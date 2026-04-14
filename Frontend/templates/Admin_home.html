@@ -1,0 +1,204 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title data-i18n="admin_home.title">Admin Dashboard</title>
+
+  <!-- Tailwind CSS (required for shared navbar/footer UI) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Icons + Fonts (match other pages) -->
+  <script src="https://unpkg.com/@phosphor-icons/web@2.1.1/dist/phosphor.js" defer></script>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@400;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+  <link rel="stylesheet" href="/static/css/styles.css?v=3" />
+  <link rel="stylesheet" href="/static/css/admin-home.css?v=1" />
+</head>
+
+<body>
+  <!-- Admin Navigation -->
+  <div id="admin-navbar-container"></div>
+
+  <div class="wrap">
+    <div class="dash-hero">
+      <div class="dash-hero-left">
+        <div class="dash-title">Admin Dashboard</div>
+        <div class="dash-sub">Welcome, <span id="name">Admin</span></div>
+        <div class="muted" data-i18n="admin_home.signed_in_message">Manage announcements, alerts, visitor counts, and entry records.</div>
+      </div>
+      <div class="dash-hero-right">
+        <div class="dash-chip"><i class="fa-solid fa-shield-halved"></i><span>Staff Area</span></div>
+      </div>
+    </div>
+
+    <div class="card" id="analyticsCard" style="display:none">
+      <div class="section-head">
+        <div>
+          <div class="section-title">Analytics</div>
+          <div class="muted">Visitor and booking insights.</div>
+        </div>
+        <div class="row">
+          <a class="btn" href="/admin/visitor-statistics/">Open Full Statistics</a>
+          <a class="btn" href="#" id="analyticsRefreshBtn">Refresh</a>
+        </div>
+      </div>
+
+      <div class="chart-grid">
+        <div class="chart-card">
+          <div class="k">Visitor Count Graph</div>
+          <div class="chart-wrap"><canvas id="chartVisitors"></canvas></div>
+        </div>
+
+        <div class="chart-card">
+          <div class="k">Pass Booking Graph</div>
+          <div class="chart-wrap"><canvas id="chartPass"></canvas></div>
+        </div>
+
+        <div class="chart-card">
+          <div class="k">Pooja Services Graph</div>
+          <div class="chart-wrap"><canvas id="chartPooja"></canvas></div>
+        </div>
+
+        <div class="chart-card">
+          <div class="k">Bhakta Nivas Booking Graph</div>
+          <div class="chart-wrap"><canvas id="chartBhakta"></canvas></div>
+        </div>
+      </div>
+
+      <pre id="analyticsError" style="margin-top:10px; display:none"></pre>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi">
+        <div class="kpi-top">
+          <div class="kpi-label">Devotee Count (Today)</div>
+          <div class="kpi-icon"><i class="fa-solid fa-users"></i></div>
+        </div>
+        <div class="kpi-value" id="kpiTodayDevotees">--</div>
+        <div class="kpi-foot muted" id="kpiTodayDevoteesMeta">Live from database</div>
+      </div>
+
+      <div class="kpi">
+        <div class="kpi-top">
+          <div class="kpi-label">Active Announcements</div>
+          <div class="kpi-icon"><i class="fa-solid fa-bullhorn"></i></div>
+        </div>
+        <div class="kpi-value" id="kpiActiveAnnouncements">--</div>
+        <div class="kpi-foot muted">Shown in homepage marquee</div>
+      </div>
+
+      <div class="kpi">
+        <div class="kpi-top">
+          <div class="kpi-label">Active Alerts</div>
+          <div class="kpi-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+        </div>
+        <div class="kpi-value" id="kpiActiveAlerts">--</div>
+        <div class="kpi-foot muted">High priority notifications</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-head">
+        <div>
+          <div class="section-title">Verification</div>
+          <div class="muted">Verify entries at the gate for different services.</div>
+        </div>
+      </div>
+
+      <div class="action-grid action-grid-3">
+        <a class="action" href="Verify_entry.html?service=pass" data-i18n="admin_home.verify_pass_booking">
+          <div class="action-icon"><i class="fa-solid fa-ticket"></i></div>
+          <div class="action-text">
+            <div class="action-title">Verify Pass Booking</div>
+            <div class="action-sub muted">Face verification & entry confirmation</div>
+          </div>
+        </a>
+
+        <a class="action" href="Verify_entry.html?service=pooja" data-i18n="admin_home.verify_pooja_services">
+          <div class="action-icon"><i class="fa-solid fa-hands-praying"></i></div>
+          <div class="action-text">
+            <div class="action-title">Verify Pooja Services</div>
+            <div class="action-sub muted">Check bookings at entry</div>
+          </div>
+        </a>
+
+        <a class="action" href="Verify_entry.html?service=bhaktnivas" data-i18n="admin_home.verify_bhakta_nivas">
+          <div class="action-icon"><i class="fa-solid fa-house-chimney"></i></div>
+          <div class="action-text">
+            <div class="action-title">Verify Bhakta Nivas</div>
+            <div class="action-sub muted">Stay verification</div>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-head">
+        <div>
+          <div class="section-title">Admin Panel Controls</div>
+          <div class="muted">Quick access to core management actions.</div>
+        </div>
+      </div>
+
+      <div class="action-grid">
+        <a class="action" href="/admin/announcements/?type=announcement" id="addAnnouncementBtn">
+          <div class="action-icon"><i class="fa-solid fa-bell"></i></div>
+          <div class="action-text">
+            <div class="action-title">Add Announcement</div>
+            <div class="action-sub muted">Create & manage marquee messages</div>
+          </div>
+        </a>
+
+        <a class="action" href="/admin/announcements/?type=alert" id="addEmergencyAlertBtn">
+          <div class="action-icon alert"><i class="fa-solid fa-triangle-exclamation"></i></div>
+          <div class="action-text">
+            <div class="action-title">Add Emergency Alert</div>
+            <div class="action-sub muted">Crowd and safety alerts</div>
+          </div>
+        </a>
+
+        <a class="action" href="/admin/visitor-counter/" id="resetVisitorCounterBtn">
+          <div class="action-icon"><i class="fa-solid fa-user-group"></i></div>
+          <div class="action-text">
+            <div class="action-title">Visitor Counter</div>
+            <div class="action-sub muted">Set / reset today’s count</div>
+          </div>
+        </a>
+
+        <button class="action" type="button" id="showEntryRecordsBtn">
+          <div class="action-icon"><i class="fa-solid fa-chart-line"></i></div>
+          <div class="action-text">
+            <div class="action-title">Show Entry Records</div>
+            <div class="action-sub muted">Charts & daily analytics</div>
+          </div>
+        </button>
+      </div>
+    </div>
+
+    <div class="card" id="entryRecordsCard" style="display:none">
+      <h3 style="margin-top:0">Entry Records</h3>
+      <div class="muted">Shows entry verifications over time.</div>
+      <div class="row" style="margin-top:10px">
+        <a class="btn" href="#" data-period="week" id="entryPeriodWeek">Week</a>
+        <a class="btn" href="#" data-period="month" id="entryPeriodMonth">Month</a>
+        <a class="btn" href="#" data-period="year" id="entryPeriodYear">Year</a>
+      </div>
+      <div style="margin-top:12px">
+        <canvas id="entryRecordsChart" height="110"></canvas>
+      </div>
+      <pre id="entryRecordsError" style="margin-top:10px; display:none"></pre>
+    </div>
+  </div>
+
+  <script src="/static/js/admin-mount-navbar.js?v=1"></script>
+  <script src="/static/js/admin-home.js?v=4"></script>
+</body>
+
+</html>

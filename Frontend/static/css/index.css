@@ -1,0 +1,51 @@
+/* Index Page Specific Styles */
+
+/* Hero section animations */
+.hero-section {
+    position: relative;
+    overflow: hidden;
+}
+
+/* Calendar widget specific to index page */
+.calendar-day {
+    padding: 8px;
+    text-align: center;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.calendar-day:hover {
+    background-color: rgba(255, 122, 0, 0.1);
+}
+
+.calendar-day.has-event {
+    background-color: rgba(255, 122, 0, 0.15);
+    font-weight: 600;
+}
+
+.calendar-day.today {
+    background-color: var(--brand-saffron);
+    color: white;
+    font-weight: bold;
+}
+
+/* Event cards */
+.event-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.event-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+}
+
+/* Online services section cards */
+#online-services .card-animate {
+    background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+    border: 1px solid #e5e7eb;
+}
+
+#online-services .card-animate:hover {
+    background: linear-gradient(180deg, #ffffff 0%, #f1f5f9 100%);
+}

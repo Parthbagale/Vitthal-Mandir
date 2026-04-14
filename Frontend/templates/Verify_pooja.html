@@ -1,0 +1,171 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pooja Services Verification - Admin Panel</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/@phosphor-icons/web@2.1.1/dist/phosphor.js" defer></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    body { background: #f8fafc; }
+    .verify-container { max-width: 960px; margin: 24px auto; padding: 16px; }
+    .panel { background: #fff; border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.08); padding: 24px; }
+    .controls { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+    .controls input[type="text"]{ padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px; min-width: 260px; }
+    .btn { cursor: pointer; border: none; padding: 10px 14px; border-radius: 8px; font-weight: 600; transition: all 0.2s; }
+    .btn-primary { background: #10b981; color: #fff; }
+    .btn-primary:hover { background: #059669; }
+    .btn-neutral { background: #e5e7eb; color: #111827; }
+    .btn-neutral:hover { background: #d1d5db; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .media { background: #0b0f1a; border-radius: 12px; overflow: hidden; aspect-ratio: 4/3; display: flex; align-items: center; justify-content: center; }
+    video, img { max-width: 100%; height: auto; }
+    .status { margin-top: 16px; padding: 12px; border-radius: 10px; display: none; }
+    .status.ok { display: block; background: #ecfdf5; color: #065f46; border: 1px solid #10b981; }
+    .status.err { display: block; background: #fef2f2; color: #991b1b; border: 1px solid #ef4444; }
+    .muted { color: #6b7280; font-size: 0.9rem; }
+    .page-title { font-size: 2rem; font-weight: 700; color: #1f2937; margin-bottom: 8px; }
+  </style>
+  <script src="/static/js/auth.js"></script>
+  <script>
+    // Enforce admin auth on load
+    (function(){
+      if (typeof requireAdminAuth === 'function') {
+        requireAdminAuth({ redirectTo: 'Admin_login.html', message: 'Please login as admin to access verification.' });
+      }
+    })();
+  </script>
+</head>
+<body>
+    {% include 'navbar.html' %}
+  <script>
+    // Single verification page: redirect to unified verifier
+    window.location.replace('Verify_entry.html?service=pooja');
+  </script>
+  <!-- Admin Navigation -->
+  <div id="admin-navbar-container"></div>
+
+  <div class="verify-container">
+    <h1 class="page-title">
+      <i class="fas fa-hands-praying text-green-500 mr-2"></i>
+      Pooja Services Verification
+    </h1>
+    <p class="muted">Enter the Pooja Booking ID and capture a live face image from the webcam to verify.</p>
+
+    <div class="panel">
+      <div class="controls">
+        <input id="bookingId" type="text" placeholder="Enter Pooja Booking ID (e.g., PJXXXXXXXXXX)" />
+        <button id="startCam" class="btn btn-neutral">Start Camera</button>
+        <button id="capture" class="btn btn-neutral">Capture</button>
+        <button id="verify" class="btn btn-primary">Verify Pooja</button>
+      </div>
+
+      <div class="grid" style="margin-top: 16px;">
+        <div>
+          <div class="media">
+            <video id="video" autoplay playsinline></video>
+          </div>
+          <p class="muted" style="margin-top:8px">Live Camera</p>
+        </div>
+        <div>
+          <div class="media" style="background:#111827;">
+            <img id="preview" alt="Captured frame will appear here" />
+          </div>
+          <p class="muted" style="margin-top:8px">Captured Image</p>
+        </div>
+      </div>
+
+      <div id="status" class="status" role="status"></div>
+
+      <canvas id="canvas" width="640" height="480" style="display:none"></canvas>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = localStorage.getItem('API_BASE') || 'http://127.0.0.1:8000';
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const preview = document.getElementById('preview');
+    const startCamBtn = document.getElementById('startCam');
+    const captureBtn = document.getElementById('capture');
+    const verifyBtn = document.getElementById('verify');
+    const bookingIdEl = document.getElementById('bookingId');
+    const statusEl = document.getElementById('status');
+
+    let stream = null;
+    let capturedDataUrl = '';
+
+    function setStatus(type, message){
+      statusEl.className = 'status ' + (type === 'ok' ? 'ok' : 'err');
+      statusEl.textContent = message;
+    }
+
+    async function startCamera(){
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: false });
+        video.srcObject = stream;
+        setStatus('ok', 'Camera started.');
+      } catch (e) {
+        setStatus('err', 'Failed to start camera: ' + e.message);
+      }
+    }
+
+    function captureFrame(){
+      if(!stream){ setStatus('err','Camera is not started.'); return; }
+      const ctx = canvas.getContext('2d');
+      const w = video.videoWidth || 640;
+      const h = video.videoHeight || 480;
+      canvas.width = w; canvas.height = h;
+      ctx.drawImage(video, 0, 0, w, h);
+      capturedDataUrl = canvas.toDataURL('image/jpeg', 0.9);
+      preview.src = capturedDataUrl;
+      setStatus('ok', 'Captured image ready for verification.');
+    }
+
+    async function verifyPooja(){
+      const booking_id = (bookingIdEl.value || '').trim();
+      if(!booking_id){ setStatus('err','Please enter a valid Pooja Booking ID.'); return; }
+      if(!capturedDataUrl){ setStatus('err','Please capture an image first.'); return; }
+
+      try{
+        const resp = await fetch(`${API_BASE}/api/booking/poojas/verify-face/`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ booking_id, image_data_url: capturedDataUrl })
+        });
+        const data = await resp.json().catch(() => ({}));
+        if(!resp.ok){
+          setStatus('err', (data && data.detail) ? ('Verification failed: ' + data.detail) : 'Verification failed.');
+          return;
+        }
+        
+        // Check if entry was already used
+        if(data.entry_used){
+          setStatus('err', data.entry_message || 'User already exists with the same face and booking ID.');
+          return;
+        }
+        
+        // Check if face matched
+        if(data.match && data.entry_allowed){
+          setStatus('ok', data.entry_message || `Match confirmed. Verification passed. (distance=${data.distance?.toFixed?.(4)}, threshold=${data.threshold?.toFixed?.(4)})`);
+        } else {
+          // Face did not match
+          setStatus('err', `Face did not match. Verification failed. (distance=${data.distance?.toFixed?.(4)}, threshold=${data.threshold?.toFixed?.(4)})`);
+        }
+      } catch(e){
+        setStatus('err', 'Network error: ' + e.message);
+      }
+    }
+
+    startCamBtn.addEventListener('click', startCamera);
+    captureBtn.addEventListener('click', captureFrame);
+    verifyBtn.addEventListener('click', verifyPooja);
+  </script>
+  
+  <script src="/static/js/admin-mount-navbar.js?v=1"></script>
+  {% include 'footer.html' %}
+</body>
+</html>

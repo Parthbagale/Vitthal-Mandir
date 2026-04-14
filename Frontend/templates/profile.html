@@ -1,0 +1,1029 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - Temple Website</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
+    <link rel="stylesheet" href="/static/css/styles.css?v=3">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#FF9100',
+                        secondary: '#F3E9DD',
+                        gold: '#B8860B',
+                        saffron: '#FF6347',
+                        maroon: '#800000',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-50 min-h-screen">
+    {% include 'navbar.html' %}
+
+
+    <!-- Profile Content -->
+    <div class="max-w-6xl mx-auto py-10 px-4">
+        <!-- Profile Header -->
+        <div class="bg-white rounded-2xl shadow-sm ring-1 ring-black/5 overflow-hidden mb-8">
+            <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-950 h-36 relative">
+                <!-- Profile image placeholder -->
+                <div class="absolute -bottom-16 left-8">
+                    <div id="profile-image-container" class="w-32 h-32 bg-white rounded-full ring-4 ring-white shadow-lg overflow-hidden">
+                        <img id="profile-image" class="w-full h-full object-cover hidden" alt="Profile">
+                        <div id="default-avatar" class="w-full h-full bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center">
+                            <i class="fas fa-user text-4xl text-slate-700"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pt-20 pb-8 px-8">
+                <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+                    <div>
+                        <h1 id="user-name" class="text-3xl font-extrabold text-slate-900 mb-1">Loading...</h1>
+                        <p id="user-email" class="text-slate-600 text-base">Loading...</p>
+                    </div>
+                    <div class="flex flex-col md:items-end gap-3">
+                        <div class="flex items-center gap-3">
+                        <span id="member-since" class="text-slate-500 text-sm" data-i18n="profile.member_since">Member since: Loading...</span>
+                        </div>
+
+                        <div class="flex items-center gap-2">
+                            <button id="edit-profile-btn" class="inline-flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white text-sm font-semibold px-4 py-2 rounded-xl">
+                                <i class="fas fa-pen"></i>
+                                <span data-i18n="profile.edit_profile">Edit Profile</span>
+                            </button>
+                            <button id="save-profile-btn" class="hidden inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold px-4 py-2 rounded-xl">
+                                <i class="fas fa-save"></i>
+                                <span data-i18n="profile.save_changes">Save</span>
+                            </button>
+                            <button id="cancel-edit-btn" class="hidden inline-flex items-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-800 text-sm font-semibold px-4 py-2 rounded-xl ring-1 ring-black/5">
+                                <i class="fas fa-xmark"></i>
+                                <span data-i18n="profile.cancel">Cancel</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="profile-message" class="hidden mt-4 text-sm px-4 py-3 rounded-xl"></div>
+            </div>
+        </div>
+
+        <!-- Profile Details -->
+        <div class="grid lg:grid-cols-3 gap-8">
+            <!-- Personal Information -->
+            <div class="bg-white rounded-2xl shadow-sm ring-1 ring-black/5 p-6 lg:col-span-1">
+                <h2 class="text-lg font-bold text-slate-900 mb-5 flex items-center" data-i18n="profile.personal_information_title">
+                    <i class="fas fa-user-circle text-orange-500 mr-3"></i>Personal Information
+                </h2>
+                <div class="grid gap-4">
+                    <div>
+                        <div class="text-xs font-semibold text-slate-500 mb-1" data-i18n="profile.full_name_label">Full Name</div>
+                        <div id="display-name" class="bg-slate-50 p-3 rounded-xl text-slate-900 ring-1 ring-black/5">Loading...</div>
+                        <input id="edit-full-name" class="hidden w-full mt-2 bg-white p-3 rounded-xl text-slate-900 ring-1 ring-black/10 focus:ring-orange-200 focus:outline-none" type="text" />
+                    </div>
+                    <div>
+                        <div class="text-xs font-semibold text-slate-500 mb-1" data-i18n="profile.username_label">Username</div>
+                        <div id="display-username" class="bg-slate-50 p-3 rounded-xl text-slate-900 ring-1 ring-black/5">Loading...</div>
+                    </div>
+                    <div>
+                        <div class="text-xs font-semibold text-slate-500 mb-1" data-i18n="profile.email_address_label">Email Address</div>
+                        <div id="display-email" class="bg-slate-50 p-3 rounded-xl text-slate-900 ring-1 ring-black/5">Loading...</div>
+                        <input id="edit-email" class="hidden w-full mt-2 bg-white p-3 rounded-xl text-slate-900 ring-1 ring-black/10 focus:ring-orange-200 focus:outline-none" type="email" />
+                    </div>
+                    <div>
+                        <div class="text-xs font-semibold text-slate-500 mb-1" data-i18n="profile.profile_photo">Profile Photo</div>
+                        <input id="edit-photo" class="hidden w-full bg-white p-3 rounded-xl text-slate-900 ring-1 ring-black/10" type="file" accept="image/*" />
+                        <div id="photo-help" class="hidden text-xs text-slate-500 mt-1">JPG/PNG</div>
+                    </div>
+                    <div>
+                        <div class="text-xs font-semibold text-slate-500 mb-1" data-i18n="profile.account_type_label">Account Type</div>
+                        <div id="display-account-type" class="bg-slate-50 p-3 rounded-xl text-slate-900 ring-1 ring-black/5" data-i18n="profile.temple_devotee">Temple Devotee</div>
+                    </div>
+                    <div>
+                        <div class="text-xs font-semibold text-slate-500 mb-1" data-i18n="profile.account_status_label">Account Status</div>
+                        <div id="display-status" class="bg-slate-50 p-3 rounded-xl text-slate-900 ring-1 ring-black/5" data-i18n="profile.active">Active</div>
+                    </div>
+                    <div>
+                        <div class="text-xs font-semibold text-slate-500 mb-1" data-i18n="profile.last_login_label">Last Login</div>
+                        <div id="display-last-login" class="bg-slate-50 p-3 rounded-xl text-slate-900 ring-1 ring-black/5">—</div>
+                    </div>
+                    <div>
+                        <div class="text-xs font-semibold text-slate-500 mb-1" data-i18n="profile.last_updated_label">Last Updated</div>
+                        <div id="display-updated-at" class="bg-slate-50 p-3 rounded-xl text-slate-900 ring-1 ring-black/5">—</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Booking Overview -->
+            <div class="bg-white rounded-2xl shadow-sm ring-1 ring-black/5 p-6 lg:col-span-2">
+                <div class="flex items-center justify-between mb-5">
+                    <h2 class="text-lg font-bold text-slate-900 flex items-center" data-i18n="profile.my_pass_bookings_title">
+                        <i class="fas fa-ticket-alt text-orange-500 mr-3"></i>My Pass Bookings
+                    </h2>
+                    <button id="show-tokens-btn" class="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold px-4 py-2 rounded-md" data-i18n="profile.my_tokens_button">
+                        <i class="fas fa-qrcode"></i>
+                        My Tokens
+                    </button>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="p-4 bg-orange-50 rounded-xl ring-1 ring-orange-100">
+                        <p class="text-xs font-semibold text-slate-600" data-i18n="profile.total_bookings_label">Total Bookings</p>
+                        <p id="stat-total" class="text-2xl font-bold text-orange-600">0</p>
+                    </div>
+                    <div class="p-4 bg-blue-50 rounded-xl ring-1 ring-blue-100">
+                        <p class="text-xs font-semibold text-slate-600" data-i18n="profile.upcoming_label">Upcoming</p>
+                        <p id="stat-upcoming" class="text-2xl font-bold text-blue-600">0</p>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <h3 class="text-base font-semibold text-slate-900 mb-3" data-i18n="profile.upcoming_passes_title">Upcoming Passes</h3>
+                    <ul id="upcoming-list" class="space-y-2"></ul>
+                    <div id="no-upcoming" class="text-slate-500 text-sm" data-i18n="profile.no_upcoming_passes">No upcoming passes.</div>
+                </div>
+
+                <div class="mt-6 pt-6 border-t border-slate-200">
+                    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+                        <h3 class="text-base font-semibold text-slate-900" data-i18n="profile.booking_history">Booking History</h3>
+                        <div class="flex items-center gap-2">
+                            <input id="booking-search" type="text" class="w-full md:w-[320px] bg-white p-2.5 rounded-xl text-slate-900 ring-1 ring-black/10 focus:ring-orange-200 focus:outline-none" placeholder="Search booking id, name, date..." />
+                            <button id="refresh-bookings-btn" class="inline-flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white text-sm font-semibold px-3 py-2.5 rounded-xl">
+                                <i class="fas fa-rotate"></i>
+                                <span>Refresh</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 grid gap-5">
+                        <div class="rounded-2xl ring-1 ring-black/5 overflow-hidden">
+                            <div class="px-4 py-3 bg-slate-50 text-sm font-semibold text-slate-900 flex items-center gap-2">
+                                <i class="fas fa-ticket-alt text-orange-500"></i>
+                                <span>Pass Bookings</span>
+                            </div>
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full text-sm">
+                                    <thead class="bg-white">
+                                        <tr class="text-left text-slate-500">
+                                            <th class="px-4 py-3 font-semibold">Booking ID</th>
+                                            <th class="px-4 py-3 font-semibold">Date</th>
+                                            <th class="px-4 py-3 font-semibold">Slot</th>
+                                            <th class="px-4 py-3 font-semibold">Status</th>
+                                            <th class="px-4 py-3 font-semibold">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="passes-tbody" class="divide-y divide-slate-100 bg-white"></tbody>
+                                </table>
+                            </div>
+                            <div id="passes-empty" class="px-4 py-4 text-slate-500 text-sm bg-white hidden">No pass bookings found.</div>
+                        </div>
+
+                        <div class="rounded-2xl ring-1 ring-black/5 overflow-hidden">
+                            <div class="px-4 py-3 bg-slate-50 text-sm font-semibold text-slate-900 flex items-center gap-2">
+                                <i class="fas fa-hands-praying text-yellow-600"></i>
+                                <span>Pooja Bookings</span>
+                            </div>
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full text-sm">
+                                    <thead class="bg-white">
+                                        <tr class="text-left text-slate-500">
+                                            <th class="px-4 py-3 font-semibold">Booking ID</th>
+                                            <th class="px-4 py-3 font-semibold">Preferred Date</th>
+                                            <th class="px-4 py-3 font-semibold">Type</th>
+                                            <th class="px-4 py-3 font-semibold">Status</th>
+                                            <th class="px-4 py-3 font-semibold">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="poojas-tbody" class="divide-y divide-slate-100 bg-white"></tbody>
+                                </table>
+                            </div>
+                            <div id="poojas-empty" class="px-4 py-4 text-slate-500 text-sm bg-white hidden">No pooja bookings found.</div>
+                        </div>
+
+                        <div class="rounded-2xl ring-1 ring-black/5 overflow-hidden">
+                            <div class="px-4 py-3 bg-slate-50 text-sm font-semibold text-slate-900 flex items-center gap-2">
+                                <i class="fas fa-bed text-green-600"></i>
+                                <span>Bhakta Nivas</span>
+                            </div>
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full text-sm">
+                                    <thead class="bg-white">
+                                        <tr class="text-left text-slate-500">
+                                            <th class="px-4 py-3 font-semibold">Booking ID</th>
+                                            <th class="px-4 py-3 font-semibold">Check-in</th>
+                                            <th class="px-4 py-3 font-semibold">Check-out</th>
+                                            <th class="px-4 py-3 font-semibold">Room</th>
+                                            <th class="px-4 py-3 font-semibold">Status</th>
+                                            <th class="px-4 py-3 font-semibold">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="nivas-tbody" class="divide-y divide-slate-100 bg-white"></tbody>
+                                </table>
+                            </div>
+                            <div id="nivas-empty" class="px-4 py-4 text-slate-500 text-sm bg-white hidden">No Bhakta Nivas bookings found.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="bg-white rounded-2xl shadow-sm ring-1 ring-black/5 p-6 mt-8">
+            <h2 class="text-lg font-bold text-slate-900 mb-5 flex items-center" data-i18n="profile.quick_actions_title">
+                <i class="fas fa-bolt text-orange-500 mr-3"></i>Quick Actions
+            </h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <button onclick="accessService('Live Darshan', 'Live_darshan.html')" class="bg-gradient-to-r from-orange-500 to-orange-600 text-white p-4 rounded-xl hover:from-orange-600 hover:to-orange-700 transition-all">
+                    <i class="fas fa-video text-2xl mb-2"></i>
+                    <p class="text-sm font-medium" data-i18n="profile.live_darshan_button">Live Darshan</p>
+                </button>
+                <button onclick="accessService('Pooja Services', 'Pooja_services.html')" class="bg-gradient-to-r from-yellow-500 to-yellow-600 text-white p-4 rounded-xl hover:from-yellow-600 hover:to-yellow-700 transition-all">
+                    <i class="fas fa-hands-praying text-2xl mb-2"></i>
+                    <p class="text-sm font-medium" data-i18n="profile.pooja_services_button">Pooja Services</p>
+                </button>
+                <button onclick="accessService('Pass Booking', 'Pass_booking.html')" class="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-4 rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all">
+                    <i class="fas fa-ticket-alt text-2xl mb-2"></i>
+                    <p class="text-sm font-medium" data-i18n="profile.pass_booking_button">Pass Booking</p>
+                </button>
+                <button onclick="accessService('Bhakta Nivas', 'Bhakta_nivas.html')" class="bg-gradient-to-r from-green-500 to-green-600 text-white p-4 rounded-xl hover:from-green-600 hover:to-green-700 transition-all">
+                    <i class="fas fa-bed text-2xl mb-2"></i>
+                    <p class="text-sm font-medium" data-i18n="profile.bhakta_nivas_button">Bhakta Nivas</p>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tokens Modal -->
+    <div id="tokens-modal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-3xl w-full mx-4 overflow-hidden">
+            <div class="flex items-center justify-between px-6 py-4 border-b">
+                <h3 class="text-lg font-semibold text-gray-800" data-i18n="profile.my_tokens_modal_title">My Tokens & Bookings</h3>
+                <button id="close-tokens-btn" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div id="tokens-content" class="max-h-[70vh] overflow-y-auto p-6 space-y-4">
+                <!-- Token cards render here -->
+            </div>
+        </div>
+    </div>
+
+    <div id="print-host" class="hidden"></div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-8 text-center">
+            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto mb-4"></div>
+            <p class="text-gray-700" data-i18n="profile.loading_profile">Loading your profile...</p>
+        </div>
+    </div>
+
+    <script>
+        // Central API base (align with other pages)
+        const API_BASE = (function(){
+            try { return localStorage.getItem('API_BASE') || 'http://127.0.0.1:8000'; } catch(_) { return 'http://127.0.0.1:8000'; }
+        })();
+
+        function fmtDispDate(iso){
+            try{
+                if(!iso) return '';
+                const d = new Date(iso);
+                if(!isNaN(d)) return d.toLocaleDateString(undefined,{ day:'2-digit', month:'long', year:'numeric' });
+                // Fallback if iso is YYYY-MM-DD only
+                const [y,m,dd] = String(iso).split('-').map(Number);
+                const dt = new Date(y, (m||1)-1, dd||1);
+                return isNaN(dt) ? String(iso) : dt.toLocaleDateString(undefined,{ day:'2-digit', month:'long', year:'numeric' });
+            } catch(_) { return String(iso||''); }
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Determine token from either user or admin flows
+            const accessToken = localStorage.getItem('accessToken') || localStorage.getItem('access_token');
+
+            if (!accessToken) {
+                window.location.href = 'index.html';
+                return;
+            }
+
+            try {
+                // Fetch user profile data
+                const response = await fetch(`${API_BASE}/api/auth/profile/`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    const payload = await response.json();
+                    displayUserProfile(payload);
+                    renderBookingOverview(payload);
+                    wireAdvancedProfileActions(payload);
+                } else {
+                    throw new Error('Failed to fetch profile');
+                }
+            } catch (error) {
+                console.error('Error fetching profile:', error);
+                alert('Error loading profile. Please login again.');
+                logout();
+            }
+
+            // Hide loading overlay
+            document.getElementById('loading-overlay').style.display = 'none';
+        });
+
+        function showProfileMessage(type, text) {
+            const box = document.getElementById('profile-message');
+            if (!box) return;
+            box.classList.remove('hidden');
+            box.textContent = text;
+            box.className = 'mt-4 text-sm px-4 py-3 rounded-xl ' + (type === 'ok'
+                ? 'bg-emerald-50 text-emerald-900 ring-1 ring-emerald-200'
+                : 'bg-red-50 text-red-900 ring-1 ring-red-200');
+        }
+
+        function hideProfileMessage() {
+            const box = document.getElementById('profile-message');
+            if (!box) return;
+            box.classList.add('hidden');
+        }
+
+        function displayUserProfile(payload) {
+            const user = payload.user || payload; // fallback if backend returns plain user
+            // Update profile information
+            document.getElementById('user-name').textContent = user.full_name;
+            document.getElementById('user-email').textContent = user.email;
+            document.getElementById('display-name').textContent = user.full_name;
+            document.getElementById('display-username').textContent = user.username;
+            document.getElementById('display-email').textContent = user.email;
+            document.getElementById('display-account-type').textContent = user.is_devotee ? 'Temple Devotee' : 'User';
+
+            // Account status
+            const statusEl = document.getElementById('display-status');
+            if (typeof user.is_active !== 'undefined') {
+                statusEl.textContent = user.is_active ? 'Active' : 'Inactive';
+                statusEl.classList.toggle('text-green-700', !!user.is_active);
+                statusEl.classList.toggle('text-red-700', !user.is_active);
+            }
+
+            // Format and display member since date
+            const memberSince = fmtDispDate(user.created_at);
+            document.getElementById('member-since').textContent = `Member since: ${memberSince}`;
+
+            // Last login and updated at
+            const lastLoginEl = document.getElementById('display-last-login');
+            const updatedAtEl = document.getElementById('display-updated-at');
+            if (user.last_login) {
+                lastLoginEl.textContent = fmtDispDate(user.last_login);
+            } else {
+                lastLoginEl.textContent = '—';
+            }
+            if (user.updated_at) {
+                updatedAtEl.textContent = fmtDispDate(user.updated_at);
+            } else {
+                updatedAtEl.textContent = '—';
+            }
+
+            // Display profile image if available
+            if (user.profile_image_base64) {
+                const profileImg = document.getElementById('profile-image');
+                const defaultAvatar = document.getElementById('default-avatar');
+                
+                profileImg.src = `data:image/jpeg;base64,${user.profile_image_base64}`;
+                profileImg.classList.remove('hidden');
+                defaultAvatar.style.display = 'none';
+            }
+        }
+
+        function renderBookingOverview(payload) {
+            const stats = payload.booking_stats || { total: 0, upcoming_count: 0 };
+            const upcoming = payload.upcoming_passes || [];
+
+            document.getElementById('stat-total').textContent = stats.total;
+            document.getElementById('stat-upcoming').textContent = stats.upcoming_count;
+
+            const list = document.getElementById('upcoming-list');
+            const empty = document.getElementById('no-upcoming');
+            list.innerHTML = '';
+            if (upcoming.length === 0) {
+                empty.style.display = 'block';
+                return;
+            }
+            empty.style.display = 'none';
+            upcoming.forEach(p => {
+                const li = document.createElement('li');
+                li.className = 'p-3 bg-slate-50 rounded-xl ring-1 ring-black/5 flex items-center justify-between';
+                li.innerHTML = `
+                  <div>
+                    <div class="text-gray-800 font-medium">${fmtDispDate(p.darshan_date)} · ${p.slot}</div>
+                    <div class="text-gray-500 text-sm">Booking ID: ${p.booking_id}</div>
+                  </div>
+                `;
+                list.appendChild(li);
+            });
+        }
+
+        function wireAdvancedProfileActions(payload) {
+            const user = payload.user || payload;
+
+            const editBtn = document.getElementById('edit-profile-btn');
+            const saveBtn = document.getElementById('save-profile-btn');
+            const cancelBtn = document.getElementById('cancel-edit-btn');
+
+            const dispName = document.getElementById('display-name');
+            const dispEmail = document.getElementById('display-email');
+
+            const editName = document.getElementById('edit-full-name');
+            const editEmail = document.getElementById('edit-email');
+            const editPhoto = document.getElementById('edit-photo');
+            const photoHelp = document.getElementById('photo-help');
+
+            function setEditMode(on) {
+                hideProfileMessage();
+                if (dispName) dispName.classList.toggle('hidden', on);
+                if (dispEmail) dispEmail.classList.toggle('hidden', on);
+                if (editName) editName.classList.toggle('hidden', !on);
+                if (editEmail) editEmail.classList.toggle('hidden', !on);
+                if (editPhoto) editPhoto.classList.toggle('hidden', !on);
+                if (photoHelp) photoHelp.classList.toggle('hidden', !on);
+
+                if (editBtn) editBtn.classList.toggle('hidden', on);
+                if (saveBtn) saveBtn.classList.toggle('hidden', !on);
+                if (cancelBtn) cancelBtn.classList.toggle('hidden', !on);
+
+                if (on) {
+                    if (editName) editName.value = user.full_name || '';
+                    if (editEmail) editEmail.value = user.email || '';
+                }
+            }
+
+            async function saveProfile() {
+                const accessToken = localStorage.getItem('accessToken') || localStorage.getItem('access_token');
+                if (!accessToken) return;
+
+                const nextName = (editName && editName.value) ? editName.value.trim() : '';
+                const nextEmail = (editEmail && editEmail.value) ? editEmail.value.trim() : '';
+
+                if (!nextName || !nextEmail) {
+                    showProfileMessage('err', 'Please enter name and email.');
+                    return;
+                }
+
+                try {
+                    const fd = new FormData();
+                    fd.append('full_name', nextName);
+                    fd.append('email', nextEmail);
+                    if (editPhoto && editPhoto.files && editPhoto.files[0]) {
+                        fd.append('profile_image', editPhoto.files[0]);
+                    }
+
+                    const res = await fetch(`${API_BASE}/api/auth/profile/`, {
+                        method: 'PATCH',
+                        headers: {
+                            'Authorization': `Bearer ${accessToken}`
+                        },
+                        body: fd
+                    });
+
+                    if (!res.ok) {
+                        const t = await res.text().catch(() => '');
+                        showProfileMessage('err', 'Profile update is not available yet on the server.');
+                        console.warn('Profile update failed:', res.status, t);
+                        return;
+                    }
+
+                    showProfileMessage('ok', 'Profile updated successfully.');
+                    setTimeout(() => location.reload(), 900);
+                } catch (e) {
+                    console.error(e);
+                    showProfileMessage('err', 'Network error while updating profile.');
+                }
+            }
+
+            if (editBtn) editBtn.addEventListener('click', () => setEditMode(true));
+            if (cancelBtn) cancelBtn.addEventListener('click', () => location.reload());
+            if (saveBtn) saveBtn.addEventListener('click', saveProfile);
+
+            const refreshBtn = document.getElementById('refresh-bookings-btn');
+            if (refreshBtn) refreshBtn.addEventListener('click', () => loadBookingTables());
+            const searchEl = document.getElementById('booking-search');
+            if (searchEl) searchEl.addEventListener('input', () => renderBookingTables());
+
+            loadBookingTables();
+        }
+
+        let _bookingsCache = { passes: [], poojas: [], nivasRows: [], nivasGroups: [] };
+
+        async function fetchAllAuthed(url) {
+            const accessToken = localStorage.getItem('accessToken') || localStorage.getItem('access_token');
+            const headers = { 'Authorization': `Bearer ${accessToken}` };
+            const collected = [];
+            let nextUrl = url;
+            for (let i = 0; i < 10 && nextUrl; i++) {
+                const res = await fetch(nextUrl, { headers });
+                if (!res.ok) throw new Error(await res.text().catch(() => res.statusText));
+                const data = await res.json();
+                if (Array.isArray(data)) {
+                    collected.push(...data);
+                    break;
+                }
+                if (Array.isArray(data.results)) {
+                    collected.push(...data.results);
+                    nextUrl = data.next;
+                } else {
+                    if (data) collected.push(data);
+                    nextUrl = null;
+                }
+            }
+            return collected;
+        }
+
+        function todayYMD() {
+            const d = new Date();
+            const y = d.getFullYear();
+            const m = String(d.getMonth() + 1).padStart(2, '0');
+            const dd = String(d.getDate()).padStart(2, '0');
+            return `${y}-${m}-${dd}`;
+        }
+
+        function statusChip(label, tone) {
+            const base = 'inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold ring-1';
+            if (tone === 'upcoming') return `<span class="${base} bg-blue-50 text-blue-800 ring-blue-200">${label}</span>`;
+            if (tone === 'past') return `<span class="${base} bg-slate-100 text-slate-700 ring-slate-200">${label}</span>`;
+            return `<span class="${base} bg-amber-50 text-amber-800 ring-amber-200">${label}</span>`;
+        }
+
+        function normalizeText(s) {
+            return String(s || '').toLowerCase();
+        }
+
+        async function loadBookingTables() {
+            const accessToken = localStorage.getItem('accessToken') || localStorage.getItem('access_token');
+            if (!accessToken) return;
+            try {
+                const [passes, poojas, nivasRows] = await Promise.all([
+                    fetchAllAuthed(`${API_BASE}/api/booking/passes/`),
+                    fetchAllAuthed(`${API_BASE}/api/booking/poojas/`),
+                    fetchAllAuthed(`${API_BASE}/api/booking/bhaktnivas/`)
+                ]);
+
+                const byCode = {};
+                (nivasRows || []).forEach(r => {
+                    const code = r.booking_code || r.booking_id || '';
+                    if (!code) return;
+                    if (!byCode[code]) byCode[code] = [];
+                    byCode[code].push(r);
+                });
+
+                const groups = Object.entries(byCode).map(([code, rows]) => {
+                    const first = rows[0] || {};
+                    return {
+                        booking_code: code,
+                        checkin_date: first.checkin_date,
+                        checkin_time: first.checkin_time,
+                        checkout_date: first.checkout_date,
+                        checkout_time: first.checkout_time,
+                        room_type: first.room_type,
+                        ac_type: first.ac_type,
+                        full_name: first.full_name
+                    };
+                });
+
+                _bookingsCache = { passes: passes || [], poojas: poojas || [], nivasRows: nivasRows || [], nivasGroups: groups };
+                renderBookingTables();
+            } catch (e) {
+                console.error(e);
+                showProfileMessage('err', 'Failed to load booking history.');
+            }
+        }
+
+        function renderBookingTables() {
+            const q = normalizeText(document.getElementById('booking-search')?.value || '');
+            const tdy = todayYMD();
+
+            const passBody = document.getElementById('passes-tbody');
+            const passEmpty = document.getElementById('passes-empty');
+            const poojaBody = document.getElementById('poojas-tbody');
+            const poojaEmpty = document.getElementById('poojas-empty');
+            const nivasBody = document.getElementById('nivas-tbody');
+            const nivasEmpty = document.getElementById('nivas-empty');
+
+            const passes = (_bookingsCache.passes || []).filter(b => {
+                const hay = `${b.booking_id || ''} ${b.full_name || ''} ${b.darshan_date || ''} ${b.slot || ''}`;
+                return !q || normalizeText(hay).includes(q);
+            });
+            const poojas = (_bookingsCache.poojas || []).filter(p => {
+                const hay = `${p.booking_id || ''} ${p.full_name || ''} ${p.preferred_date || ''} ${p.pooja_type || ''}`;
+                return !q || normalizeText(hay).includes(q);
+            });
+            const nivas = (_bookingsCache.nivasGroups || []).filter(n => {
+                const hay = `${n.booking_code || ''} ${n.full_name || ''} ${n.checkin_date || ''} ${n.checkout_date || ''} ${n.room_type || ''} ${n.ac_type || ''}`;
+                return !q || normalizeText(hay).includes(q);
+            });
+
+            if (passBody) {
+                passBody.innerHTML = '';
+                passes.forEach(b => {
+                    const isUpcoming = String(b.darshan_date || '') >= tdy;
+                    const st = isUpcoming ? statusChip('Upcoming', 'upcoming') : statusChip('Past', 'past');
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td class="px-4 py-3 text-slate-900 font-semibold">${b.booking_id || '-'}</td>
+                        <td class="px-4 py-3 text-slate-700">${fmtDispDate(b.darshan_date)}</td>
+                        <td class="px-4 py-3 text-slate-700">${b.slot || '-'}</td>
+                        <td class="px-4 py-3">${st}</td>
+                        <td class="px-4 py-3">
+                            <div class="flex items-center gap-2">
+                                <button class="text-sm font-semibold px-3 py-1.5 rounded-lg bg-slate-900 text-white hover:bg-slate-800" type="button" data-action="print" data-kind="pass" data-id="${b.booking_id || ''}">Print</button>
+                            </div>
+                        </td>
+                    `;
+                    passBody.appendChild(tr);
+                });
+                if (passEmpty) passEmpty.classList.toggle('hidden', passes.length > 0);
+            }
+
+            if (poojaBody) {
+                poojaBody.innerHTML = '';
+                poojas.forEach(p => {
+                    const isUpcoming = String(p.preferred_date || '') >= tdy;
+                    const st = isUpcoming ? statusChip('Upcoming', 'upcoming') : statusChip('Past', 'past');
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td class="px-4 py-3 text-slate-900 font-semibold">${p.booking_id || '-'}</td>
+                        <td class="px-4 py-3 text-slate-700">${fmtDispDate(p.preferred_date)}</td>
+                        <td class="px-4 py-3 text-slate-700">${p.pooja_type || '-'}</td>
+                        <td class="px-4 py-3">${st}</td>
+                        <td class="px-4 py-3">
+                            <div class="flex items-center gap-2">
+                                <button class="text-sm font-semibold px-3 py-1.5 rounded-lg bg-slate-900 text-white hover:bg-slate-800" type="button" data-action="print" data-kind="pooja" data-id="${p.booking_id || ''}">Print</button>
+                            </div>
+                        </td>
+                    `;
+                    poojaBody.appendChild(tr);
+                });
+                if (poojaEmpty) poojaEmpty.classList.toggle('hidden', poojas.length > 0);
+            }
+
+            if (nivasBody) {
+                nivasBody.innerHTML = '';
+                nivas.forEach(n => {
+                    const isUpcoming = String(n.checkin_date || '') >= tdy;
+                    const st = isUpcoming ? statusChip('Upcoming', 'upcoming') : statusChip('Past', 'past');
+                    const room = `${n.room_type || '-'}${n.ac_type ? ' (' + n.ac_type + ')' : ''}`;
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td class="px-4 py-3 text-slate-900 font-semibold">${n.booking_code || '-'}</td>
+                        <td class="px-4 py-3 text-slate-700">${fmtDispDate(n.checkin_date)} ${n.checkin_time || ''}</td>
+                        <td class="px-4 py-3 text-slate-700">${fmtDispDate(n.checkout_date)} ${n.checkout_time || ''}</td>
+                        <td class="px-4 py-3 text-slate-700">${room}</td>
+                        <td class="px-4 py-3">${st}</td>
+                        <td class="px-4 py-3">
+                            <div class="flex items-center gap-2">
+                                <button class="text-sm font-semibold px-3 py-1.5 rounded-lg bg-slate-900 text-white hover:bg-slate-800" type="button" data-action="print" data-kind="nivas" data-id="${n.booking_code || ''}">Print</button>
+                            </div>
+                        </td>
+                    `;
+                    nivasBody.appendChild(tr);
+                });
+                if (nivasEmpty) nivasEmpty.classList.toggle('hidden', nivas.length > 0);
+            }
+
+            document.querySelectorAll('[data-action="print"]').forEach(btn => {
+                if (btn.dataset.bound === '1') return;
+                btn.dataset.bound = '1';
+                btn.addEventListener('click', () => printBooking(btn.dataset.kind, btn.dataset.id));
+            });
+        }
+
+        function printBooking(kind, id) {
+            const tdy = new Date().toLocaleString();
+            let title = 'Booking';
+            let body = '';
+            if (kind === 'pass') {
+                const b = (_bookingsCache.passes || []).find(x => x.booking_id === id) || {};
+                title = 'Pass Booking';
+                body = `
+                  <div><b>Booking ID:</b> ${b.booking_id || '-'}</div>
+                  <div><b>Name:</b> ${b.full_name || '-'}</div>
+                  <div><b>Date:</b> ${fmtDispDate(b.darshan_date)}</div>
+                  <div><b>Slot:</b> ${b.slot || '-'}</div>
+                `;
+            } else if (kind === 'pooja') {
+                const p = (_bookingsCache.poojas || []).find(x => x.booking_id === id) || {};
+                title = 'Pooja Booking';
+                body = `
+                  <div><b>Booking ID:</b> ${p.booking_id || '-'}</div>
+                  <div><b>Name:</b> ${p.full_name || '-'}</div>
+                  <div><b>Preferred Date:</b> ${fmtDispDate(p.preferred_date)}</div>
+                  <div><b>Pooja Type:</b> ${p.pooja_type || '-'}</div>
+                `;
+            } else {
+                const n = (_bookingsCache.nivasGroups || []).find(x => x.booking_code === id) || {};
+                title = 'Bhakta Nivas Booking';
+                body = `
+                  <div><b>Booking ID:</b> ${n.booking_code || '-'}</div>
+                  <div><b>Name:</b> ${n.full_name || '-'}</div>
+                  <div><b>Check-in:</b> ${fmtDispDate(n.checkin_date)} ${n.checkin_time || ''}</div>
+                  <div><b>Check-out:</b> ${fmtDispDate(n.checkout_date)} ${n.checkout_time || ''}</div>
+                  <div><b>Room:</b> ${n.room_type || '-'} ${n.ac_type ? '('+n.ac_type+')' : ''}</div>
+                `;
+            }
+
+            const w = window.open('', '_blank', 'width=900,height=700');
+            if (!w) return;
+            w.document.write(`
+              <html><head><title>${title}</title>
+              <style>
+                body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;padding:24px;color:#0f172a;}
+                .card{border:1px solid #e2e8f0;border-radius:16px;padding:18px;max-width:560px;}
+                h1{margin:0 0 8px;font-size:20px;}
+                .muted{color:#64748b;font-size:12px;margin-bottom:12px;}
+                .row{margin:6px 0;}
+              </style>
+              </head><body>
+                <div class="card">
+                  <h1>${title}</h1>
+                  <div class="muted">Generated: ${tdy}</div>
+                  <div class="row">${body}</div>
+                </div>
+                <script>window.onload=function(){window.print();}<\/script>
+              </body></html>
+            `);
+            w.document.close();
+        }
+
+        // Tokens modal logic
+        const tokensModal = document.getElementById('tokens-modal');
+        const tokensContent = document.getElementById('tokens-content');
+        const showTokensBtn = document.getElementById('show-tokens-btn');
+        const closeTokensBtn = document.getElementById('close-tokens-btn');
+
+        async function fetchAndRenderTokens() {
+            tokensContent.innerHTML = '<div class="text-center text-gray-600">Loading tokens...</div>';
+            const accessToken = localStorage.getItem('accessToken') || localStorage.getItem('access_token');
+            const headers = { 'Authorization': `Bearer ${accessToken}` };
+            try {
+                // Helper to fetch all pages or normalize arrays
+                async function fetchAll(url){
+                    const collected = [];
+                    let nextUrl = url;
+                    for(let i=0;i<10 && nextUrl;i++){
+                        const res = await fetch(nextUrl, { headers });
+                        if(!res.ok) throw new Error(await res.text() || res.statusText);
+                        const data = await res.json();
+                        if(Array.isArray(data)) { collected.push(...data); break; }
+                        if(Array.isArray(data.results)) {
+                            collected.push(...data.results);
+                            nextUrl = data.next;
+                        } else {
+                            // single object or unknown format
+                            if(data) collected.push(data);
+                            nextUrl = null;
+                        }
+                    }
+                    return collected;
+                }
+
+                const [passes, poojas, nivasRows] = await Promise.all([
+                    fetchAll(`${API_BASE}/api/booking/passes/`),
+                    fetchAll(`${API_BASE}/api/booking/poojas/`),
+                    fetchAll(`${API_BASE}/api/booking/bhaktnivas/`)
+                ]);
+
+                // Results are already arrays from fetchAll()
+
+                tokensContent.innerHTML = '';
+
+                const hasAny = (arr) => Array.isArray(arr) && arr.length > 0;
+
+                // Pass Booking tokens
+                const passSection = document.createElement('div');
+                passSection.innerHTML = `
+                  <h4 class="text-base font-semibold text-gray-800 mb-3 flex items-center"><i class="fas fa-ticket-alt text-orange-500 mr-2"></i>Pass Booking Tokens</h4>
+                `;
+                tokensContent.appendChild(passSection);
+                if (hasAny(passes)) {
+                    passes.forEach((b, idx) => {
+                        const card = document.createElement('div');
+                        card.className = 'border rounded-xl p-4 flex items-center justify-between gap-4 mb-3';
+                        const qrId = `qr_pass_${b.booking_id}_${idx}`;
+                        card.innerHTML = `
+                            <div class="flex items-center gap-4">
+                                ${b.image_base64 ? `<img src="${b.image_base64}" alt="Photo" class="w-16 h-16 rounded object-cover border">` : ''}
+                                <div>
+                                    <div class="text-sm text-gray-500">Booking ID</div>
+                                    <div class="font-semibold text-gray-800">${b.booking_id}</div>
+                                    <div class="text-gray-600 text-sm">${fmtDispDate(b.darshan_date)} · ${b.slot}</div>
+                                    <div class="text-gray-500 text-sm">${b.full_name}</div>
+                                    <div class="mt-3 flex items-center gap-2">
+                                        <button class="text-sm font-semibold px-3 py-1.5 rounded-lg bg-slate-900 text-white hover:bg-slate-800" type="button" data-token-print="1" data-booking-kind="pass" data-booking-id="${b.booking_id}">Print</button>
+                                        <button class="text-sm font-semibold px-3 py-1.5 rounded-lg bg-slate-100 text-slate-800 hover:bg-slate-200 ring-1 ring-black/5" type="button" data-token-download="1" data-qr-host="${qrId}">Download QR</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="${qrId}" class="w-[110px] h-[110px] flex items-center justify-center border rounded"></div>
+                        `;
+                        if (passSection) passSection.appendChild(card);
+                        const qrText = `Pass|BookingID:${b.booking_id}|Name:${b.full_name}|Slot:${b.slot}|Date:${b.darshan_date}`;
+                        const qrHost = card.querySelector(`#${qrId}`);
+                        if (qrHost) {
+                            new QRCode(qrHost, { text: qrText, width: 100, height: 100 });
+                        } else {
+                            console.warn('QR host not found for pass token', qrId);
+                        }
+                    });
+                } else {
+                    passSection.innerHTML += '<div class="text-sm text-gray-500 mb-4">No pass bookings.</div>';
+                }
+                
+
+                // Pooja booking tokens
+                const poojaSection = document.createElement('div');
+                poojaSection.innerHTML = `
+                  <h4 class="text-base font-semibold text-gray-800 mb-3 flex items-center"><i class="fas fa-hands-praying text-yellow-500 mr-2"></i>Pooja Booking Tokens</h4>
+                `;
+                tokensContent.appendChild(poojaSection);
+                if (hasAny(poojas)) {
+                    poojas.forEach((p, idx) => {
+                        const card = document.createElement('div');
+                        card.className = 'border rounded-xl p-4 flex items-center justify-between gap-4 mb-3';
+                        const qrId = `qr_pooja_${p.booking_id}_${idx}`;
+                        card.innerHTML = `
+                            <div class="flex items-center gap-4">
+                                ${p.image_base64 ? `<img src="${p.image_base64}" alt="Photo" class="w-16 h-16 rounded object-cover border">` : ''}
+                                <div>
+                                    <div class="text-sm text-gray-500">Booking ID</div>
+                                    <div class="font-semibold text-gray-800">${p.booking_id}</div>
+                                    <div class="text-gray-600 text-sm">${fmtDispDate(p.preferred_date)} · ${p.pooja_type}</div>
+                                    <div class="text-gray-500 text-sm">${p.full_name}</div>
+                                    <div class="mt-3 flex items-center gap-2">
+                                        <button class="text-sm font-semibold px-3 py-1.5 rounded-lg bg-slate-900 text-white hover:bg-slate-800" type="button" data-token-print="1" data-booking-kind="pooja" data-booking-id="${p.booking_id}">Print</button>
+                                        <button class="text-sm font-semibold px-3 py-1.5 rounded-lg bg-slate-100 text-slate-800 hover:bg-slate-200 ring-1 ring-black/5" type="button" data-token-download="1" data-qr-host="${qrId}">Download QR</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="${qrId}" class="w-[110px] h-[110px] flex items-center justify-center border rounded"></div>
+                        `;
+                        if (poojaSection) poojaSection.appendChild(card);
+                        const qrText = `Pooja|BookingID:${p.booking_id}|Name:${p.full_name}|Type:${p.pooja_type}|Date:${p.preferred_date}`;
+                        const qrHost = card.querySelector(`#${qrId}`);
+                        if (qrHost) {
+                            new QRCode(qrHost, { text: qrText, width: 100, height: 100 });
+                        } else {
+                            console.warn('QR host not found for pooja token', qrId);
+                        }
+                    });
+                } else {
+                    poojaSection.innerHTML += '<div class="text-sm text-gray-500 mb-4">No pooja bookings.</div>';
+                }
+                
+
+                // Bhakta Nivas booking tokens (group by booking_code)
+                const nivasSection = document.createElement('div');
+                nivasSection.innerHTML = `
+                  <h4 class="text-base font-semibold text-gray-800 mb-3 flex items-center"><i class="fas fa-bed text-green-600 mr-2"></i>Bhakta Nivas Bookings</h4>
+                `;
+                tokensContent.appendChild(nivasSection);
+                if (hasAny(nivasRows)) {
+                    const byCode = {};
+                    nivasRows.forEach(r => {
+                        if (!byCode[r.booking_code]) byCode[r.booking_code] = [];
+                        byCode[r.booking_code].push(r);
+                    });
+                    Object.entries(byCode).forEach(([code, rows], i) => {
+                        const first = rows[0] || {};
+                        const card = document.createElement('div');
+                        card.className = 'border rounded-xl p-4 flex items-center justify-between gap-4 mb-3';
+                        const qrId = `qr_nivas_${code}_${i}`;
+                        const img = rows.find(x => x.image_base64)?.image_base64;
+                        card.innerHTML = `
+                            <div class="flex items-center gap-4">
+                                ${img ? `<img src="${img}" alt="Photo" class="w-16 h-16 rounded object-cover border">` : ''}
+                                <div>
+                                    <div class="text-sm text-gray-500">Booking ID</div>
+                                    <div class="font-semibold text-gray-800">${code}</div>
+                                    <div class="text-gray-600 text-sm">${fmtDispDate(first.checkin_date) || ''} ${first.checkin_time || ''} → ${fmtDispDate(first.checkout_date) || ''} ${first.checkout_time || ''}</div>
+                                    <div class="text-gray-500 text-sm">${first.full_name || ''} · ${first.room_type || ''} ${first.ac_type ? '('+first.ac_type+')' : ''}</div>
+                                    <div class="mt-3 flex items-center gap-2">
+                                        <button class="text-sm font-semibold px-3 py-1.5 rounded-lg bg-slate-900 text-white hover:bg-slate-800" type="button" data-token-print="1" data-booking-kind="nivas" data-booking-id="${code}">Print</button>
+                                        <button class="text-sm font-semibold px-3 py-1.5 rounded-lg bg-slate-100 text-slate-800 hover:bg-slate-200 ring-1 ring-black/5" type="button" data-token-download="1" data-qr-host="${qrId}">Download QR</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="${qrId}" class="w-[110px] h-[110px] flex items-center justify-center border rounded"></div>
+                        `;
+                        if (nivasSection) nivasSection.appendChild(card);
+                        const qrText = `Nivas|BookingID:${code}|Name:${first.full_name || ''}|Room:${first.room_type || ''}|AC:${first.ac_type || ''}|CheckIn:${first.checkin_date || ''} ${first.checkin_time || ''}|CheckOut:${first.checkout_date || ''} ${first.checkout_time || ''}`;
+                        const qrHost = card.querySelector(`#${qrId}`);
+                        if (qrHost) {
+                            new QRCode(qrHost, { text: qrText, width: 100, height: 100 });
+                        } else {
+                            console.warn('QR host not found for nivas token', qrId);
+                        }
+                    });
+                } else {
+                    nivasSection.innerHTML += '<div class="text-sm text-gray-500 mb-2">No Bhakta Nivas bookings.</div>';
+                }
+                
+
+                if (!tokensContent.innerHTML.trim()) {
+                    tokensContent.innerHTML = '<div class="text-center text-gray-600">No tokens found.</div>';
+                }
+            } catch (e) {
+                console.error(e);
+                tokensContent.innerHTML = `<div class="text-center text-red-600">${e.message || 'Failed to load tokens'}</div>`;
+            }
+        }
+
+        function downloadQrFromHost(hostId) {
+            const host = document.getElementById(hostId);
+            if (!host) return;
+            const canvas = host.querySelector('canvas');
+            const img = host.querySelector('img');
+            let dataUrl = '';
+            if (canvas && canvas.toDataURL) {
+                dataUrl = canvas.toDataURL('image/png');
+            } else if (img && img.src) {
+                dataUrl = img.src;
+            }
+            if (!dataUrl) return;
+            const a = document.createElement('a');
+            a.href = dataUrl;
+            a.download = `${hostId}.png`;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+        }
+
+        function openTokensModal() {
+            tokensModal.classList.remove('hidden');
+            tokensModal.classList.add('flex');
+            fetchAndRenderTokens();
+        }
+        function closeTokensModal() {
+            tokensModal.classList.add('hidden');
+            tokensModal.classList.remove('flex');
+        }
+
+        // Wire up buttons after DOM ready
+        document.addEventListener('DOMContentLoaded', () => {
+            if (showTokensBtn) showTokensBtn.addEventListener('click', openTokensModal);
+            if (closeTokensBtn) closeTokensBtn.addEventListener('click', closeTokensModal);
+            // Close when clicking backdrop
+            tokensModal?.addEventListener('click', (e) => { if (e.target === tokensModal) closeTokensModal(); });
+
+            document.addEventListener('click', (e) => {
+                const t = e.target;
+                const btn = t && t.closest ? t.closest('[data-token-print],[data-token-download]') : null;
+                if (!btn) return;
+                if (btn.hasAttribute('data-token-print')) {
+                    const kind = btn.getAttribute('data-booking-kind') || '';
+                    const id = btn.getAttribute('data-booking-id') || '';
+                    printBooking(kind, id);
+                } else if (btn.hasAttribute('data-token-download')) {
+                    const hostId = btn.getAttribute('data-qr-host') || '';
+                    downloadQrFromHost(hostId);
+                }
+            });
+        });
+
+        function logout() {
+            // Clear both user and admin auth keys
+            localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('currentUser');
+            localStorage.removeItem('accessToken');
+            localStorage.removeItem('refreshToken');
+            localStorage.removeItem('userId');
+            localStorage.removeItem('access_token');
+            localStorage.removeItem('refresh_token');
+            localStorage.removeItem('auth_user');
+            window.location.href = 'index.html';
+        }
+
+        // Global function to access services
+        if (typeof window.accessService === 'undefined') {
+            window.accessService = function(serviceName, url) {
+                window.location.href = url;
+            };
+        }
+
+        // Logout button event listener
+        const logoutBtnEl = document.getElementById('logout-btn');
+        if (logoutBtnEl) logoutBtnEl.addEventListener('click', logout);
+    </script>
+    
+    <!-- External JavaScript for Google Translate initialization -->
+    <script src="/static/js/script_fixed.js?v=4"></script>
+    <script src="/static/js/script.js"></script>
+    <script src="/static/js/tailwind.config.js"></script>
+
+    {% include 'footer.html' %}
+</body>
+</html>

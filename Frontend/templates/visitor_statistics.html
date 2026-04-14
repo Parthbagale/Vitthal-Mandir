@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Analytics Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/static/css/styles.css?v=3">
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+  <style>
+    :root {
+      --bg: #0b1220;
+      --panel: rgba(15, 23, 42, 0.85);
+      --panel2: rgba(2, 6, 23, 0.45);
+      --border: rgba(148, 163, 184, 0.18);
+      --text: #e5e7eb;
+      --muted: rgba(229, 231, 235, 0.72);
+      --accent: #f97316;
+      --accent2: #a78bfa;
+      --good: #22c55e;
+      --warn: #f59e0b;
+      --bad: #ef4444;
+    }
+    body { background: radial-gradient(1200px 600px at 20% 10%, rgba(249,115,22,.18), transparent 55%), radial-gradient(1000px 500px at 80% 20%, rgba(167,139,250,.16), transparent 55%), var(--bg); color: var(--text); }
+    .panel { background: var(--panel); border: 1px solid var(--border); border-radius: 18px; }
+    .panel-soft { background: var(--panel2); border: 1px solid var(--border); border-radius: 18px; }
+    .muted { color: var(--muted); }
+    .kpi { background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02)); border: 1px solid var(--border); border-radius: 18px; padding: 14px; }
+    .kpi-title { font-size: 12px; color: var(--muted); letter-spacing: .06em; text-transform: uppercase; }
+    .kpi-value { font-size: 22px; font-weight: 800; margin-top: 6px; }
+    .btn { border: 1px solid var(--border); border-radius: 999px; padding: 10px 14px; background: rgba(2,6,23,.35); color: var(--text); transition: background .15s ease, transform .15s ease; }
+    .btn:hover { background: rgba(2,6,23,.55); transform: translateY(-1px); }
+    .btn-primary { background: rgba(249,115,22,.18); border-color: rgba(249,115,22,.38); }
+    .btn-primary:hover { background: rgba(249,115,22,.26); }
+    .btn-active { background: rgba(167,139,250,.18); border-color: rgba(167,139,250,.38); }
+    .chart-title { font-size: 14px; font-weight: 700; }
+    .chart-wrap { height: 320px; }
+    .chart-wrap-sm { height: 280px; }
+    .chart-wrap-xs { height: 260px; }
+    .error { display: none; margin-top: 10px; padding: 10px 12px; border-radius: 14px; border: 1px solid rgba(239,68,68,.35); background: rgba(239,68,68,.10); color: #fecaca; }
+    .apexcharts-tooltip, .apexcharts-xaxistooltip { background: rgba(15, 23, 42, .98) !important; border: 1px solid rgba(148, 163, 184, .18) !important; color: var(--text) !important; }
+  </style>
+</head>
+
+<body>
+  <div class="max-w-7xl mx-auto px-4 py-8">
+    <div class="panel p-5 md:p-6 mb-6">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div>
+          <div class="text-2xl md:text-3xl font-extrabold">Admin Analytics Dashboard</div>
+          <div class="muted mt-1">Visitors, bookings, capacity and revenue insights</div>
+        </div>
+        <div class="flex flex-wrap items-center gap-2">
+          <a class="btn" href="/Admin_home.html">Back to Dashboard</a>
+          <div class="flex items-center gap-2">
+            <button class="btn btn-active" type="button" data-range="today" id="rangeToday">Today</button>
+            <button class="btn" type="button" data-range="7" id="range7">7 Days</button>
+            <button class="btn" type="button" data-range="30" id="range30">30 Days</button>
+          </div>
+          <button class="btn btn-primary" type="button" id="refreshBtn">Refresh</button>
+        </div>
+      </div>
+      <div class="error" id="dashError"></div>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
+      <div class="kpi">
+        <div class="kpi-title">Today's Visitors</div>
+        <div class="kpi-value" id="kpiTodayVisitors">--</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-title">Pass Tokens Used</div>
+        <div class="kpi-value" id="kpiPassUsed">--</div>
+        <div class="muted text-sm mt-1" id="kpiPassUsedSub">out of 180</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-title">Pooja Bookings</div>
+        <div class="kpi-value" id="kpiPoojaBookings">--</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-title">Bhakt Nivas Rooms Booked</div>
+        <div class="kpi-value" id="kpiBhaktNivasBooked">--</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-title">Today's Revenue</div>
+        <div class="kpi-value" id="kpiRevenue">--</div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
+      <div class="panel-soft p-4 lg:col-span-2">
+        <div class="flex items-center justify-between gap-3">
+          <div class="chart-title">Visitor Trend</div>
+          <div class="muted text-sm" id="visitorTrendSub">Area chart</div>
+        </div>
+        <div class="chart-wrap" id="visitorTrendChart"></div>
+      </div>
+
+      <div class="panel-soft p-4">
+        <div class="flex items-center justify-between gap-3">
+          <div class="chart-title">Darshan Pass Capacity</div>
+          <div class="muted text-sm" id="passCapacitySub">180/day</div>
+        </div>
+        <div class="chart-wrap-sm" id="passCapacityChart"></div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+      <div class="panel-soft p-4 lg:col-span-2">
+        <div class="flex items-center justify-between gap-3">
+          <div class="chart-title">Pooja Booking Analytics (Slot Usage)</div>
+          <div class="muted text-sm" id="poojaSlotsSub">4 slots per pooja</div>
+        </div>
+        <div class="chart-wrap" id="poojaSlotsChart"></div>
+      </div>
+
+      <div class="panel-soft p-4">
+        <div class="chart-title">Bhakt Nivas Occupancy</div>
+        <div class="chart-wrap-xs" id="bhaktNivasOccupancyChart"></div>
+        <div class="muted text-sm mt-2" id="bhaktNivasSub"></div>
+      </div>
+
+      <div class="panel-soft p-4 lg:col-span-3">
+        <div class="flex items-center justify-between gap-3">
+          <div class="chart-title">Bhakt Nivas Booking Trend</div>
+          <div class="muted text-sm" id="bhaktNivasTrendSub">Rooms booked per day</div>
+        </div>
+        <div class="chart-wrap" id="bhaktNivasTrendChart"></div>
+      </div>
+
+      <div class="panel-soft p-4 lg:col-span-3">
+        <div class="flex items-center justify-between gap-3">
+          <div class="chart-title">Temple Revenue Analytics</div>
+          <div class="muted text-sm" id="revenueSub">Distribution</div>
+        </div>
+        <div class="chart-wrap" id="revenueChart"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/static/js/visitor-statistics.js?v=1"></script>
+</body>
+
+</html>

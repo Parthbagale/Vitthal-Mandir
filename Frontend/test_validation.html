@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Validation Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-8">
+    <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-lg p-6">
+        <h1 class="text-2xl font-bold mb-6">Registration Validation Test</h1>
+        
+        <div class="space-y-4 mb-6">
+            <h2 class="text-lg font-semibold">Test Cases:</h2>
+            
+            <div class="bg-blue-50 p-4 rounded">
+                <h3 class="font-semibold mb-2">✅ Valid Test Data:</h3>
+                <ul class="text-sm space-y-1">
+                    <li>Name: John Doe (letters only)</li>
+                    <li>Username: john_doe123 (alphanumeric + underscore)</li>
+                    <li>Email: john@gmail.com (letters in both parts)</li>
+                    <li>Mobile: 9876543210 (10 digits, starts with 6-9)</li>
+                    <li>Aadhaar: 234123412346 (12 digits, valid checksum)</li>
+                </ul>
+            </div>
+            
+            <div class="bg-red-50 p-4 rounded">
+                <h3 class="font-semibold mb-2">❌ Invalid Test Data (should be rejected):</h3>
+                <ul class="text-sm space-y-1">
+                    <li>Name: John123 (contains numbers)</li>
+                    <li>Email: 123@456.com (no letters in local/domain)</li>
+                    <li>Mobile: 1234567890 (doesn't start with 6-9)</li>
+                    <li>Aadhaar: 123456789012 (invalid checksum)</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="bg-yellow-50 p-4 rounded mb-6">
+            <h3 class="font-semibold mb-2">📋 How to Test:</h3>
+            <ol class="text-sm space-y-1 list-decimal list-inside">
+                <li>Open index.html in your browser</li>
+                <li>Click the "Register" button in the navbar</li>
+                <li>Try entering invalid data (see examples above)</li>
+                <li>Check browser console (F12) for validation logs</li>
+                <li>Verify that form submission is blocked with error messages</li>
+                <li>Try valid data to confirm it passes validation</li>
+            </ol>
+        </div>
+
+        <div class="bg-green-50 p-4 rounded">
+            <h3 class="font-semibold mb-2">🔍 What to Look For:</h3>
+            <ul class="text-sm space-y-1">
+                <li>✓ Red border and background on invalid fields</li>
+                <li>✓ Error messages below each field</li>
+                <li>✓ Console logs showing validation details</li>
+                <li>✓ Form submission blocked when validation fails</li>
+                <li>✓ Scroll to first error field</li>
+                <li>✓ Real-time validation on blur (when leaving field)</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Valid Aadhaar numbers for testing (with correct Verhoeff checksum)
+        const validAadhaarNumbers = [
+            '234123412346',
+            '123456789012',
+            '999999990019'
+        ];
+        
+        console.log('Valid Aadhaar numbers for testing:', validAadhaarNumbers);
+    </script>
+</body>
+</html>

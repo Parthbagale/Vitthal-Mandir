@@ -1,0 +1,178 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>E-Library - Shri Vitthal Rukmini Mandir, Pandharpur</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Icons + Fonts -->
+    <script src="https://unpkg.com/@phosphor-icons/web@2.1.1/dist/phosphor.js" defer></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- External CSS -->
+    <link rel="stylesheet" href="/static/css/styles.css?v=3">
+</head>
+
+<body class="bg-gray-100 text-gray-800">
+    {% include 'navbar.html' %}
+ 
+
+    <main>
+        <!-- Page Header -->
+        <section class="relative min-h-[30vh] md:min-h-[35vh] flex items-center justify-center text-center text-white" style="background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);">
+            <div class="relative z-10">
+                <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold font-playfair animate-fade-in-up">
+                    Digital <span class="text-white">E-Library</span>
+                </h1>
+                <p class="mt-4 text-sm sm:text-lg md:text-xl font-light animate-fade-in-up" style="animation-delay:.5s">Sacred texts at your fingertips</p>
+            </div>
+        </section>
+
+        <!-- Books Collection -->
+        <section class="py-16 md:py-24 bg-gray-50">
+            <div class="container mx-auto px-6">
+                <h2 class="text-4xl font-bold text-center text-gray-900 font-playfair mb-12">Sacred Texts Collection</h2>
+                <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    
+                    <!-- Pandharpur Yatra Information -->
+                    <div class="book-card bg-white p-8 border rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col">
+                        <div class="text-center mb-6">
+                            <img src="images/i9.jpg" alt="Pandharpur Yatra" class="w-full h-48 object-cover rounded-lg">
+                        </div>
+                        <h3 class="text-2xl font-semibold mb-4 text-center">Pandharpur Yatra Information</h3>
+                        <p class="text-gray-700 mb-6 text-center flex-grow">Pandharpur Yatra is a journey to Pandharpur where people go to pray to Lord Vitthal.</p>
+                        <div class="text-center mt-auto">
+                            <a href="book/Pandharpur-Yatra.pdf" class="inline-block bg-orange-500 text-white py-3 px-6 rounded-full font-semibold hover:bg-orange-600 transition duration-300" target="_blank">
+                                <i class="fas fa-download mr-2"></i>Read / Download
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Sant Shri Pralhad Maharaj Badave -->
+                    <div class="book-card bg-white p-8 border rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col">
+                        <div class="text-center mb-6">
+                            <img src="images/Prhalad_Maharaj_Badave.png" alt="Sant Pralhad Maharaj" class="w-full h-48 object-cover rounded-lg">
+                        </div>
+                        <h3 class="text-2xl font-semibold mb-4 text-center">Sant Shri Pralhad MaharajBadave</h3>
+                        <p class="text-gray-700 mb-6 text-center flex-grow">Sant Prahlad Maharaj Badave protected Lord Vitthal's idol during Afzal Khan's attack in 1659, making him highly respected among devotees.</p>
+                        <div class="text-center mt-auto">
+                            <a href="book/Prhaladh_Maharaj_Badave_History.pdf" class="inline-block bg-orange-500 text-white py-3 px-6 rounded-full font-semibold hover:bg-orange-600 transition duration-300" target="_blank">
+                                <i class="fas fa-download mr-2"></i>Read / Download
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Bhagavad Gita -->
+                    <div class="book-card bg-white p-8 border rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col">
+                        <div class="text-center mb-6">
+                            <img src="images/Bhagvat_Gita.png" alt="Bhagavad Gita" class="w-full h-48 object-cover rounded-lg">
+                        </div>
+                        <h3 class="text-2xl font-semibold mb-4 text-center">Bhagavad Gita</h3>
+                        <p class="text-gray-700 mb-6 text-center flex-grow">A sacred Hindu scripture consisting of 700 verses, containing the dialogue between Prince Arjuna and Lord Krishna.</p>
+                        <div class="text-center mt-auto">
+                            <a href="book/Bhagvat_gita.pdf" class="inline-block bg-orange-500 text-white py-3 px-6 rounded-full font-semibold hover:bg-orange-600 transition duration-300" target="_blank">
+                                <i class="fas fa-download mr-2"></i>Read / Download
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Sant Dnyaneshwar's Works -->
+                    <div class="book-card bg-white p-8 border rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col">
+                        <div class="text-center mb-6">
+                            <img src="images/Dnyaneshvari.png" alt="Dnyaneshwari" class="w-full h-48 object-cover rounded-lg">
+                        </div>
+                        <h3 class="text-2xl font-semibold mb-4 text-center">Sant Dnyaneshwar's Works</h3>
+                        <p class="text-gray-700 mb-6 text-center flex-grow">Philosophical and spiritual poetry by the great Marathi saint, including the famous Dnyaneshwari commentary.</p>
+                        <div class="text-center mt-auto">
+                            <a href="book/Dnyaneshwari.pdf" class="inline-block bg-orange-500 text-white py-3 px-6 rounded-full font-semibold hover:bg-orange-600 transition duration-300" target="_blank">
+                                <i class="fas fa-download mr-2"></i>Read / Download
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Sant Tukaram's Abhangas -->
+                    <div class="book-card bg-white p-8 border rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col">
+                        <div class="text-center mb-6">
+                            <img src="images/Tukaram_abhang.png" alt="Tukaram Abhang" class="w-full h-48 object-cover rounded-lg">
+                        </div>
+                        <h3 class="text-2xl font-semibold mb-4 text-center">Sant Tukaram's Abhangas</h3>
+                        <p class="text-gray-700 mb-6 text-center flex-grow">Devotional songs written by the beloved Varkari saint Tukaram, expressing pure devotion to Lord Vitthal.</p>
+                        <div class="text-center mt-auto">
+                            <a href="book/Abhang.pdf" class="inline-block bg-orange-500 text-white py-3 px-6 rounded-full font-semibold hover:bg-orange-600 transition duration-300" target="_blank">
+                                <i class="fas fa-download mr-2"></i>Read / Download
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Reading Guidelines -->
+        <section class="py-16 md:py-24 bg-gray-50">
+            <div class="container mx-auto px-6">
+                <h2 class="text-4xl font-bold text-center text-gray-900 font-playfair mb-12">Reading Guidelines</h2>
+                <div class="max-w-4xl mx-auto">
+                    <div class="bg-white rounded-xl shadow-lg p-8">
+                        <div class="grid md:grid-cols-2 gap-8">
+                            <div>
+                                <h3 class="text-2xl font-semibold text-gray-900 mb-4">How to Use</h3>
+                                <ul class="space-y-3 text-gray-600">
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check-circle text-orange-500 mr-3 mt-1"></i>
+                                        <span>Click on any book to open the PDF reader</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check-circle text-orange-500 mr-3 mt-1"></i>
+                                        <span>Use the download button to save for offline reading</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check-circle text-orange-500 mr-3 mt-1"></i>
+                                        <span>Bookmark your favorite verses and chapters</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check-circle text-orange-500 mr-3 mt-1"></i>
+                                        <span>Share meaningful passages with others</span>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h3 class="text-2xl font-semibold text-gray-900 mb-4">Reading Tips</h3>
+                                <ul class="space-y-3 text-gray-600">
+                                    <li class="flex items-start">
+                                        <i class="fas fa-lightbulb text-orange-500 mr-3 mt-1"></i>
+                                        <span>Start with a prayer for understanding</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-lightbulb text-orange-500 mr-3 mt-1"></i>
+                                        <span>Read slowly and contemplate the meaning</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-lightbulb text-orange-500 mr-3 mt-1"></i>
+                                        <span>Keep a notebook for important insights</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-lightbulb text-orange-500 mr-3 mt-1"></i>
+                                        <span>Discuss with fellow devotees for deeper understanding</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    
+    <!-- External JavaScript -->
+    <script src="/static/js/script_fixed.js"></script>
+    <script src="/static/js/script.js"></script>
+    <script src="/static/js/tailwind.config.js"></script>
+    {% include 'footer.html' %}
+</body>
+</html>

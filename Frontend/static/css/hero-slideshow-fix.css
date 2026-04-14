@@ -1,0 +1,68 @@
+/**
+ * Hero Slideshow Fix - Ensures slideshow images are visible
+ */
+
+/* Ensure hero section has proper positioning */
+#home.hero-bg {
+    position: relative;
+    overflow: hidden;
+}
+
+/* Ensure slider container is properly positioned */
+.hero-bg-slider {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+}
+
+/* Ensure slides are properly positioned and sized */
+.hero-bg-slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0;
+    transition: opacity 900ms ease-in-out;
+    z-index: 1;
+}
+
+/* Active slide should be visible */
+.hero-bg-slide.is-active {
+    opacity: 1 !important;
+    z-index: 2;
+}
+
+/* Dark overlay on top of slides */
+.hero-bg-slider::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.35);
+    pointer-events: none;
+    z-index: 10;
+}
+
+/* Ensure content is above the slideshow */
+#home .relative.z-10 {
+    position: relative;
+    z-index: 20 !important;
+}
+
+/* Debug: Add a border to see if slides are there */
+.hero-bg-slide {
+    border: 2px solid transparent;
+}
+
+.hero-bg-slide.is-active {
+    border-color: transparent;
+}

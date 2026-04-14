@@ -1,0 +1,246 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gallery - Shri Vitthal Rukmini Mandir, Pandharpur</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Icons + Fonts -->
+    <script src="https://unpkg.com/@phosphor-icons/web@2.1.1/dist/phosphor.js" defer></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- External CSS -->
+    <link rel="stylesheet" href="/static/css/styles.css?v=3">
+</head>
+
+<body class="bg-gray-100 text-gray-800">
+    {% include 'navbar.html' %}
+ 
+
+            <!-- Mobile -->
+            <div class="lg:hidden">
+                <button id="mobile-menu-btn" class="text-gray-700 hover:text-primary" aria-controls="mobile-menu" aria-expanded="false" aria-label="Toggle menu">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" /></svg>
+                    </button>
+            </div>
+        </nav>
+
+        <div id="mobile-menu" class="lg:hidden hidden bg-white shadow-inner py-4" role="menu">
+            <a href="index.html" class="block py-2 px-6 text-gray-700 hover:bg-gray-100" data-i18n="nav.home">Home</a>
+            <a href="About_temple.html" class="block py-2 px-6 text-gray-700 hover:bg-gray-100" data-i18n="nav.about">About Temple</a>
+            <a href="E_library.html" class="block py-2 px-6 text-gray-700 hover:bg-gray-100" data-i18n="nav.elibrary">E-Library</a>
+            <a href="Gallery.html" class="block py-2 px-6 text-primary font-semibold" data-i18n="nav.gallery">Gallery</a>
+            <a href="Live_darshan.html" class="block py-2 px-6 text-gray-700 hover:bg-gray-100">Live Darshan</a>
+            <a href="#" onclick="accessService('Pooja Services','Pooja_services.html')" class="block py-2 px-6 text-gray-700 hover:bg-gray-100">Pooja Services</a>
+            <a href="#" onclick="accessService('Pass Booking','Pass_booking.html')" class="block py-2 px-6 text-gray-700 hover:bg-gray-100">Pass Booking</a>
+            <a href="#" onclick="accessService('Bhakta Nivas','Bhakta_nivas.html')" class="block py-2 px-6 text-gray-700 hover:bg-gray-100">Bhakta Nivas</a>
+            <a href="Contact.html" class="block py-2 px-6 text-gray-700 hover:bg-gray-100" data-i18n="nav.contact">Contact</a>
+        </div>
+    </header>
+
+    <main>
+        <!-- Page Header -->
+        <section class="relative min-h-[30vh] md:min-h-[35vh] flex items-center justify-center text-center text-white" style="background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);">
+            <div class="relative z-10">
+                <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold font-playfair animate-fade-in-up" data-i18n="bhakta_nivas_images.header_title">
+                    About <span class="text-white">Bhakt Nivas </span>
+                </h1>
+                <p class="mt-4 text-sm sm:text-lg md:text-xl font-light animate-fade-in-up" style="animation-delay:.5s" data-i18n="bhakta_nivas_images.header_subtitle">Learn about our sacred heritage</p>
+            </div>
+        </section>
+        <!-- paragraph-->
+         <section>
+            <div class="mt-6 p-6 bg-white shadow-lg rounded-2xl animate-fade-in-up" style="animation-delay:.5s">
+                <h2 class="text-2xl font-semibold text-center mb-4 text-orange-600" data-i18n="bhakta_nivas_images.about_bn_title">
+                  About Bhakt Nivas
+                </h2>
+              
+                <p class="text-base sm:text-lg md:text-xl font-light leading-relaxed text-gray-700 mb-4" data-i18n="bhakta_nivas_images.paragraph_1">
+                  Shri Vitthal Rukmini Mandir Samiti has built modern lodging facilities for devotees.
+                  IGBC has ranked this building and this is the first "Green Building" in the district.
+                  It has capacity for 1200 devotees. Special types of trees having religious and health
+                  significance are planted. Water from this building is not sent out but is processed
+                  and re-used. Rain water and waste water will be processed and will be used for trees
+                  in the building premise.
+                </p>
+              
+                <p class="text-base sm:text-lg md:text-xl font-light leading-relaxed text-gray-700 mb-4" data-i18n="bhakta_nivas_images.paragraph_2">
+                  Garbage is collected at one place in rooms. Dry and wet garbage will be separated and
+                  will be processed to produce fertilizers. For this purpose, a modern machine is installed
+                  in the building. Modern fire safety mechanisms are used in the building to control fire.
+                  In case of fire, within a few seconds oxygen and water will be sprayed. Heavy water sprays
+                  will be triggered where fire intensity is high.
+                </p>
+              
+                <p class="text-base sm:text-lg md:text-xl font-light leading-relaxed text-gray-700 mb-4" data-i18n="bhakta_nivas_images.paragraph_3">
+                  Bhakta Nivas has trees like Tulasi, Zendu, Red flower, and 27 trees belonging to 27
+                  Nakshatras. Nakshatra trees were planted on that particular Nakshatra.
+                </p>
+              
+                <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3" data-i18n="bhakta_nivas_images.other_facilities_title">Other Facilities:</h3>
+                <ul class="list-disc list-inside text-base sm:text-lg md:text-xl font-light text-gray-700 space-y-2">
+                  <li data-i18n="bhakta_nivas_images.facility_1">A big veg restaurant with all modern facilities</li>
+                  <li data-i18n="bhakta_nivas_images.facility_2">2200 SqMeter lawn with 15×9 Meter stage for various programs</li>
+                  <li data-i18n="bhakta_nivas_images.facility_3">43 shops on front side of Bhakta Nivas</li>
+                  <li data-i18n="bhakta_nivas_images.facility_4">Parking for 273 four wheelers and 200 two wheelers</li>
+                </ul>
+              </div>
+              
+
+         </section>
+        <!-- Gallery 1-->
+        <section class="py-16 md:py-24 bg-white">
+            <div class="container mx-auto px-6">
+                <h2 class="text-4xl font-bold text-center text-gray-900 font-playfair mb-12" data-i18n="bhakta_nivas_images.garden_area_title">Bhakta Nivas - Garden and Surrounding Area</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 bn-reveal-stagger">
+                    <!-- Bhakta Nivas - Garden and Surrounding Area -->
+  
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden card-animate bn-reveal">
+                        <div class="img-hover"><img src="images/Bhakta Nivas Images/Bhakta Nivas - Garden and Surrounding Area/Garden  1.jpg" alt="Garden" class="w-full h-48 object-cover bn-lightbox-trigger" onerror="this.onerror=null;this.src='https://placehold.co/600x400/E6B800/FFFFFF?text=Image+Not+Found'"></div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-semibold text-gray-900" data-i18n="bhakta_nivas_images.garden_1_title">Garden</h3>
+                            <p class="text-gray-500 text-sm mt-2" data-i18n="bhakta_nivas_images.garden_1_description">The beautiful Garden and Surrounding Area in bhakta nivas</p>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden card-animate bn-reveal">
+                        <div class="img-hover"><img src="images/Bhakta Nivas Images/Bhakta Nivas - Garden and Surrounding Area/Garden 2.jpg" alt="Garden" class="w-full h-48 object-cover bn-lightbox-trigger" onerror="this.onerror=null;this.src='https://placehold.co/600x400/E6B800/FFFFFF?text=Image+Not+Found'"></div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-semibold text-gray-900" data-i18n="bhakta_nivas_images.garden_2_title">Garden</h3>
+                            <p class="text-gray-500 text-sm mt-2" data-i18n="bhakta_nivas_images.garden_2_description">The beautiful Garden and Surrounding Area in bhakta nivas</p>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden card-animate bn-reveal">
+                        <div class="img-hover"><img src="images/Bhakta Nivas Images/Bhakta Nivas - Garden and Surrounding Area/Garden 3.jpg" alt="Garden" class="w-full h-48 object-cover bn-lightbox-trigger" onerror="this.onerror=null;this.src='https://placehold.co/600x400/E6B800/FFFFFF?text=Image+Not+Found'"></div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-semibold text-gray-900" data-i18n="bhakta_nivas_images.garden_3_title">Garden</h3>
+                            <p class="text-gray-500 text-sm mt-2" data-i18n="bhakta_nivas_images.garden_3_description">The beautiful Garden and Surrounding Area in bhakta nivas</p>
+                        </div>
+                    </div>
+                   
+                </div>
+            </div>
+        </section>
+                <!-- Gallery 2-->
+                <section class="py-16 md:py-24 bg-white">
+                    <div class="container mx-auto px-6">
+                        <h2 class="text-4xl font-bold text-center text-gray-900 font-playfair mb-12" data-i18n="bhakta_nivas_images.lodging_facility_title">Bhakta Nivas - Lodging Facility</h2>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 bn-reveal-stagger">
+                            <!-- Bhakta Nivas - Lodging Facility -->
+  
+                            <div class="bg-white rounded-xl shadow-lg overflow-hidden card-animate bn-reveal">
+                                <div class="img-hover"><img src="images/Bhakta Nivas Images/Bhakta Nivas - Lodging Facility/Lodging 1.jpg" alt="Facilities" class="w-full h-48 object-cover bn-lightbox-trigger" onerror="this.onerror=null;this.src='https://placehold.co/600x400/E6B800/FFFFFF?text=Image+Not+Found'"></div>
+                                <div class="p-6">
+                                    <h3 class="text-xl font-semibold text-gray-900" data-i18n="bhakta_nivas_images.lodging_1_title">Facilities</h3>
+                                    <p class="text-gray-500 text-sm mt-2" data-i18n="bhakta_nivas_images.lodging_1_description">The beautiful room in bhakta nivas.</p>
+                                </div>
+                            </div>
+                            <div class="bg-white rounded-xl shadow-lg overflow-hidden card-animate bn-reveal">
+                                <div class="img-hover"><img src="images/Bhakta Nivas Images/Bhakta Nivas - Lodging Facility/Lodging 2.jpg" alt="Facilities" class="w-full h-48 object-cover bn-lightbox-trigger" onerror="this.onerror=null;this.src='https://placehold.co/600x400/E6B800/FFFFFF?text=Image+Not+Found'"></div>
+                                <div class="p-6">
+                                    <h3 class="text-xl font-semibold text-gray-900" data-i18n="bhakta_nivas_images.lodging_2_title">Facilities</h3>
+                                    <p class="text-gray-500 text-sm mt-2" data-i18n="bhakta_nivas_images.lodging_2_description">The beautiful room in bhakta nivas.</p>
+                                </div>
+                            </div>
+                            <div class="bg-white rounded-xl shadow-lg overflow-hidden card-animate bn-reveal">
+                                <div class="img-hover"><img src="images/Bhakta Nivas Images/Bhakta Nivas - Lodging Facility/Lodging 3.jpg" alt="Facilities" class="w-full h-48 object-cover bn-lightbox-trigger" onerror="this.onerror=null;this.src='https://placehold.co/600x400/E6B800/FFFFFF?text=Image+Not+Found'"></div>
+                                <div class="p-6">
+                                    <h3 class="text-xl font-semibold text-gray-900" data-i18n="bhakta_nivas_images.lodging_3_title">Facilities</h3>
+                                    <p class="text-gray-500 text-sm mt-2" data-i18n="bhakta_nivas_images.lodging_3_description">The beautiful room in bhakta nivas.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+        
+                <!-- Gallery 3-->
+                <section class="py-16 md:py-24 bg-white">
+                    <div class="container mx-auto px-6">
+                        <h2 class="text-4xl font-bold text-center text-gray-900 font-playfair mb-12" data-i18n="bhakta_nivas_images.interior_title">Bhakta Nivas - Interior</h2>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 bn-reveal-stagger">
+                            <!-- Bhakta Nivas - Interior -->
+  
+                            <div class="bg-white rounded-xl shadow-lg overflow-hidden card-animate bn-reveal">
+                                <div class="img-hover"><img src="images/Bhakta Nivas Images/Bhakta Nivas - Interior/Interior 1.jpg" alt="Interior" class="w-full h-48 object-cover bn-lightbox-trigger" onerror="this.onerror=null;this.src='https://placehold.co/600x400/E6B800/FFFFFF?text=Image+Not+Found'"></div>
+                                <div class="p-6">
+                                    <h3 class="text-xl font-semibold text-gray-900" data-i18n="bhakta_nivas_images.interior_1_title">Interior</h3>
+                                    <p class="text-gray-500 text-sm mt-2" data-i18n="bhakta_nivas_images.interior_1_description">The beautiful interior in bhakta nivas.</p>
+                                </div>
+                            </div>
+                            <div class="bg-white rounded-xl shadow-lg overflow-hidden card-animate bn-reveal">
+                                <div class="img-hover"><img src="images/Bhakta Nivas Images/Bhakta Nivas - Interior/Interior 2.jpg" alt="Interior" class="w-full h-48 object-cover bn-lightbox-trigger" onerror="this.onerror=null;this.src='https://placehold.co/600x400/E6B800/FFFFFF?text=Image+Not+Found'"></div>
+                                <div class="p-6">
+                                    <h3 class="text-xl font-semibold text-gray-900" data-i18n="bhakta_nivas_images.interior_2_title">Interior</h3>
+                                    <p class="text-gray-500 text-sm mt-2" data-i18n="bhakta_nivas_images.interior_2_description">The beautiful interior in bhakta nivas.</p>
+                                </div>
+                            </div>
+                            <div class="bg-white rounded-xl shadow-lg overflow-hidden card-animate bn-reveal">
+                                <div class="img-hover"><img src="images/Bhakta Nivas Images/Bhakta Nivas - Interior/Interior 3.jpg" alt="Interior" class="w-full h-48 object-cover bn-lightbox-trigger" onerror="this.onerror=null;this.src='https://placehold.co/600x400/E6B800/FFFFFF?text=Image+Not+Found'"></div>
+                                <div class="p-6">
+                                    <h3 class="text-xl font-semibold text-gray-900" data-i18n="bhakta_nivas_images.interior_3_title">Interior</h3>
+                                    <p class="text-gray-500 text-sm mt-2" data-i18n="bhakta_nivas_images.interior_3_description">The beautiful interior in bhakta nivas.</p>
+                                </div>
+                            </div>
+                           
+                        </div>
+                    </div>
+                </section>
+     
+
+    </main>
+
+   
+
+    <!-- External JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+        });
+    </script>
+    <script src="/static/js/script_fixed.js"></script>
+    <script src="/static/js/script.js"></script>
+    <script src="/static/js/tailwind.config.js"></script>
+    <!-- Page-scoped animations & lightbox init -->
+    <script>
+      // Intersection Observer for bn-reveal
+      (function(){
+        const items = document.querySelectorAll('.bn-reveal');
+        if (!('IntersectionObserver' in window) || items.length === 0) return items.forEach(i=>i.classList.add('bn-in-view'));
+        const io = new IntersectionObserver((entries)=>{
+          entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('bn-in-view'); io.unobserve(e.target); } });
+        }, { threshold: 0.15 });
+        items.forEach(el=>io.observe(el));
+      })();
+      
+      // Lightbox (simple)
+      (function(){
+        const modal = document.createElement('div');
+        modal.id = 'bn-lightbox';
+        modal.className = 'fixed inset-0 bg-black/80 hidden items-center justify-center z-50 p-4';
+        modal.innerHTML = `
+          <button class="absolute top-5 right-5 text-white/80 hover:text-white text-3xl" aria-label="Close">×</button>
+          <img class="max-h-[85vh] max-w-[95vw] rounded-xl shadow-2xl opacity-0 scale-95 transition-all duration-200" alt="preview" />
+        `;
+        document.body.appendChild(modal);
+        const imgEl = modal.querySelector('img');
+        const closeBtn = modal.querySelector('button');
+        function open(src){
+          imgEl.src = src; modal.classList.remove('hidden'); modal.classList.add('flex');
+          requestAnimationFrame(()=>{ imgEl.classList.remove('opacity-0','scale-95'); imgEl.classList.add('opacity-100','scale-100'); });
+        }
+        function close(){ imgEl.classList.add('opacity-0','scale-95'); setTimeout(()=>{ modal.classList.add('hidden'); modal.classList.remove('flex'); }, 180); }
+        modal.addEventListener('click',(e)=>{ if(e.target===modal) close(); });
+        closeBtn.addEventListener('click', close);
+        document.querySelectorAll('.bn-lightbox-trigger').forEach(img=>{
+          img.style.cursor = 'zoom-in';
+          img.addEventListener('click', ()=> open(img.currentSrc || img.src));
+        });
+      })();
+    </script>
+    {% include 'footer.html' %}
+</body>
+</html>
+
+

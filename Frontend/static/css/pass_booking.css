@@ -1,0 +1,64 @@
+/* Pass Booking Page Specific Styles */
+
+.pass-type-card {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    border: 2px solid #e5e7eb;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.pass-type-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+    border-color: rgba(255, 122, 0, 0.3);
+}
+
+.pass-type-card.selected {
+    border-color: var(--brand-saffron);
+    background: linear-gradient(135deg, #ffffff 0%, #fef3e7 100%);
+}
+
+.pass-icon {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, var(--brand-saffron-500), var(--brand-saffron-600));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px;
+}
+
+.visitor-counter {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    justify-content: center;
+}
+
+.visitor-counter button {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--brand-saffron);
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.visitor-counter button:hover {
+    background: var(--brand-saffron-600);
+    transform: scale(1.1);
+}
+
+.visitor-counter input {
+    width: 60px;
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    border: none;
+    background: transparent;
+}

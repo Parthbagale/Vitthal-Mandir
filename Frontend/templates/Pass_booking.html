@@ -1,0 +1,964 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pass Booking - Shri Vitthal Rukmini Mandir, Pandharpur</title>
+
+  <!-- Tailwind CSS + Icons + Fonts -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/@phosphor-icons/web@2.1.1/dist/phosphor.js" defer></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Site styles -->
+  <link rel="stylesheet" href="/static/css/styles.css?v=3">
+  <!-- Auth Guard -->
+  <script src="/static/js/auth.js"></script>
+  <script>
+    // Enforce user auth on load
+    (function(){
+      if (typeof requireAuth === 'function') {
+        requireAuth({ redirectTo: 'index.html', message: 'Please login to access Pass Booking.' });
+      }
+    })();
+  </script>
+
+  <!-- Page-specific light styles to keep previous compact look -->
+  <style>
+    :root{ --accent:#6a0dad; }
+    .booking-card{ border:2px solid var(--accent); }
+    .pass-card{ border:2px solid var(--accent); }
+    #qrcode{ width:120px;height:120px;display:flex;justify-content:center;align-items:center;border:2px dashed var(--accent);border-radius:8px;padding:5px;background:#fafafa; }
+    .photo{ width:120px;height:120px;border-radius:8px;object-fit:cover;border:2px solid #e5e7eb; }
+    
+    /* Hide calendar icon from date input */
+    input[type="date"]::-webkit-calendar-picker-indicator {
+      display: none;
+      -webkit-appearance: none;
+    }
+    input[type="date"]::-webkit-inner-spin-button,
+    input[type="date"]::-webkit-clear-button {
+      display: none;
+      -webkit-appearance: none;
+    }
+    /* For Firefox */
+    input[type="date"] {
+      -moz-appearance: textfield;
+    }
+    
+    /* Availability calendar (compact) */
+    #availabilityCalendar { max-width: 280px; }
+    .avail-calendar { display:grid; grid-template-columns: repeat(7, 1fr); gap:4px; margin-top:6px; }
+    .avail-cal-legend { display:flex; align-items:center; gap:8px; font-size:11px; color:#4b5563; margin-top:4px; }
+    .avail-cal-legend span { display:inline-flex; align-items:center; gap:6px; }
+    .dot { width:8px; height:8px; border-radius:50%; display:inline-block; }
+    .dot.green { background:#16a34a; }
+    .dot.red { background:#dc2626; }
+    .cal-cell { border:1px solid #e5e7eb; border-radius:6px; padding:6px 4px; text-align:center; background:#fff; cursor:pointer; user-select:none; }
+    .cal-cell.disabled { color:#9ca3af; background:#f9fafb; cursor:not-allowed; }
+    .cal-cell.ekadashi-date { 
+      background: linear-gradient(135deg, #e5e7eb 0%, #d1d5db 100%) !important; 
+      border: 2px solid #ff6b00 !important;
+      cursor: not-allowed !important;
+      position: relative;
+    }
+    .cal-cell.ekadashi-date::before {
+      content: '🕉️';
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      font-size: 10px;
+      opacity: 0.5;
+    }
+    .cal-cell.ekadashi-date .day { 
+      color: #ff6b00 !important; 
+      font-weight: 700 !important;
+    }
+    .cal-cell .day { font-weight:600; font-size:11px; color:#374151; }
+    .cal-cell .status { margin-top:3px; font-size:9px; }
+    .cal-cell.full { outline:2px solid #fecaca; }
+    .cal-cell.available { outline:2px solid #bbf7d0; }
+    .cal-header { display:flex; justify-content:space-between; align-items:center; margin-top:6px; }
+    .cal-nav-btn { padding:2px 6px; border:1px solid #e5e7eb; border-radius:6px; font-size:11px; background:#fff; }
+    @media (max-width: 640px) { .avail-calendar { gap:3px; } .cal-cell { padding:5px 3px; } }
+    @media print {
+      @page { size: A4 portrait; margin: 10mm; }
+      html, body { margin: 0 !important; padding: 0 !important; overflow: visible !important; background: #fff !important; }
+      /* Hide non-receipt sections without hiding #pass ancestors */
+      nav, header { display: none !important; }
+      main > section:first-of-type { display: none !important; }
+      /* Hide the full booking form card (including its heading) */
+      .booking-card, .booking-card * { display: none !important; }
+      #bookingForm, #bookingForm * { display: none !important; }
+      #masterList, #masterList * { display: none !important; }
+      footer, footer * { display: none !important; }
+
+      /* Show receipt only */
+      #pass { display: block !important; visibility: visible !important; }
+      #pass * { visibility: visible !important; }
+      #pass { position: static !important; margin-left: auto; margin-right: auto; width: 190mm; max-width: 190mm; height: auto !important; max-height: none !important; overflow: visible !important; box-sizing: border-box; transform: none !important; transform-origin: top center; page-break-inside: avoid; break-inside: avoid; }
+      #pass > * { page-break-inside: avoid; break-inside: avoid; }
+      #pass .shadow-lg, #pass [class*="shadow-"] { box-shadow: none !important; }
+      #pass .bg-gray-50 { background: #fff !important; }
+      #pass .border, #pass [class*="border-"] { border-color: #d1d5db !important; }
+      #pass button { display: none !important; }
+    }
+  </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+  
+  <!-- Header -->
+  {% include 'navbar.html' %}
+
+  <main>
+    <!-- Hero -->
+    <section class="relative h-[30vh] flex items-center justify-center text-center text-white" style="background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);">
+      <div class="relative z-10">
+        <h1 class="text-3xl md:text-4xl font-bold font-playfair">Darshan <span class="text-yellow-300">Pass Booking</span></h1>
+        <p class="mt-2 text-sm md:text-base">Book your darshan pass and get a printable QR-enabled pass</p>
+      </div>
+    </section>
+
+    <!-- Booking + Pass -->
+    <section class="py-10">
+      <div class="container mx-auto px-6 grid lg:grid-cols-2 gap-8">
+        <!-- Form -->
+        <div class="bg-white rounded-2xl shadow booking-card p-6">
+          <h2 class="text-xl font-semibold text-gray-800 mb-4">Booking Form</h2>
+          <form id="bookingForm" class="space-y-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700">Select Darshan Date</label>
+              <input type="date" id="darshanDate" required class="mt-1 w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary p-2" />
+              <div id="selectedDateDisplay" class="text-xs text-gray-600 mt-1"></div>
+              <!-- Availability calendar (next 30-60 days) -->
+              <div class="cal-header">
+                <div id="calMonthLabel" class="text-sm font-medium text-gray-700"></div>
+                <div class="space-x-2">
+                  <button type="button" id="calPrev" class="cal-nav-btn">Prev</button>
+                  <button type="button" id="calNext" class="cal-nav-btn">Next</button>
+                </div>
+              </div>
+              <div id="availabilityCalendar" class="avail-calendar"></div>
+              <div class="avail-cal-legend">
+                <span><span class="dot green"></span> Available</span>
+                <span><span class="dot red"></span> Full</span>
+                <span style="color: #ff6b00; font-weight: 600;">🕉️ Ekadashi (Not Available)</span>
+              </div>
+              <div class="text-xs text-gray-600 mt-2 italic">
+                * Pass booking is not available on Ekadashi dates as per temple tradition
+              </div>
+            </div>
+            <div class="grid sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700">Full Name</label>
+                <input type="text" id="name" required class="mt-1 w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary p-2" />
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700">Email</label>
+                <input type="email" id="email" required class="mt-1 w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary p-2" />
+              </div>
+            </div>
+            <div class="grid sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700">Mobile <span class="text-red-500">*</span></label>
+                <div class="relative">
+                  <input type="text" id="mobile" required pattern="[6-9][0-9]{9}" maxlength="10" inputmode="numeric" class="mt-1 w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary p-2" title="Mobile number must be 10 digits and start with 6, 7, 8, or 9" onkeypress="return event.charCode >= 48 && event.charCode <= 57" />
+                </div>
+                <p id="mobile_error" class="text-red-500 text-xs mt-1"></p>
+              </div>
+
+              <!-- Aadhaar Card Number -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700">Aadhaar Card Number <span class="text-red-500">*</span></label>
+                <div class="relative">
+                  <input type="text" id="aadhaar" name="aadhaar" required pattern="[0-9]{12}" maxlength="12" inputmode="numeric" class="mt-1 w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary p-2" placeholder="Enter 12-digit Aadhaar number" title="Aadhaar number must be exactly 12 digits" onkeypress="return event.charCode >= 48 && event.charCode <= 57" />
+                  <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                    <i class="fas fa-id-card text-gray-400"></i>
+                  </div>
+                </div>
+                <p id="aadhaar_error" class="text-red-500 text-xs mt-1"></p>
+                <p class="text-xs text-gray-500 mt-1"><i class="fas fa-info-circle"></i> Your Aadhaar is required for identity verification</p>
+              </div>
+              
+              <!-- OTP Verification Field (hidden by default) -->
+              <div id="sms-otp-section" class="hidden">
+                <label class="block text-sm font-medium text-gray-700">Enter OTP <span class="text-red-500">*</span></label>
+                <div class="relative">
+                  <input type="text" id="sms-otp" maxlength="6" inputmode="numeric" class="mt-1 w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary p-2 pr-24" placeholder="6-digit OTP" onkeypress="return event.charCode >= 48 && event.charCode <= 57" />
+                  <button type="button" id="verify-sms-otp-btn" class="absolute right-2 top-1/2 -translate-y-1/2 px-3 py-1 bg-green-500 text-white text-xs rounded hover:bg-green-600 transition">
+                    Verify
+                  </button>
+                </div>
+                <p id="sms-otp_error" class="text-red-500 text-xs mt-1"></p>
+                <p id="sms-otp-status" class="text-xs mt-1"></p>
+              </div>
+            </div>
+            <div class="grid sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700">Gender <span class="text-red-500">*</span></label>
+                <select id="gender" required class="mt-1 w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary p-2">
+                  <option value="">--Select--</option>
+                  <option>Male</option>
+                  <option>Female</option>
+                  <option>Other</option>
+                </select>
+                <p id="gender_error" class="text-red-500 text-xs mt-1"></p>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700">Upload Photo</label>
+                <input type="file" id="photo" accept="image/*" required class="mt-1 w-full text-sm" />
+                <div class="mt-2 flex flex-wrap items-center gap-2">
+                  <button type="button" id="passCamStart" class="bg-gray-200 text-gray-800 px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-300">Open Camera</button>
+                  <button type="button" id="passCamCapture" class="bg-indigo-600 text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-indigo-700 hidden">Capture</button>
+                  <button type="button" id="passCamStop" class="bg-red-500 text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-red-600 hidden">Close</button>
+                </div>
+                <div id="passCamBox" class="mt-3 hidden">
+                  <video id="passCamVideo" class="w-full max-w-sm rounded-md border" autoplay playsinline></video>
+                  <img id="passCamPreview" class="w-full max-w-sm rounded-md border mt-2 hidden" alt="Captured photo preview" />
+                  <canvas id="passCamCanvas" class="hidden"></canvas>
+                </div>
+              </div>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700">Slot Time <span class="text-red-500">*</span></label>
+              <select id="slot" required class="mt-1 w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary p-2">
+                <option value="">--Select--</option>
+                <option>08:00 AM - 10:00 AM</option>
+                <option>10:00 AM - 12:00 PM</option>
+                <option>12:00 PM - 02:00 PM</option>
+                <option>02:00 PM - 04:00 PM</option>
+                <option>04:00 PM - 06:00 PM</option>
+                <option>06:00 PM - 08:00 PM</option>
+              </select>
+              <p id="slot_error" class="text-red-500 text-xs mt-1"></p>
+              <p id="availabilityInfo" class="text-sm mt-2 text-gray-600">Select date and slot to see availability.</p>
+            </div>
+            <div id="bookingErrorMsg" class="hidden bg-red-50 border border-red-300 text-red-700 text-sm rounded-md px-4 py-3"></div>
+            <button id="bookBtn" type="submit" class="w-full bg-purple-700 hover:bg-purple-800 text-white font-semibold py-2.5 rounded-md">Book Darshan Pass</button>
+          </form>
+        </div>
+
+        <!-- Pass Preview + Master List -->
+        <div class="space-y-6">
+          <div class="bg-white shadow-lg rounded-2xl p-6 border border-gray-200 relative overflow-hidden" id="pass" style="display:none;">
+
+            <div class="absolute inset-0 flex items-center justify-center opacity-[0.04] pointer-events-none">
+              <img src="images/mandir logo.jpg" alt="Watermark" class="w-[520px] h-[520px] object-contain">
+            </div>
+
+            <div class="relative z-10">
+              <div class="flex items-start justify-between gap-4 pb-4 border-b border-gray-200">
+                <div class="flex items-center gap-3">
+                  <img src="images/mandir logo.jpg" alt="Vitthal Mandir Logo" class="w-14 h-14 rounded-full border border-gray-200 shadow-sm">
+                  <div>
+                    <div class="text-lg font-semibold text-gray-900 leading-tight">Shri Vitthal Rukmini Mandir, Pandharpur</div>
+                    <div class="text-sm text-gray-600">Darshan Pass Receipt</div>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <div class="text-xs text-gray-500">Booking ID</div>
+                  <div id="bookingId" class="text-sm font-semibold text-gray-900 tracking-wide"></div>
+                  <div id="receiptIssuedAt" class="text-xs text-gray-500 mt-1"></div>
+                </div>
+              </div>
+
+              <div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="md:col-span-2">
+                  <div class="bg-gray-50 border border-gray-200 rounded-xl p-4">
+                    <div class="text-sm font-semibold text-gray-900 mb-3">Devotee Details</div>
+                    <div class="grid grid-cols-2 gap-x-6 gap-y-2 text-sm">
+                      <div class="text-gray-600 font-semibold">Name</div>
+                      <div id="pName" class="text-gray-900"></div>
+
+                      <div class="text-gray-600 font-semibold">Email</div>
+                      <div id="pEmail" class="text-gray-900"></div>
+
+                      <div class="text-gray-600 font-semibold">Mobile</div>
+                      <div id="pMobile" class="text-gray-900"></div>
+
+                      <div class="text-gray-600 font-semibold">Gender</div>
+                      <div id="pGender" class="text-gray-900"></div>
+
+                      <div class="text-gray-600 font-semibold">Slot Time</div>
+                      <div id="pSlot" class="text-gray-900"></div>
+
+                      <div class="text-gray-600 font-semibold">Darshan Date</div>
+                      <div id="pDate" class="text-gray-900"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="md:col-span-1">
+                  <div class="bg-gray-50 border border-gray-200 rounded-xl p-4">
+                    <div class="text-sm font-semibold text-gray-900 mb-3">Photo</div>
+                    <img src="" id="pPhoto" alt="User Photo" class="w-full h-40 object-cover rounded-lg border border-gray-200 hidden" />
+                    <div id="noPhoto" class="text-xs text-gray-500">No photo</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
+                <div class="md:col-span-2 bg-gray-50 border border-gray-200 rounded-xl p-4">
+                  <div class="text-sm font-semibold text-gray-900 mb-2">Instructions</div>
+                  <div class="text-xs text-gray-600 leading-relaxed">
+                    Please carry this pass on the day of darshan. Show the QR code at the entry counter for verification.
+                  </div>
+                </div>
+                <div class="md:col-span-1 bg-gray-50 border border-gray-200 rounded-xl p-4">
+                  <div class="text-sm font-semibold text-gray-900 mb-3">QR Code</div>
+                  <div class="flex items-center justify-center">
+                    <div id="qrcode" class="border border-gray-200 rounded-lg p-2 bg-white"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="mt-4 pt-4 border-t border-gray-200 flex items-center justify-between">
+                <div class="text-xs text-gray-500">Thank you for booking your darshan pass.</div>
+                <button onclick="window.print()" class="bg-purple-700 hover:bg-purple-800 text-white px-5 py-2.5 rounded-lg font-semibold text-sm shadow-sm transition-all duration-200">
+                  <i class="ph ph-printer"></i> Print Pass
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+ 
+
+  <!-- Validation utility -->
+  <script src="/static/js/validation.js"></script>
+  <!-- Aadhaar Validation -->
+  <script src="/static/js/aadhaar-validation.js"></script>
+  <!-- Aadhaar Field Validation -->
+  <script src="/static/js/aadhaar-field-validation.js"></script>
+
+  <!-- Libs -->
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
+  <script>
+    const availabilityInfo = document.getElementById('availabilityInfo');
+    const dateEl = document.getElementById('darshanDate');
+    const slotEl = document.getElementById('slot');
+    const bookBtn = document.getElementById('bookBtn');
+    const calGrid = document.getElementById('availabilityCalendar');
+
+    // Enforce valid minimum date (today)
+    (function setMinDate(){
+      if (!dateEl) return;
+      const t = new Date();
+      t.setHours(0,0,0,0);
+      const y = t.getFullYear();
+      const m = String(t.getMonth()+1).padStart(2,'0');
+      const d = String(t.getDate()).padStart(2,'0');
+      dateEl.min = `${y}-${m}-${d}`;
+    })();
+
+    const passPhotoInput = document.getElementById('photo');
+    const passCamStartBtn = document.getElementById('passCamStart');
+    const passCamCaptureBtn = document.getElementById('passCamCapture');
+    const passCamStopBtn = document.getElementById('passCamStop');
+    const passCamBox = document.getElementById('passCamBox');
+    const passCamVideo = document.getElementById('passCamVideo');
+    const passCamCanvas = document.getElementById('passCamCanvas');
+    const passCamPreview = document.getElementById('passCamPreview');
+
+    let passCamStream = null;
+
+    function passStopCamera() {
+      if (passCamStream) {
+        try { passCamStream.getTracks().forEach(t => t.stop()); } catch(_) {}
+      }
+      passCamStream = null;
+      if (passCamVideo) passCamVideo.srcObject = null;
+      if (passCamCaptureBtn) passCamCaptureBtn.classList.add('hidden');
+      if (passCamStopBtn) passCamStopBtn.classList.add('hidden');
+      if (passCamBox) passCamBox.classList.add('hidden');
+    }
+
+    function setFileOnInput(fileInput, file) {
+      const dt = new DataTransfer();
+      dt.items.add(file);
+      fileInput.files = dt.files;
+      try { fileInput.dispatchEvent(new Event('change', { bubbles: true })); } catch(_) {}
+    }
+
+    async function passStartCamera() {
+      if (!passCamBox || !passCamVideo || !passCamCaptureBtn || !passCamStopBtn) return;
+      try {
+        passCamStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: false });
+        passCamVideo.srcObject = passCamStream;
+        passCamBox.classList.remove('hidden');
+        passCamCaptureBtn.classList.remove('hidden');
+        passCamStopBtn.classList.remove('hidden');
+      } catch (e) {
+        alert('Failed to start camera: ' + e.message);
+      }
+    }
+
+    async function passCapturePhoto() {
+      if (!passCamStream || !passCamVideo || !passCamCanvas || !passPhotoInput) return;
+      const w = passCamVideo.videoWidth || 640;
+      const h = passCamVideo.videoHeight || 480;
+      passCamCanvas.width = w;
+      passCamCanvas.height = h;
+      const ctx = passCamCanvas.getContext('2d');
+      ctx.drawImage(passCamVideo, 0, 0, w, h);
+      const blob = await new Promise(resolve => passCamCanvas.toBlob(resolve, 'image/jpeg', 0.92));
+      if (!blob) {
+        alert('Failed to capture photo.');
+        return;
+      }
+      const userId = localStorage.getItem('userId') || 'user';
+      const filename = `${userId}_${Date.now()}.jpg`;
+      const file = new File([blob], filename, { type: blob.type || 'image/jpeg' });
+      setFileOnInput(passPhotoInput, file);
+      if (passCamPreview) {
+        passCamPreview.src = URL.createObjectURL(blob);
+        passCamPreview.classList.remove('hidden');
+      }
+      passStopCamera();
+    }
+
+    if (passCamStartBtn) passCamStartBtn.addEventListener('click', passStartCamera);
+    if (passCamCaptureBtn) passCamCaptureBtn.addEventListener('click', passCapturePhoto);
+    if (passCamStopBtn) passCamStopBtn.addEventListener('click', passStopCamera);
+    const calMonthLabel = document.getElementById('calMonthLabel');
+    const calPrev = document.getElementById('calPrev');
+    const calNext = document.getElementById('calNext');
+    const selectedDateDisplay = document.getElementById('selectedDateDisplay');
+
+    // Config
+    const CAPACITY_PER_DAY = 180; // total passes per day
+    const KNOWN_SLOTS = [
+       
+       
+      '08:00 AM - 10:00 AM',
+      '10:00 AM - 12:00 PM',
+      '12:00 PM - 02:00 PM',
+      '02:00 PM - 04:00 PM',
+      '04:00 PM - 06:00 PM',
+      '06:00 PM - 08:00 PM',
+    ];
+
+    const dailyRemainingCache = new Map(); // date -> { remaining, capacity }
+    const slotRemainingCache = new Map(); // `${date}__${slot}` -> { remaining, capacity }
+
+    function cacheKey(date, slot){
+      return `${date}__${slot}`;
+    }
+
+    async function fetchAvailability(date, slot){
+      const key = cacheKey(date, slot);
+      if (slotRemainingCache.has(key)) return slotRemainingCache.get(key);
+      const params = new URLSearchParams({ darshan_date: date, slot });
+      const url = `http://127.0.0.1:8000/api/booking/passes/check-availability/?${params.toString()}`;
+      const res = await fetch(url);
+      if(!res.ok){
+        throw new Error(await res.text());
+      }
+      const data = await res.json();
+      if (data && typeof data.remaining === 'number' && typeof data.capacity === 'number') {
+        slotRemainingCache.set(key, { remaining: data.remaining, capacity: data.capacity });
+      }
+      return data;
+    }
+
+    // Try to get per-day remaining directly; if not supported, approximate by summing slot usage
+    async function fetchDailyRemaining(date){
+      if (dailyRemainingCache.has(date)) return dailyRemainingCache.get(date);
+      // Attempt daily endpoint (if backend supports slot-less query)
+      try{
+        const params = new URLSearchParams({ darshan_date: date });
+        const url = `http://127.0.0.1:8000/api/booking/passes/check-availability/?${params.toString()}`;
+        const res = await fetch(url);
+        if(res.ok){
+          const data = await res.json();
+          if(typeof data.remaining === 'number' && typeof data.capacity === 'number'){
+            const v = { remaining: data.remaining, capacity: data.capacity };
+            dailyRemainingCache.set(date, v);
+            return v;
+          }
+        }
+      } catch(_) { /* fall back */ }
+      // Fallback: aggregate across known slots
+      try{
+        let used = 0;
+        let totalCap = 0;
+        for(const s of KNOWN_SLOTS){
+          try{
+            const info = await fetchAvailability(date, s);
+            // if backend returns per-slot capacity
+            if(typeof info.capacity === 'number') totalCap += info.capacity;
+            if(typeof info.remaining === 'number' && typeof info.capacity === 'number'){
+              used += Math.max(0, info.capacity - info.remaining);
+            }
+          } catch(_) { /* ignore individual slot errors */ }
+        }
+        // If totalCap not provided by backend for slots, default to CAPACITY_PER_DAY
+        const capacity = totalCap > 0 ? totalCap : CAPACITY_PER_DAY;
+        const remaining = Math.max(0, capacity - used);
+        const v = { remaining, capacity };
+        dailyRemainingCache.set(date, v);
+        return v;
+      } catch(_){
+        const v = { remaining: CAPACITY_PER_DAY, capacity: CAPACITY_PER_DAY };
+        dailyRemainingCache.set(date, v);
+        return v;
+      }
+    }
+
+    async function updateDailyAvailabilityUI() {
+      const date = dateEl.value;
+      if (!date) return;
+      if (slotEl && slotEl.value) return; // slot UI will show more specific info
+
+      try {
+        const info = await fetchDailyRemaining(date);
+        const remaining = typeof info.remaining === 'number' ? info.remaining : 0;
+        const capacity = typeof info.capacity === 'number' ? info.capacity : CAPACITY_PER_DAY;
+        const booked = Math.max(0, capacity - remaining);
+        availabilityInfo.textContent = `Booked: ${booked} / ${capacity} for this date`;
+        availabilityInfo.classList.remove('text-green-600','text-red-600');
+        availabilityInfo.classList.add(remaining > 0 ? 'text-green-600' : 'text-red-600');
+      } catch(_) {
+        availabilityInfo.textContent = 'Select date and slot to see availability.';
+        availabilityInfo.classList.remove('text-green-600','text-red-600');
+      }
+    }
+
+    async function updateAvailabilityUI(){
+      const date = dateEl.value;
+      const slot = slotEl.value;
+      if(!date){
+        availabilityInfo.textContent = 'Select date and slot to see availability.';
+        availabilityInfo.classList.remove('text-green-600','text-red-600');
+        bookBtn.disabled = false;
+        return;
+      }
+      if(!slot){
+        await updateDailyAvailabilityUI();
+        bookBtn.disabled = false;
+        return;
+      }
+      try{
+        const info = await fetchAvailability(date, slot);
+        const remaining = typeof info.remaining === 'number' ? info.remaining : 0;
+        const capacity = typeof info.capacity === 'number' ? info.capacity : CAPACITY_PER_DAY;
+        const booked = Math.max(0, capacity - remaining);
+        availabilityInfo.textContent = `Booked: ${booked} / ${capacity} for this slot`;
+        if(info.remaining > 0){
+          availabilityInfo.classList.add('text-green-600');
+          availabilityInfo.classList.remove('text-red-600');
+          bookBtn.disabled = false;
+        } else {
+          availabilityInfo.classList.add('text-red-600');
+          availabilityInfo.classList.remove('text-green-600');
+          bookBtn.disabled = true;
+        }
+      }catch(err){
+        availabilityInfo.textContent = '';
+        availabilityInfo.classList.remove('text-green-600','text-red-600');
+        bookBtn.disabled = false;
+      }
+    }
+
+    // Calendar state and renderer
+    let calCursor = new Date();
+    calCursor.setDate(1); // first of month
+
+    function fmtDate(d){
+      const y = d.getFullYear();
+      const m = String(d.getMonth()+1).padStart(2,'0');
+      const day = String(d.getDate()).padStart(2,'0');
+      return `${y}-${m}-${day}`;
+    }
+
+    function monthLabel(d){
+      return d.toLocaleString(undefined, { month:'long', year:'numeric' });
+    }
+
+    // Display format: Day Month Year (e.g., 09 October 2025)
+    function formatDisplayDate(iso){
+      try{
+        const [y,m,d] = iso.split('-').map(Number);
+        const dt = new Date(y, (m||1)-1, d||1);
+        return dt.toLocaleDateString(undefined, { day:'2-digit', month:'long', year:'numeric' });
+      } catch(_) {
+        return iso;
+      }
+    }
+
+    function updateSelectedDateDisplay(){
+      if(!selectedDateDisplay) return;
+      if(dateEl.value){
+        selectedDateDisplay.textContent = `Selected: ${formatDisplayDate(dateEl.value)}`;
+      } else {
+        selectedDateDisplay.textContent = '';
+      }
+    }
+
+    // Ekadashi dates for 2026 (non-clickable dates)
+    const EKADASHI_DATES_2026 = [
+      '2026-04-13', // Varuthini Ekadashi
+      '2026-04-27', // Mohini Ekadashi
+      '2026-05-13', // Apara Ekadashi
+      '2026-05-27', // Padmini Ekadashi
+      '2026-06-11', // Parama Ekadashi
+      '2026-06-25', // Nirjala Ekadashi
+      '2026-07-10', // Yogini Ekadashi
+      '2026-07-25', // Devshayani Ekadashi (Ashadi Ekadashi)
+      '2026-08-09', // Kamika Ekadashi
+      '2026-08-23', // Shravana Putrada Ekadashi
+      '2026-09-06', // Aja Ekadashi
+      '2026-09-21', // Parsva Ekadashi
+      '2026-10-06', // Indira Ekadashi
+      '2026-10-21', // Papankusha Ekadashi
+      '2026-11-05', // Rama Ekadashi
+      '2026-11-20', // Prabodhini Ekadashi (Kartiki Ekadashi)
+      '2026-12-04', // Pashankusha Ekadashi
+      '2026-12-20'  // Mokshada Ekadashi (Vaikuntha Ekadashi)
+    ];
+    
+    // Check if a date is Ekadashi
+    function isEkadashi(dateString) {
+      return EKADASHI_DATES_2026.includes(dateString);
+    }
+
+    async function renderCalendar(){
+      if(!calGrid) return;
+      calGrid.innerHTML = '';
+      calMonthLabel.textContent = monthLabel(calCursor);
+
+      const firstDayIdx = new Date(calCursor.getFullYear(), calCursor.getMonth(), 1).getDay();
+      const daysInMonth = new Date(calCursor.getFullYear(), calCursor.getMonth()+1, 0).getDate();
+      // Fill leading blanks to align to weekday (Sun=0)
+      for(let i=0;i<firstDayIdx;i++){
+        const blank = document.createElement('div');
+        blank.className = 'cal-cell disabled';
+        calGrid.appendChild(blank);
+      }
+      const today = new Date(); today.setHours(0,0,0,0);
+      for(let day=1; day<=daysInMonth; day++){
+        const d = new Date(calCursor.getFullYear(), calCursor.getMonth(), day);
+        const iso = fmtDate(d);
+        const cell = document.createElement('div');
+        cell.className = 'cal-cell';
+        const isPast = d < today;
+        const isEkadashiDate = isEkadashi(iso);
+        
+        cell.innerHTML = `<div class="day">${day}</div><div class="status">Checking...</div>`;
+        
+        if(isPast){
+          cell.classList.add('disabled');
+          cell.querySelector('.status').textContent = '—';
+        } else if(isEkadashiDate){
+          // Ekadashi date - mark as disabled with special styling
+          cell.classList.add('ekadashi-date');
+          cell.classList.add('disabled');
+          cell.querySelector('.status').innerHTML = `<span class="text-[10px] text-orange-600 font-semibold">Ekadashi</span><br><span class="text-[9px] text-gray-500">Not Available</span>`;
+          cell.style.backgroundColor = '#e5e7eb'; // Stone/gray color
+          cell.style.cursor = 'not-allowed';
+          cell.style.opacity = '0.7';
+        } else {
+          // Fetch per-day remaining and color
+          fetchDailyRemaining(iso).then(info => {
+            const remaining = (typeof info.remaining === 'number') ? info.remaining : CAPACITY_PER_DAY;
+            const capacity = (typeof info.capacity === 'number') ? info.capacity : CAPACITY_PER_DAY;
+            const booked = Math.max(0, capacity - remaining);
+            const full = remaining <= 0;
+            const status = cell.querySelector('.status');
+            if(full){
+              status.innerHTML = `<span class="dot red"></span> Full<br><span class="text-[9px] text-gray-600">${booked}/${capacity}</span>`;
+              cell.classList.add('full');
+            } else {
+              status.innerHTML = `<span class="dot green"></span> Available<br><span class="text-[9px] text-gray-600">${booked}/${capacity}</span>`;
+              cell.classList.add('available');
+            }
+          }).catch(_ => {
+            const status = cell.querySelector('.status');
+            status.textContent = '';
+          });
+          cell.addEventListener('click', () => {
+            dateEl.value = iso;
+            updateSelectedDateDisplay();
+            updateAvailabilityUI();
+          });
+        }
+        calGrid.appendChild(cell);
+      }
+    }
+
+    if(calPrev && calNext){
+      calPrev.addEventListener('click', () => { calCursor.setMonth(calCursor.getMonth()-1); renderCalendar(); });
+      calNext.addEventListener('click', () => { calCursor.setMonth(calCursor.getMonth()+1); renderCalendar(); });
+    }
+
+    dateEl.addEventListener('change', () => { updateSelectedDateDisplay(); updateAvailabilityUI(); });
+    slotEl.addEventListener('change', updateAvailabilityUI);
+    // initial state
+    updateAvailabilityUI();
+    renderCalendar();
+    updateSelectedDateDisplay();
+
+    document.getElementById("bookingForm").onsubmit = async function(e){
+      e.preventDefault();
+
+      // Clear any previous booking error
+      const bookingErrEl = document.getElementById('bookingErrorMsg');
+      if (bookingErrEl) { bookingErrEl.textContent = ''; bookingErrEl.classList.add('hidden'); }
+
+      // Validate date is today or in the future (handles manual typing)
+      try {
+        const iso = dateEl.value;
+        if (!iso) {
+          showBookingError('Please select a valid date.');
+          return;
+        }
+        const parts = iso.split('-').map(Number);
+        const sel = new Date(parts[0], (parts[1] || 1) - 1, parts[2] || 1);
+        sel.setHours(0,0,0,0);
+        const today = new Date();
+        today.setHours(0,0,0,0);
+        if (sel < today) {
+          showBookingError('Please select a valid future date.');
+          dateEl.value = '';
+          updateSelectedDateDisplay();
+          updateAvailabilityUI();
+          return;
+        }
+      } catch (_) {}
+
+      // Validate availability just before submitting
+      try{
+        const info = await fetchAvailability(dateEl.value, slotEl.value);
+        if(info.remaining <= 0){
+          showBookingError('Selected slot is full. Please choose another slot.');
+          await updateAvailabilityUI();
+          return;
+        }
+      }catch(_){ /* fall through; server will enforce too */ }
+
+      const token = localStorage.getItem('accessToken');
+      if(!token){
+        showBookingError('Please login to book a pass.');
+        return;
+      }
+
+      const name = document.getElementById("name").value;
+      const email = document.getElementById("email").value;
+      const mobile = document.getElementById("mobile").value;
+      const gender = document.getElementById("gender").value;
+      const slot = document.getElementById("slot").value;
+      const date = document.getElementById("darshanDate").value;
+      const file = document.getElementById("photo").files[0];
+
+      // --- Field validation ---
+      let valid = true;
+
+      // Clear previous select errors
+      ['gender', 'slot'].forEach(id => {
+        const el = document.getElementById(id);
+        const err = document.getElementById(id + '_error');
+        if (el) el.classList.remove('border-red-500');
+        if (err) err.textContent = '';
+      });
+
+      if (!gender) {
+        document.getElementById('gender_error').textContent = 'Please select a gender';
+        document.getElementById('gender').classList.add('border-red-500');
+        valid = false;
+      }
+      if (!slot) {
+        document.getElementById('slot_error').textContent = 'Please select a slot time';
+        document.getElementById('slot').classList.add('border-red-500');
+        valid = false;
+      }
+      if (!name.trim() || !email.trim() || !mobile.trim() || !date || !file) {
+        showBookingError('All fields are required.');
+        valid = false;
+      }
+      if (valid && !Validator.validateName(name)) {
+        Validator.showError('name', 'Name must contain only alphabets');
+        valid = false;
+      }
+      if (valid && !Validator.validateEmail(email)) {
+        Validator.showError('email', 'Enter a valid email address');
+        valid = false;
+      }
+      if (valid && !Validator.validateMobile(mobile)) {
+        Validator.showError('mobile', 'Mobile number must be exactly 10 digits');
+        valid = false;
+      }
+      if (!valid) return;
+
+      const aadhaar = document.getElementById('aadhaar').value.trim();
+      if (!aadhaar || aadhaar.length !== 12) {
+        showBookingError('Please enter a valid 12-digit Aadhaar number');
+        return;
+      }
+
+      const form = new FormData();
+      form.append('full_name', name);
+      form.append('email', email);
+      form.append('mobile', mobile);
+      form.append('aadhaar', aadhaar);
+      form.append('children_count', '0');
+      form.append('gender', gender);
+      form.append('slot', slot);
+      form.append('darshan_date', date);
+      form.append('photo', file);
+
+      try {
+        const resp = await fetch('http://127.0.0.1:8000/api/booking/passes/', {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${token}` },
+          body: form
+        });
+
+        if(!resp.ok){
+          const errText = await resp.text();
+          let msg = errText;
+          try{
+            const errJson = JSON.parse(errText);
+            if(errJson && errJson.detail){
+              msg = errJson.detail + (errJson.remaining !== undefined ? ` (Remaining: ${errJson.remaining})` : '');
+            }
+          }catch(_){}
+          showBookingError(msg);
+          await updateAvailabilityUI();
+          return;
+        }
+
+        const data = await resp.json();
+
+        // Update availability cache immediately (client-side) so calendar/UI shows 180-1 without refresh
+        try {
+          const dKey = date;
+          const sKey = cacheKey(date, slot);
+
+          const prevDay = dailyRemainingCache.get(dKey);
+          if (prevDay && typeof prevDay.remaining === 'number') {
+            dailyRemainingCache.set(dKey, { ...prevDay, remaining: Math.max(0, prevDay.remaining - 1) });
+          } else {
+            dailyRemainingCache.set(dKey, { remaining: Math.max(0, CAPACITY_PER_DAY - 1), capacity: CAPACITY_PER_DAY });
+          }
+
+          const prevSlot = slotRemainingCache.get(sKey);
+          if (prevSlot && typeof prevSlot.remaining === 'number') {
+            slotRemainingCache.set(sKey, { ...prevSlot, remaining: Math.max(0, prevSlot.remaining - 1) });
+          }
+        } catch(_) {}
+
+        // Re-render calendar/availability text to reflect the decrement
+        try {
+          await updateAvailabilityUI();
+          await renderCalendar();
+        } catch(_) {}
+
+        if (typeof window.showSuccessPopup === 'function') {
+          window.showSuccessPopup({
+            title: 'Pass Booked!',
+            message: 'Your darshan pass has been booked successfully.',
+            meta: [
+              { label: 'Booking ID', value: data.booking_id || '' },
+              { label: 'Darshan Date', value: data.darshan_date || '' },
+              { label: 'Slot', value: data.slot || '' }
+            ]
+          });
+        }
+
+        // Fill pass preview
+        document.getElementById("bookingId").textContent = data.booking_id;
+        const issuedAtEl = document.getElementById('receiptIssuedAt');
+        if (issuedAtEl) {
+          const now = new Date();
+          const pad2 = (n) => String(n).padStart(2, '0');
+          issuedAtEl.textContent = `Issued: ${pad2(now.getDate())}-${pad2(now.getMonth()+1)}-${now.getFullYear()} ${pad2(now.getHours())}:${pad2(now.getMinutes())}`;
+        }
+        document.getElementById("pName").textContent = data.full_name;
+        document.getElementById("pEmail").textContent = data.email;
+        document.getElementById("pMobile").textContent = data.mobile;
+        document.getElementById("pGender").textContent = data.gender;
+        document.getElementById("pSlot").textContent = data.slot;
+        document.getElementById("pDate").textContent = formatDisplayDate(data.darshan_date);
+        const noPhotoEl = document.getElementById('noPhoto');
+        if(data.image_base64){
+          document.getElementById("pPhoto").src = data.image_base64;
+          document.getElementById("pPhoto").classList.remove('hidden');
+          if (noPhotoEl) noPhotoEl.classList.add('hidden');
+        } else {
+          document.getElementById("pPhoto").removeAttribute('src');
+          document.getElementById("pPhoto").classList.add('hidden');
+          if (noPhotoEl) noPhotoEl.classList.remove('hidden');
+        }
+
+        // Generate QR
+        document.getElementById("qrcode").innerHTML = "";
+        new QRCode(document.getElementById("qrcode"), {
+          text: `BookingID:${data.booking_id} | Name:${data.full_name} | Slot:${data.slot} | Date:${data.darshan_date}`,
+          width: 100, height: 100
+        });
+
+        document.getElementById("pass").style.display = "block";
+        document.getElementById("bookingForm").reset();
+      } catch (e) {
+        console.error(e);
+        showBookingError('Unexpected error. Please try again.');
+      }
+    }
+
+    function showBookingError(msg) {
+      const el = document.getElementById('bookingErrorMsg');
+      if (!el) return;
+      el.textContent = msg;
+      el.classList.remove('hidden');
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  </script>
+
+  <!-- Site scripts -->
+  <script src="/static/js/mobile_validation.js"></script>
+  <script src="/static/js/script_fixed.js?v=5"></script>
+  <script src="/static/js/script.js"></script>
+  <script src="/static/js/tailwind.config.js"></script>
+  <script src="/static/js/navbar-fix.js"></script>
+  <script>
+    // Attach live validation to Pass Booking fields
+    document.addEventListener('DOMContentLoaded', function() {
+      if (window.Validator) {
+        Validator.attachLive('name', 'name');
+        Validator.attachLive('email', 'email');
+        Validator.attachLive('mobile', 'mobile');
+      }
+      // Clear inline errors on select change
+      document.getElementById('gender').addEventListener('change', function() {
+        if (this.value) {
+          document.getElementById('gender_error').textContent = '';
+          this.classList.remove('border-red-500');
+        }
+      });
+      document.getElementById('slot').addEventListener('change', function() {
+        if (this.value) {
+          document.getElementById('slot_error').textContent = '';
+          this.classList.remove('border-red-500');
+        }
+      });
+    });
+    // Gentle auth gate: if not logged in, prompt with modal instead of redirecting
+    (function(){
+      try {
+        var loggedIn = (window.isLoggedIn === true) || (typeof window.hasToken === 'function' && window.hasToken());
+        if (!loggedIn && typeof window.showAuthRequiredModal === 'function') {
+          showAuthRequiredModal('Pass Booking');
+        }
+      } catch(_) {}
+    })();
+  </script>
+  <script src="/static/js/script.js"></script>
+  <script src="/static/js/tailwind.config.js"></script>
+    {% include 'footer.html' %}
+</body>
+</html>
+

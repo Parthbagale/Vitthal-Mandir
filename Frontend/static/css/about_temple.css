@@ -1,0 +1,42 @@
+/* About Temple Page Specific Styles */
+
+/* Page header styling */
+.about-temple-header {
+    background-position: center;
+    background-blend-mode: overlay;
+}
+
+/* Temple history cards */
+.history-card {
+    transition: all 0.3s ease;
+    border-left: 4px solid var(--brand-saffron);
+}
+
+.history-card:hover {
+    transform: translateX(8px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* Temple timings table */
+.timings-table {
+    border-collapse: separate;
+    border-spacing: 0 8px;
+}
+
+.timings-row {
+    transition: background-color 0.2s ease;
+}
+
+.timings-row:hover {
+    background-color: rgba(255, 122, 0, 0.05);
+}
+
+/* Image gallery on about page */
+.temple-image-gallery img {
+    transition: transform 0.4s ease, filter 0.4s ease;
+}
+
+.temple-image-gallery img:hover {
+    transform: scale(1.05);
+    filter: brightness(1.1);
+}

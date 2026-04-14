@@ -1,0 +1,212 @@
+/**
+ * Home Page Layout Fixes
+ */
+
+/* Fix 1: Gallery Section */
+.grid.grid-cols-2.md\:grid-cols-4 {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+}
+
+@media (min-width: 768px) {
+    .grid.grid-cols-2.md\:grid-cols-4 {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+.grid img {
+    width: 100%;
+    height: 8rem;
+    object-fit: contain;
+    background: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* Fix 2: E-Library Cards */
+.grid.grid-cols-1.md\:grid-cols-3 {
+    display: grid !important;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+    .grid.grid-cols-1.md\:grid-cols-3 {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+.bg-gray-50.p-6.rounded-xl {
+    background-color: #f9fafb !important;
+    padding: 1.5rem !important;
+    border-radius: 0.75rem !important;
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.bg-gray-50.p-6.rounded-xl i {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+/* Fix 3: Calendar Widget */
+.calendar-widget {
+    background: white;
+    padding: 1rem;
+    border-radius: 0.5rem;
+}
+
+.calendar-widget .grid {
+    display: grid !important;
+}
+
+.ekadashi-date {
+    position: relative;
+    background: #fff8f1 !important;
+    border-bottom: 2px solid #ff6b00 !important;
+    color: #ff6b00 !important;
+    font-weight: bold !important;
+}
+
+.ekadashi-date::after {
+    content: '';
+    position: absolute;
+    bottom: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 4px;
+    background: #ff6b00;
+    border-radius: 50%;
+}
+
+/* Fix 4: Reveal Animations */
+.reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.reveal.revealed {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.reveal-stagger .reveal {
+    transition-delay: 0s;
+}
+
+/* Fix 5: Card Animations */
+.card-animate {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card-animate:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+/* Fix 6: Section Spacing */
+section {
+    padding-top: 4rem;
+    padding-bottom: 4rem;
+}
+
+@media (min-width: 768px) {
+    section {
+        padding-top: 6rem;
+        padding-bottom: 6rem;
+    }
+}
+
+/* Fix 7: Ensure containers are visible */
+.container {
+    max-width: 1280px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+}
+
+/* Fix 8: Event Cards */
+.event-card {
+    display: block !important;
+    margin-bottom: 1rem;
+}
+
+/* Fix 9: Primary Color */
+.bg-primary {
+    background-color: #ff6b00 !important;
+}
+
+.text-primary {
+    color: #ff6b00 !important;
+}
+
+.hover\:bg-primary-dark:hover {
+    background-color: #e55d00 !important;
+}
+
+/* Fix 10: Ensure grid layouts work */
+.grid {
+    display: grid;
+}
+
+/* Fix 11: Gallery hover effects */
+.grid img {
+    transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+.grid img:hover {
+    transform: scale(1.05);
+    filter: brightness(1.05);
+}
+
+/* Fix 12: Responsive text */
+@media (max-width: 640px) {
+    .text-4xl {
+        font-size: 2rem;
+    }
+    
+    .text-lg {
+        font-size: 1rem;
+    }
+}
+
+
+/* Voice Button Styles */
+#voice-btn {
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+#voice-btn.listening {
+    background-color: #ff6b00 !important;
+    color: white !important;
+    animation: pulse-voice 1.5s infinite;
+}
+
+@keyframes pulse-voice {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(255, 107, 0, 0.7);
+    }
+    50% {
+        transform: scale(1.05);
+        box-shadow: 0 0 0 10px rgba(255, 107, 0, 0);
+    }
+}
+
+/* Voice button hover effect */
+#voice-btn:hover {
+    transform: scale(1.1);
+}
+
+#voice-btn:active {
+    transform: scale(0.95);
+}

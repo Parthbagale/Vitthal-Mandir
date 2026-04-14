@@ -1,0 +1,78 @@
+﻿<!-- Chatbot Container -->
+<div id="chatbot-container" class="fixed bottom-6 right-6 z-[1000]">
+  <button id="chatbot-icon"
+    class="w-20 h-20 bg-transparent rounded-full shadow-lg flex items-center justify-center animate-bounce"
+    aria-label="Open chatbot">
+    <img src="/static/images/cl2.jpg" alt="Chatbot" class="w-20 h-20 object-contain rounded-full" />
+  </button>
+</div>
+
+<!-- Chatbot Modal -->
+<div id="chatbot-overlay" class="chatbot-overlay">
+  <div id="chatbot-modal" class="chatbot-modal">
+    <button id="close-chatbot-modal-btn" class="close-button-modal" aria-label="Close chatbot">
+      <i class="ph ph-x"></i>
+    </button>
+    <div class="chat-header-modal">
+      <div class="chat-header-brand">
+        <img src="/static/images/cl3.jpg" alt="cl3" class="chat-header-logo" loading="lazy" />
+        <i class="fas fa-hindu-temple temple-icon"></i>
+      </div>
+      <h1>Vitthal-Rukmini Mandir AI Assistant</h1>
+      <p>Your guide to spiritual queries and temple information.</p>
+    </div>
+    <div class="chat-container-modal">
+      <div class="sidebar-modal">
+        <div class="logo-modal ">
+          <i class="fas fa-robot logo-icon"></i>
+          <span class="logo-text">AI Assistant</span>
+        </div>
+        <div class="quick-actions-modal">
+          <h3>Quick Actions</h3>
+          <button class="action-btn-modal" data-query="Tell me about Lord Vitthal.">
+            <i class="fas fa-info-circle"></i>  About Lord Vitthal
+          </button>
+          <button class="action-btn-modal" data-query="How to book darshan?">
+            <i class="fas fa-calendar-alt"></i>  Book Darshan
+          </button>
+          <button class="action-btn-modal" data-query="What are the temple timings?">
+            <i class="fas fa-clock"></i>  Temple Timings
+          </button>
+          <button class="action-btn-modal" data-query="How can I donate?">
+            <i class="fas fa-hand-holding-usd"></i>  Donate
+          </button>
+          <button id="exit-chatbot-btn" class="action-btn-modal" type="button">
+            <i class="fas fa-sign-out-alt"></i>  Exit
+          </button>
+        </div>
+      </div>
+      <div class="chat-area-modal">
+        <div class="chat-header">
+          
+        </div>
+        <div id="messages" class="chat-messages-modal">
+          <!-- Messages will be appended here -->
+          <div class="message-box-modal bot-message-modal">
+            <div class="message-header-modal">
+              <div class="avatar-modal bot-avatar-modal"><img src="/static/images/cl3.jpg" alt="AI" class="bot-avatar-img" loading="lazy" /></div>
+              <span>Vitthal Assistant</span>
+            </div>
+            <p>Ram Krushna Hari</p>
+            <span class="message-time-modal"></span>
+          </div>
+        </div>
+        <div class="input-area-modal">
+          <input type="text" id="user-input" class="user-input-modal" placeholder="Type your message..." />
+          <button id="voice-btn" class="action-icon-modal voice" type="button" aria-label="Voice input">
+            <i class="fas fa-microphone"></i>
+          </button>
+          <button id="send-btn" class="action-icon-modal send">
+            <i class="fas fa-paper-plane"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+

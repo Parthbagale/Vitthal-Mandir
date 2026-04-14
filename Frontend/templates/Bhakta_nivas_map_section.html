@@ -1,0 +1,108 @@
+<!-- Bhakta Nivas Map Section - Add this to your Bhakta_nivas.html -->
+
+<!-- Map Section -->
+<section class="py-16 md:py-24 bg-gray-50">
+    <div class="container mx-auto px-6">
+        <h2 class="text-4xl font-bold text-center text-gray-900 font-playfair mb-4">
+            Bhakta Nivas Locations
+        </h2>
+        <p class="text-center text-gray-600 mb-12 max-w-2xl mx-auto">
+            Find the nearest Bhakta Nivas to Vitthal Mandir. View distances and get walking directions.
+        </p>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Distance Panel (Left Side) -->
+            <div class="lg:col-span-1">
+                <div id="distance-panel"></div>
+                
+                <!-- Route Info -->
+                <div id="route-info" style="display: none; margin-top: 16px;"></div>
+                
+                <!-- Legend -->
+                <div class="mt-6 bg-white rounded-lg p-4 shadow">
+                    <h4 class="font-semibold text-gray-900 mb-3">Map Legend</h4>
+                    <div class="space-y-2">
+                        <div class="flex items-center gap-3">
+                            <span style="font-size: 24px;">🕉</span>
+                            <span class="text-sm text-gray-700">Vitthal Mandir (Main Temple)</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span style="font-size: 24px;">🏠</span>
+                            <span class="text-sm text-gray-700">Bhakta Nivas Locations</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div style="width: 20px; height: 20px; background: #2196F3; border-radius: 50%; border: 2px solid white;"></div>
+                            <span class="text-sm text-gray-700">Your Current Location</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div style="width: 60px; height: 20px; background: #FF7A00; border-radius: 10px;"></div>
+                            <span class="text-sm text-gray-700">Distance Labels</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Refresh Location Button -->
+                    <button onclick="refreshUserLocation()" 
+                            class="mt-4 w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition flex items-center justify-center gap-2">
+                        <i class="fas fa-location-arrow"></i>
+                        <span>Refresh My Location</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Map (Right Side) -->
+            <div class="lg:col-span-2">
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                    <div id="bhakta-nivas-map" style="width: 100%; height: 600px;"></div>
+                </div>
+                
+                <!-- Map Instructions -->
+                <div class="mt-4 bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
+                    <div class="flex items-start">
+                        <i class="fas fa-info-circle text-blue-500 mt-1 mr-3"></i>
+                        <div>
+                            <p class="text-sm text-blue-900 font-semibold mb-1">How to use the map:</p>
+                            <ul class="text-sm text-blue-800 space-y-1">
+                                <li>• Allow location access to see routes from your current position</li>
+                                <li>• Click on any Bhakta Nivas marker to see details</li>
+                                <li>• Choose "From Temple" or "From My Location" for directions</li>
+                                <li>• Blue routes = from your location, Orange routes = from temple</li>
+                                <li>• Click location cards (left) to focus on that Bhakta Nivas</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Google Maps API Script -->
+<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY&callback=initBhaktaNivasMap" async defer></script>
+
+<!-- Bhakta Nivas Map Script -->
+<script src="static/js/bhakta_nivas_map.js"></script>
+
+<style>
+/* Additional map styles */
+#bhakta-nivas-map {
+    border-radius: 12px;
+}
+
+#distance-panel::-webkit-scrollbar {
+    width: 6px;
+}
+
+#distance-panel::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+#distance-panel::-webkit-scrollbar-thumb {
+    background: #FF7A00;
+    border-radius: 10px;
+}
+
+#distance-panel::-webkit-scrollbar-thumb:hover {
+    background: #e06e00;
+}
+</style>

@@ -1,0 +1,31 @@
+# Django and Core Dependencies
+Django>=5.0.0
+psycopg2-binary>=2.9.0
+python-decouple>=3.8
+python-dotenv>=1.0.0
+dj-database-url>=2.1.0
+supabase>=2.3.0
+
+# REST Framework
+djangorestframework>=3.14.0
+djangorestframework-simplejwt>=5.3.0
+
+# CORS Headers
+django-cors-headers>=4.3.0
+
+# SMS Gateway
+requests>=2.31.0
+
+# Google AI
+google-generativeai>=0.3.0
+
+# Image Processing (for face detection in booking)
+opencv-python>=4.8.0
+numpy>=1.24.0
+
+# Additional utilities
+Pillow>=10.0.0
+
+# Deployment
+gunicorn>=21.2.0
+whitenoise>=6.6.0

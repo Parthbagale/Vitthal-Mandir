@@ -1,0 +1,43 @@
+/* Admin Page Specific Styles */
+
+.admin-sidebar {
+    background: linear-gradient(180deg, #1f2937 0%, #111827 100%);
+    min-height: 100vh;
+}
+
+.admin-nav-item {
+    padding: 12px 20px;
+    color: #d1d5db;
+    transition: all 0.2s ease;
+    border-left: 4px solid transparent;
+}
+
+.admin-nav-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border-left-color: var(--brand-saffron);
+}
+
+.admin-nav-item.active {
+    background: rgba(255, 122, 0, 0.2);
+    color: white;
+    border-left-color: var(--brand-saffron);
+}
+
+.stat-card {
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-4px);
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--brand-saffron);
+}

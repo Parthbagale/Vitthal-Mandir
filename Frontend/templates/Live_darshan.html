@@ -1,0 +1,110 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shri Vitthal Rukmini Mandir – Live Darshan</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Icons + Fonts (match index.html) -->
+  <script src="https://unpkg.com/@phosphor-icons/web@2.1.1/dist/phosphor.js" defer></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- External CSS (match index.html) -->
+  <link rel="stylesheet" href="/static/css/styles.css?v=3">
+
+  <!-- Auth Guard -->
+  <script src="/static/js/auth.js"></script>
+  <script>
+    // Enforce user auth on load
+    (function(){
+      if (typeof window.__auth !== 'undefined') {
+        window.__auth.requireAuth();
+      }
+    })();
+  </script>
+
+  <!-- Animate on Scroll (AOS) CSS + JS -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+    // Enforce user auth on load
+    (function(){
+      if (typeof requireAuth === 'function') {
+        requireAuth({ redirectTo: 'index.html', message: 'Please login to access Live Darshan.' });
+      }
+    })();
+  </script>
+</head>
+<body class="bg-gray-100 text-gray-900 flex flex-col min-h-screen">
+
+  <!-- Header / Navbar (standardized) -->
+  {% include 'navbar.html' %}
+
+  <!-- Hero Section -->
+  <header class="relative w-full h-[30vh] md:h-[35vh] flex items-center justify-center text-center" style="background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);">
+    <div class="relative z-10 p-6 md:p-10 rounded-xl">
+      <h1 class="text-3xl md:text-5xl font-bold text-white font-playfair" data-aos="zoom-in">
+        श्री विठ्ठल रुक्मिणी मंदिर – पंढरपूर
+      </h1>
+      <p class="mt-3 text-white" data-aos="zoom-in" data-aos-delay="150">Experience the divine Live Darshan</p>
+    </div>
+  </header>
+
+  <!-- Live Darshan Section -->
+  <main class="flex flex-col flex-1">
+    <section class="py-16 md:py-20 bg-gray-50" data-aos="fade-up">
+      <div class="container mx-auto px-6">
+        <div class="max-w-5xl mx-auto text-center space-y-6">
+          <h2 class="text-3xl md:text-4xl font-bold text-gray-900 font-playfair">📺 Live Darshan</h2>
+          <!-- Live stream embed -->
+          <div class="aspect-video w-full max-w-5xl mx-auto overflow-hidden rounded-xl shadow-lg bg-black">
+            <iframe
+              id="darshan-iframe"
+              class="w-full h-full"
+              src="https://www.youtube.com/embed/0zp1h8rKl68?si=RCqJ7tIRZ0ImiIS7"
+              title="YouTube video player"
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              referrerpolicy="strict-origin-when-cross-origin"
+              allowfullscreen>
+            </iframe>
+          </div>
+
+          <!-- Fallback notice if embed is blocked -->
+          <p class="text-sm text-gray-500 mt-2">
+            If the stream does not load,
+            <a href="https://www.youtube.com/watch?v=0zp1h8rKl68" target="_blank" rel="noopener"
+               class="text-orange-500 underline font-medium">click here to watch on YouTube</a>.
+          </p>
+
+          <div class="pt-2 flex justify-center gap-4 flex-wrap">
+            <a href="Pass_booking.html" class="inline-block text-white py-2.5 px-6 rounded-full font-semibold transition" style="background-color: orange;">Book Seva</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  
+
+  <!-- Google Translate + AOS Init -->
+  <script src="/static/js/script_fixed.js?v=4"></script>
+  <script src="/static/js/script.js"></script>
+  <script src="/static/js/tailwind.config.js"></script>
+  <script>
+    AOS.init({
+      duration: 1000,
+      once: true
+    });
+    // Dynamic year for footer
+    const y = document.getElementById('year');
+    if (y) y.textContent = new Date().getFullYear();
+  </script>
+  {% include 'footer.html' %}
+</body>
+</html>
+
+

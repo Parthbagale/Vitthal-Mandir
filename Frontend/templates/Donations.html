@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="donations.title">Donations - Shri Vitthal Rukmini Mandir</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+
+  <link rel="stylesheet" href="/static/css/styles.css?v=3">
+  <style>
+    @media print {
+      body * { display: none !important; }
+      #donationReceiptPrint, #donationReceiptPrint * { display: block !important; }
+      #donationReceiptPrint {
+        position: fixed !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 210mm !important;
+        min-height: 297mm !important;
+        padding: 12mm !important;
+        margin: 0 !important;
+        background: #fff !important;
+      }
+      #donationReceiptPrintCard { box-shadow: none !important; border: 1px solid #e5e7eb !important; }
+      #donationReceiptPrintCard, #donationReceiptPrintCard * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+      @page { size: A4; margin: 0; }
+    }
+  </style>
+  <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#FF9100',
+                        secondary: '#F3E9DD',
+                        gold: '#B8860B',
+                        saffron: '#FF6347',
+                        maroon: '#800000',
+                    }
+                }
+            }
+        }
+  </script>
+</head>
+<body class="bg-gradient-to-br from-orange-50 to-yellow-50 min-h-screen text-gray-800">
+    {% include 'navbar.html' %}
+
+    <main class="container mx-auto px-4 py-8">
+        <section class="bg-white rounded-2xl shadow-xl p-8 mb-8">
+            <h1 class="text-4xl font-bold font-playfair text-center text-gray-900 mb-6" data-i18n="donations.main_title">Support Our Temple</h1>
+            <p class="text-lg text-center text-gray-600 max-w-3xl mx-auto mb-8" data-i18n="donations.description">
+                Your generous contributions help us maintain the temple, conduct daily rituals, organize festivals, and support various community services. Every donation, big or small, makes a significant difference.
+            </p>
+
+            <div class="max-w-4xl mx-auto">
+                <div class="bg-white border border-gray-200 rounded-2xl shadow-lg overflow-hidden">
+                    <div class="px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-orange-50 to-yellow-50">
+                        <div class="text-lg font-semibold text-gray-900">Donation Form</div>
+                    </div>
+
+                    <form id="donationForm" class="p-6">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Full Name</label>
+                                <input id="donorName" type="text" required class="mt-1 w-full border border-gray-300 rounded-md p-2 focus:ring-primary focus:border-primary" />
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Email</label>
+                                <input id="donorEmail" type="email" required 
+                                    pattern="[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
+                                    title="Please enter a valid email address (e.g., example@gmail.com)"
+                                    class="mt-1 w-full border border-gray-300 rounded-md p-2 focus:ring-primary focus:border-primary" 
+                                    
+                                <p class="text-xs text-gray-500 mt-1">Enter a valid email with proper domain (e.g., @gmail.com)</p>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Mobile</label>
+                                <input id="donorMobile" type="text" required pattern="[6-9][0-9]{9}" maxlength="10" inputmode="numeric" class="mt-1 w-full border border-gray-300 rounded-md p-2 focus:ring-primary focus:border-primary" onkeypress="return event.charCode >= 48 && event.charCode <= 57" />
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Donation Category</label>
+                                <select id="donationCategory" required class="mt-1 w-full border border-gray-300 rounded-md p-2 focus:ring-primary focus:border-primary">
+                                    <option value="">--Select--</option>
+                                    <option value="Temple Maintenance">Temple Maintenance</option>
+                                    <option value="Daily Pooja">Daily Pooja</option>
+                                    <option value="Annadan">Annadan</option>
+                                    <option value="Festival Fund">Festival Fund</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Amount (INR)</label>
+                                <input id="donationAmount" type="number" min="1" required class="mt-1 w-full border border-gray-300 rounded-md p-2 focus:ring-primary focus:border-primary" />
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Payment Method</label>
+                                <div class="mt-2 grid grid-cols-2 gap-2 text-sm text-gray-700">
+                                    <label class="flex items-center gap-2">
+                                        <input type="radio" name="paymentMethod" value="UPI" checked />
+                                        <span>UPI</span>
+                                    </label>
+ 
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="paymentSection" class="hidden mt-6 bg-orange-50 border border-orange-200 rounded-xl p-4">
+                            <div class="text-sm font-semibold text-gray-900 mb-2">Pay via UPI Apps (BHIM/Paytm/GPay/PhonePe)</div>
+                            <div class="grid grid-cols-1 md:grid-cols-[220px_1fr] gap-4 items-start">
+                                <div class="bg-white border border-gray-200 rounded-lg p-2 w-[220px]">
+                                    <div id="donationQr" class="w-[200px] h-[200px] mx-auto"></div>
+                                    <div class="text-xs text-gray-500 text-center mt-2">Scan &amp; pay</div>
+                                </div>
+                                <div class="text-sm text-gray-700">
+                                    <div class="font-semibold text-gray-900">UPI ID</div>
+                                    <div class="mt-1 flex items-center gap-2">
+                                        <div id="upiIdText" class="font-mono text-gray-900 break-all">7385060933@fam</div>
+                                        <button type="button" id="copyUpiBtn" class="inline-flex items-center bg-primary text-white py-1.5 px-3 rounded-md font-semibold hover:bg-orange-600 transition">
+                                            <i class="fas fa-copy mr-2"></i> Copy
+                                        </button>
+                                    </div>
+                                    <div class="mt-3">
+                                        <div class="text-xs text-gray-600">Amount and reference auto-embedded in QR</div>
+                                        <div id="upiPreview" class="mt-1 text-xs text-gray-500 break-all"></div>
+                                    </div>
+                                    <div class="mt-4 text-xs text-gray-600">
+                                        Or pay to UPI ID and mention your name in the note.
+                                    </div>
+                                    
+                                    <!-- Payment Status -->
+                                    <div class="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                                        <div class="flex items-center gap-2 text-blue-800 mb-2">
+                                            <i class="fas fa-info-circle"></i>
+                                            <span class="text-sm font-semibold">Waiting for payment...</span>
+                                        </div>
+                                        <p class="text-xs text-blue-700 mb-3">Complete the payment using any UPI app.</p>
+                                        
+                                        <button type="button" id="confirmPaymentBtn" class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2.5 px-4 rounded-lg transition flex items-center justify-center gap-2">
+                                            <i class="fas fa-check-circle"></i>
+                                            I have completed the payment
+                                        </button>
+                                        <p class="text-xs text-gray-600 mt-2 text-center">Click above after successful payment to generate receipt</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="button" id="proceedToPayBtn" class="mt-6 w-full bg-primary hover:bg-orange-600 text-white font-semibold py-3 rounded-lg shadow-sm transition">
+                            Proceed to Payment
+                        </button>
+
+                        <div class="mt-3 text-xs text-gray-500 text-center">
+                            Pay securely via UPI using any payment app
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <section id="donationReceiptSection" class="hidden pb-10">
+            <div class="max-w-4xl mx-auto">
+                <div id="donationReceiptCard" class="bg-white shadow-lg rounded-2xl p-6 border border-gray-200 relative overflow-hidden">
+                    <div class="absolute inset-0 flex items-center justify-center opacity-[0.04] pointer-events-none">
+                        <img src="images/mandir logo.jpg" alt="Watermark" class="w-[520px] h-[520px] object-contain">
+                    </div>
+
+                    <div class="relative z-10">
+                        <div class="flex items-start justify-between gap-4 pb-4 border-b border-gray-200">
+                            <div class="flex items-center gap-3">
+                                <img src="images/mandir logo.jpg" alt="Vitthal Mandir Logo" class="w-14 h-14 rounded-full border border-gray-200 shadow-sm">
+                                <div>
+                                    <div class="text-lg font-semibold text-gray-900 leading-tight">Shri Vitthal Rukmini Mandir, Pandharpur</div>
+                                    <div class="text-sm text-gray-600">Donation Receipt</div>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-xs text-gray-500">Receipt ID</div>
+                                <div id="donReceiptId" class="text-sm font-semibold text-gray-900 tracking-wide"></div>
+                                <div id="donIssuedAt" class="text-xs text-gray-500 mt-1"></div>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="md:col-span-2">
+                                <div class="bg-gray-50 border border-gray-200 rounded-xl p-4">
+                                    <div class="text-sm font-semibold text-gray-900 mb-3">Donor Details</div>
+                                    <div class="grid grid-cols-2 gap-x-6 gap-y-2 text-sm">
+                                        <div class="text-gray-600 font-semibold">Name</div>
+                                        <div id="donName" class="text-gray-900"></div>
+
+                                        <div class="text-gray-600 font-semibold">Email</div>
+                                        <div id="donEmail" class="text-gray-900"></div>
+
+                                        <div class="text-gray-600 font-semibold">Mobile</div>
+                                        <div id="donMobile" class="text-gray-900"></div>
+
+                                        <div class="text-gray-600 font-semibold">Category</div>
+                                        <div id="donCategory" class="text-gray-900"></div>
+
+                                        <div class="text-gray-600 font-semibold">Amount</div>
+                                        <div id="donAmount" class="text-gray-900"></div>
+
+                                        <div class="text-gray-600 font-semibold">Payment Method</div>
+                                        <div id="donMethod" class="text-gray-900"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="md:col-span-1">
+                                <div class="bg-gray-50 border border-gray-200 rounded-xl p-4">
+                                    <div class="text-sm font-semibold text-gray-900 mb-3">QR Code</div>
+                                    <div class="flex items-center justify-center">
+                                        <div id="donReceiptQr" class="border border-gray-200 rounded-lg p-2 bg-white"></div>
+                                    </div>
+                                    <div class="text-xs text-gray-500 mt-2">
+                                        For reference only. Keep this receipt for your records.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    
+        <section class="text-center mt-8">
+            <p class="text-gray-600 text-sm" data-i18n="donations.thank_you">Thank you for your devotion and support!</p>
+    </section>
+  </main>
+
+  <div id="donationReceiptPrint" class="hidden">
+    <div id="donationReceiptPrintCard"></div>
+  </div>
+
+  <script src="/static/js/script_fixed.js?v=5"></script>
+  <script src="/static/js/script.js"></script>
+  <script src="/static/js/tailwind.config.js"></script>
+  <script src="/static/js/navbar-fix.js"></script>
+  <script>
+  // Donor name: only letters; mobile: only digits
+  document.addEventListener('DOMContentLoaded', function() {
+    var nameEl = document.getElementById('donorName');
+    if (nameEl) {
+      nameEl.addEventListener('keypress', function(e) {
+        if (!/[A-Za-z\s]/.test(e.key)) e.preventDefault();
+      });
+    }
+    var mobileEl = document.getElementById('donorMobile');
+    if (mobileEl) {
+      mobileEl.addEventListener('keypress', function(e) {
+        if (!/[0-9]/.test(e.key)) e.preventDefault();
+      });
+    }
+  });
+  </script>
+  <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const UPI_ID = '7385060933@fam';
+            const qrHost = document.getElementById('donationQr');
+            const upiPreviewEl = document.getElementById('upiPreview');
+            const upiIdText = document.getElementById('upiIdText');
+            const copyUpiBtn = document.getElementById('copyUpiBtn');
+            const form = document.getElementById('donationForm');
+
+            const donorName = document.getElementById('donorName');
+            const donationCategory = document.getElementById('donationCategory');
+            const donationAmount = document.getElementById('donationAmount');
+
+            if (upiIdText) upiIdText.textContent = UPI_ID;
+
+            let qr = null;
+            function buildUpiUrl() {
+                const name = (donorName?.value || '').trim();
+                const cat = (donationCategory?.value || '').trim();
+                const amt = Number(donationAmount?.value || 0);
+
+                const pn = 'Shri Vitthal Mandir';
+                const tnParts = ['Donation'];
+                if (cat) tnParts.push(cat);
+                if (name) tnParts.push(name);
+                const tn = tnParts.join(' - ');
+
+                const params = new URLSearchParams();
+                params.set('pa', UPI_ID);
+                params.set('pn', pn);
+                params.set('tn', tn);
+                if (amt && amt > 0) params.set('am', amt.toFixed(2));
+                params.set('cu', 'INR');
+                return `upi://pay?${params.toString()}`;
+            }
+
+            function renderQr() {
+                console.log('renderQr() called');
+                if (!qrHost) {
+                    console.error('qrHost not found!');
+                    return;
+                }
+                const upiUrl = buildUpiUrl();
+                console.log('UPI URL:', upiUrl);
+                if (upiPreviewEl) upiPreviewEl.textContent = upiUrl;
+                qrHost.innerHTML = '';
+                qr = new QRCode(qrHost, {
+                    text: upiUrl,
+                    width: 200,
+                    height: 200,
+                    colorDark: "#000000",
+                    colorLight: "#ffffff",
+                    correctLevel: QRCode.CorrectLevel.H
+                });
+                console.log('QR code generated successfully');
+            }
+
+            function bindQrUpdates() {
+                const inputs = [donorName, donationCategory, donationAmount];
+                inputs.forEach(el => {
+                    if (!el) return;
+                    el.addEventListener('input', renderQr);
+                    el.addEventListener('change', renderQr);
+                });
+            }
+
+            if (copyUpiBtn) {
+                copyUpiBtn.addEventListener('click', () => copyUpiId(UPI_ID));
+            }
+
+            if (form) {
+                // Store form data globally for receipt generation
+                let formData = {};
+                
+                // Validation function
+                function validateForm() {
+                    const name = (document.getElementById('donorName')?.value || '').trim();
+                    const email = (document.getElementById('donorEmail')?.value || '').trim();
+                    const mobile = (document.getElementById('donorMobile')?.value || '').trim();
+                    const cat = (document.getElementById('donationCategory')?.value || '').trim();
+                    const amt = (document.getElementById('donationAmount')?.value || '').trim();
+
+                    // Validate all required fields are filled
+                    if (!name) {
+                        alert('Please enter your name');
+                        document.getElementById('donorName')?.focus();
+                        return null;
+                    }
+
+                    if (!email) {
+                        alert('Please enter your email address');
+                        document.getElementById('donorEmail')?.focus();
+                        return null;
+                    }
+
+                    if (!mobile) {
+                        alert('Please enter your mobile number');
+                        document.getElementById('donorMobile')?.focus();
+                        return null;
+                    }
+
+                    // Validate mobile number (10 digits)
+                    if (!/^\d{10}$/.test(mobile)) {
+                        alert('Please enter a valid 10-digit mobile number');
+                        document.getElementById('donorMobile')?.focus();
+                        return null;
+                    }
+
+                    if (!cat) {
+                        alert('Please select a donation category');
+                        document.getElementById('donationCategory')?.focus();
+                        return null;
+                    }
+
+                    if (!amt) {
+                        alert('Please enter donation amount');
+                        document.getElementById('donationAmount')?.focus();
+                        return null;
+                    }
+
+                    // Validate amount is a positive number
+                    const amountNum = parseFloat(amt);
+                    if (isNaN(amountNum) || amountNum <= 0) {
+                        alert('Please enter a valid donation amount (greater than 0)');
+                        document.getElementById('donationAmount')?.focus();
+                        return null;
+                    }
+
+                    // Validate email format with proper domain
+                    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+                    if (!emailRegex.test(email)) {
+                        alert('Please enter a valid email address with a proper domain (e.g., example@gmail.com)');
+                        document.getElementById('donorEmail')?.focus();
+                        return null;
+                    }
+
+                    // Split email into username and domain
+                    const emailParts = email.split('@');
+                    if (emailParts.length !== 2) {
+                        alert('Please enter a valid email address');
+                        document.getElementById('donorEmail')?.focus();
+                        return null;
+                    }
+
+                    const username = emailParts[0];
+                    const domain = emailParts[1];
+
+                    // Validate username: must contain at least one letter (not just numbers)
+                    if (!/[a-zA-Z]/.test(username)) {
+                        alert('Email username must contain at least one letter. Please use a proper email format (e.g., user123@gmail.com, not 123@gmail.com)');
+                        document.getElementById('donorEmail')?.focus();
+                        return null;
+                    }
+
+                    // Validate username: should start with a letter or number (not special character)
+                    if (!/^[a-zA-Z0-9]/.test(username)) {
+                        alert('Email username must start with a letter or number');
+                        document.getElementById('donorEmail')?.focus();
+                        return null;
+                    }
+
+                    // Validate domain: ensure it has at least one dot and valid TLD
+                    const domainParts = domain.split('.');
+                    if (domainParts.length < 2 || domainParts[domainParts.length - 1].length < 2) {
+                        alert('Please enter a valid email address with a proper domain (e.g., example@gmail.com)');
+                        document.getElementById('donorEmail')?.focus();
+                        return null;
+                    }
+
+                    // Check if domain TLD is numeric (invalid)
+                    const tld = domainParts[domainParts.length - 1];
+                    if (/^\d+$/.test(tld)) {
+                        alert('Please enter a valid email address. Domain extension cannot be only numbers (e.g., use @gmail.com, not @123.com)');
+                        document.getElementById('donorEmail')?.focus();
+                        return null;
+                    }
+
+                    // Validate domain name part (before TLD) contains letters
+                    const domainName = domainParts[0];
+                    if (!/[a-zA-Z]/.test(domainName)) {
+                        alert('Please enter a valid email domain (e.g., gmail.com, yahoo.com, not 123.com)');
+                        document.getElementById('donorEmail')?.focus();
+                        return null;
+                    }
+
+                    return { name, email, mobile, cat, amt };
+                }
+                
+                // Handle Proceed to Payment button
+                const proceedBtn = document.getElementById('proceedToPayBtn');
+                console.log('Proceed button found:', proceedBtn);
+                if (proceedBtn) {
+                    proceedBtn.addEventListener('click', (e) => {
+                        console.log('Button clicked!');
+                        e.preventDefault();
+                        e.stopPropagation();
+                        
+                        const data = validateForm();
+                        console.log('Validation result:', data);
+                        if (!data) return;
+                        
+                        const method = 'UPI';
+                        formData = { ...data, method };
+                        console.log('Form data:', formData);
+                        
+                        // Show QR code payment section
+                        const paymentSection = document.getElementById('paymentSection');
+                        console.log('Payment section found:', paymentSection);
+                        if (paymentSection) {
+                            paymentSection.classList.remove('hidden');
+                            console.log('Calling renderQr()...');
+                            renderQr();
+                            paymentSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        } else {
+                            console.error('Payment section not found!');
+                        }
+                        
+                        // Handle manual payment confirmation
+                        const confirmBtn = document.getElementById('confirmPaymentBtn');
+                        if (confirmBtn) {
+                            confirmBtn.onclick = () => {
+                                // Generate receipt with manual payment
+                                const now = new Date();
+                                const receiptId = `DN${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}${String(now.getDate()).padStart(2,'0')}${String(now.getHours()).padStart(2,'0')}${String(now.getMinutes()).padStart(2,'0')}${String(now.getSeconds()).padStart(2,'0')}`;
+                                
+                                generateReceipt({
+                                    receipt_id: receiptId,
+                                    donor_name: formData.name,
+                                    donor_email: formData.email,
+                                    donor_mobile: formData.mobile,
+                                    category: formData.cat,
+                                    amount: formData.amt,
+                                    payment_id: 'MANUAL_' + receiptId,
+                                    payment_method: 'UPI',
+                                    payment_completed_at: now.toLocaleString('en-IN', { 
+                                        day: '2-digit', 
+                                        month: '2-digit', 
+                                        year: 'numeric', 
+                                        hour: '2-digit', 
+                                        minute: '2-digit' 
+                                    })
+                                });
+                            };
+                        }
+                    });
+                }
+                
+                // Function to generate receipt
+                function generateReceipt(data) {
+                    const { receipt_id, donor_name, donor_email, donor_mobile, category, amount, payment_id, payment_method, payment_completed_at } = data;
+                    
+                    // Hide payment section and show receipt
+                    const paymentSection = document.getElementById('paymentSection');
+                    const receiptSection = document.getElementById('donationReceiptSection');
+                    
+                    if (paymentSection) paymentSection.classList.add('hidden');
+                    if (receiptSection) receiptSection.classList.remove('hidden');
+
+                    const setText = (id, val) => {
+                        const el = document.getElementById(id);
+                        if (el) el.textContent = val || '-';
+                    };
+
+                    setText('donReceiptId', receipt_id);
+                    setText('donIssuedAt', `Issued: ${payment_completed_at}`);
+                    setText('donName', donor_name);
+                    setText('donEmail', donor_email);
+                    setText('donMobile', donor_mobile);
+                    setText('donCategory', category);
+                    setText('donAmount', amount ? `₹${amount}` : '-');
+                    setText('donMethod', payment_method || 'UPI');
+
+                    const qrEl = document.getElementById('donReceiptQr');
+                    if (qrEl) {
+                        qrEl.innerHTML = '';
+                        const qrText = `Donation|ReceiptID:${receipt_id}|Name:${donor_name}|Mobile:${donor_mobile}|Category:${category}|Amount:${amount}|PaymentID:${payment_id}`;
+                        new QRCode(qrEl, { text: qrText, width: 120, height: 120 });
+                    }
+
+                    const printBtn = document.getElementById('printDonationReceiptBtn');
+                    if (printBtn) {
+                        printBtn.onclick = () => {
+                            const liveCard = document.getElementById('donationReceiptCard');
+                            const printCard = document.getElementById('donationReceiptPrintCard');
+                            if (liveCard && printCard) {
+                                printCard.innerHTML = liveCard.innerHTML;
+                            }
+                            window.print();
+                        };
+                    }
+
+                    try {
+                        receiptSection?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    } catch (_) {}
+                }
+            }
+
+            bindQrUpdates();
+            renderQr();
+        });
+
+        function copyUpiId(upiId) {
+            navigator.clipboard.writeText(upiId).then(() => {
+                alert('UPI ID copied to clipboard!');
+            }).catch(err => {
+                console.error('Failed to copy UPI ID:', err);
+            });
+        }
+
+  </script>
+    {% include 'footer.html' %}
+</body>
+</html>
+
+

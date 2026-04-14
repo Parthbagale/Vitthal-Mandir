@@ -1,0 +1,1109 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pooja Services - Shri Vitthal Rukmini Mandir, Pandharpur</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Icons + Fonts -->
+  <script src="https://unpkg.com/@phosphor-icons/web@2.1.1/dist/phosphor.js" defer></script>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@400;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- External CSS -->
+  <link rel="stylesheet" href="/static/css/styles.css?v=5">
+  <link rel="stylesheet" href="css/date-picker.css">
+  <!-- Auth Guard -->
+  <script src="/static/js/auth.js"></script>
+  <script>
+    // Enforce user auth on load
+    (function () {
+      if (typeof requireAuth === 'function') {
+        requireAuth({ redirectTo: 'index.html', message: 'Please login to access Pooja Services.' });
+      }
+    })();
+  </script>
+
+  <!-- QR Code Library -->
+  <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+  <!-- Validation utility -->
+  <script src="/static/js/validation.js"></script>
+  <!-- Aadhaar Validation -->
+  <script src="/static/js/aadhaar-validation.js"></script>
+  <!-- Aadhaar Field Validation -->
+  <script src="/static/js/aadhaar-field-validation.js"></script>
+  <!-- Pooja Slot Filter -->
+  <script src="/static/js/pooja-slot-filter.js"></script>
+
+  <!-- Print Styles -->
+  <style>
+    @page {
+      size: A4 portrait;
+      margin: 10mm;
+    }
+
+    @media print {
+
+      html,
+      body {
+        margin: 0 !important;
+        padding: 0 !important;
+        height: auto !important;
+        overflow: hidden !important;
+      }
+
+      body * {
+        display: none !important;
+      }
+
+      #bookingPreview {
+        display: block !important;
+      }
+
+      #bookingPreview * {
+        display: revert !important;
+      }
+
+      #bookingPreview {
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 190mm;
+        max-height: 277mm;
+        min-height: 0;
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+        overflow: hidden;
+        page-break-inside: avoid;
+        break-inside: avoid;
+      }
+
+      /* Center on page */
+      #bookingPreview {
+        right: 0;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      /* Chrome print: ensure the receipt never overflows to a second page */
+      #bookingPreview {
+        transform: scale(0.92);
+        transform-origin: top center;
+      }
+
+      /* Professional PDF look */
+      body {
+        background: #fff !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      #bookingPreview {
+        padding: 0 !important;
+      }
+
+      #bookingPreview .shadow-lg,
+      #bookingPreview [class*="shadow-"] {
+        box-shadow: none !important;
+      }
+
+      #bookingPreview .bg-gray-50 {
+        background: #fff !important;
+      }
+
+      #bookingPreview .border,
+      #bookingPreview [class*="border-"] {
+        border-color: #d1d5db !important;
+      }
+
+      #bookingPreview .rounded-2xl,
+      #bookingPreview .rounded-xl,
+      #bookingPreview .rounded-lg {
+        border-radius: 10px !important;
+      }
+
+      #bookingPreview {
+        font-family: Inter, Arial, sans-serif !important;
+        color: #111827 !important;
+      }
+
+      #bookingPreview canvas {
+        image-rendering: crisp-edges;
+      }
+
+      /* Prevent table/sections from breaking across pages */
+      #bookingPreview>* {
+        page-break-inside: avoid;
+        break-inside: avoid;
+      }
+    }
+
+    /* Availability calendar (compact) */
+    .date-picker-wrapper {
+      position: relative;
+    }
+
+    #poojaCalendar {
+      max-width: 280px;
+    }
+
+    .avail-calendar {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 4px;
+      margin-top: 6px;
+    }
+
+    .avail-cal-legend {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      color: #4b5563;
+      margin-top: 4px;
+    }
+
+    .avail-cal-legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .dot.green {
+      background: #16a34a;
+    }
+
+    .dot.red {
+      background: #dc2626;
+    }
+
+    .cal-cell {
+      border: 1px solid #e5e7eb;
+      border-radius: 6px;
+      padding: 6px 4px;
+      text-align: center;
+      background: #fff;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .cal-cell.disabled {
+      color: #9ca3af;
+      background: #f9fafb;
+      cursor: not-allowed;
+    }
+
+    .cal-cell .day {
+      font-weight: 600;
+      font-size: 11px;
+      color: #374151;
+    }
+
+    .cal-cell .status {
+      margin-top: 3px;
+      font-size: 9px;
+    }
+
+    .cal-cell.full {
+      outline: 2px solid #fecaca;
+    }
+
+    .cal-cell.available {
+      outline: 2px solid #bbf7d0;
+    }
+
+    .cal-cell.selected {
+      outline: 2px solid #a855f7;
+      border-color: #a855f7;
+    }
+
+    .cal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 6px;
+    }
+
+    .cal-nav-btn {
+      padding: 2px 6px;
+      border: 1px solid #e5e7eb;
+      border-radius: 6px;
+      font-size: 11px;
+      background: #fff;
+    }
+
+    @media (max-width: 640px) {
+      .avail-calendar {
+        gap: 3px;
+      }
+
+      .cal-cell {
+        padding: 5px 3px;
+      }
+    }
+  </style>
+</head>
+
+<body class="bg-gray-100 text-gray-900 font-sans">
+
+
+  <!-- Header -->
+  {% include 'navbar.html' %}
+
+  <!-- Hero -->
+  <section class="h-64 md:h-80 flex items-center justify-center text-center text-white" style="background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);">
+    <div class="relative z-10">
+      <h1 class="text-3xl md:text-4xl font-bold">Temple <span style="color: #FFD700;">Pooja Services</span></h1>
+      <p class="mt-2 text-sm md:text-base">Book your Pooja online and get a printable QR-enabled receipt</p>
+    </div>
+  </section>
+
+  <!-- Booking Form -->
+  <section class="py-10 container mx-auto px-6">
+    <div class="max-w-2xl mx-auto">
+      <div class="bg-white p-6 rounded-xl shadow-md border-2 border-purple-700">
+        <h2 class="text-lg font-semibold mb-4">Booking Form</h2>
+        <form id="poojaForm" class="space-y-4">
+
+          <div>
+            <label class="block text-sm font-medium">Select Pooja</label>
+            <select id="poojaType" required class="mt-1 w-full border rounded-md p-2">
+              <option value="">-- Select Pooja --</option>
+              <option value="Nitya Pooja Vitthal">Nitya Pooja Vitthal (₹25000)</option>
+              <option value="Nitya Pooja Rukmini Mata">Nitya Pooja Rukmini Mata (₹11000)</option>
+              <option value="Padya Pooja">Padya Pooja (₹5000)</option>
+              <option value="Tulsi Pooja">Tulsi Pooja (₹2100)</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium">Select Darshan Date</label>
+            <div class="date-picker-wrapper mt-1">
+              <input type="text" id="date_display" required placeholder="dd-mm-yyyy" pattern="\d{2}-\d{2}-\d{4}"
+                inputmode="numeric" readonly class="w-full border rounded-md p-2 custom-date-picker">
+              <span class="calendar-icon" id="date_calendar_icon"><i class="fas fa-calendar-alt"></i></span>
+              <input type="hidden" id="date" required>
+
+              <div id="selectedDateDisplay" class="text-xs text-gray-600 mt-1"></div>
+
+              <div id="poojaCalendar" class="mt-2 w-full">
+                <div class="cal-header">
+                  <div id="poojaCalendarMonth" class="text-sm font-medium text-gray-700"></div>
+                  <div class="space-x-2">
+                    <button type="button" id="poojaCalendarPrev" class="cal-nav-btn">Prev</button>
+                    <button type="button" id="poojaCalendarNext" class="cal-nav-btn">Next</button>
+                  </div>
+                </div>
+                <div id="poojaCalendarGrid" class="avail-calendar"></div>
+                <div class="avail-cal-legend">
+                  <span><span class="dot green"></span> Available</span>
+                  <span><span class="dot red"></span> Full</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium">Full Name</label>
+              <input type="text" id="name" required class="mt-1 w-full border rounded-md p-2">
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium">Email</label>
+              <input type="email" id="email" required class="mt-1 w-full border rounded-md p-2">
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium">Mobile</label>
+              <input type="text" id="mobile" required pattern="[6-9][0-9]{9}" maxlength="10" inputmode="numeric"
+                class="mt-1 w-full border rounded-md p-2"
+                title="Mobile number must be 10 digits and start with 6, 7, 8, or 9"
+                onkeypress="return event.charCode >= 48 && event.charCode <= 57">
+              <p class="text-xs text-gray-500 mt-1">Enter 10-digit mobile number .</p>
+            </div>
+
+            <!-- Aadhaar Card Number -->
+            <div>
+              <label class="block text-sm font-medium">Aadhaar Card Number <span class="text-red-600">*</span></label>
+              <input type="text" id="aadhaar" name="aadhaar" required pattern="[0-9]{12}" maxlength="12" inputmode="numeric"
+                class="mt-1 w-full border rounded-md p-2"
+                placeholder="Enter 12-digit Aadhaar number"
+                title="Aadhaar number must be exactly 12 digits"
+                onkeypress="return event.charCode >= 48 && event.charCode <= 57">
+              <p class="text-xs text-gray-500 mt-1"><i class="fas fa-id-card"></i> Required for identity verification</p>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium">Gender <span class="text-red-600">*</span></label>
+              <select id="gender" required class="mt-1 w-full border rounded-md p-2">
+                <option value="">--Select--</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+              </select>
+              <p id="gender_error" class="text-red-500 text-xs mt-1"></p>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium">Upload Photo <span class="text-red-600">*</span></label>
+              <input type="file" id="photo" accept="image/*" required class="mt-1 w-full text-sm">
+              <div class="mt-2 flex flex-wrap items-center gap-2">
+                <button type="button" id="poojaCamStart"
+                  class="bg-gray-200 text-gray-800 px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-300">Open
+                  Camera</button>
+                <button type="button" id="poojaCamCapture"
+                  class="bg-indigo-600 text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-indigo-700 hidden">Capture</button>
+                <button type="button" id="poojaCamStop"
+                  class="bg-red-500 text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-red-600 hidden">Close</button>
+              </div>
+              <div id="poojaCamBox" class="mt-3 hidden">
+                <video id="poojaCamVideo" class="w-full max-w-sm rounded-md border" autoplay playsinline></video>
+                <img id="poojaCamPreview" class="w-full max-w-sm rounded-md border mt-2 hidden"
+                  alt="Captured photo preview" />
+                <canvas id="poojaCamCanvas" class="hidden"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium">Slot Time <span class="text-red-600">*</span></label>
+            <select id="slotTime" required class="mt-1 w-full border rounded-md p-2">
+              <option value="">--Select--</option>
+              <option value="morning">Morning</option>
+              <option value="afternoon">Afternoon</option>
+              <option value="evening">Evening</option>
+            </select>
+            <p id="slotTime_error" class="text-xs text-gray-500 mt-1">Select date and slot to see availability.</p>
+          </div>
+
+          <div id="bookingErrorMsg" class="hidden bg-red-50 border border-red-300 text-red-700 text-sm rounded-md px-4 py-3"></div>
+          <button type="submit"
+            class="w-full bg-purple-700 hover:bg-purple-800 text-white font-semibold py-2.5 rounded-md">Book
+            Pooja</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- Booking Preview -->
+  <section id="bookingPreview" class="hidden py-10 container mx-auto px-6">
+    <div class="bg-white shadow-lg rounded-2xl p-6 max-w-3xl mx-auto border border-gray-200 relative overflow-hidden">
+
+      <div class="absolute inset-0 flex items-center justify-center opacity-[0.04] pointer-events-none">
+        <img src="images/mandir logo.jpg" alt="Watermark" class="w-[520px] h-[520px] object-contain">
+      </div>
+
+      <div class="relative z-10">
+        <div class="flex items-start justify-between gap-4 pb-4 border-b border-gray-200">
+          <div class="flex items-center gap-3">
+            <img src="images/mandir logo.jpg" alt="Vitthal Mandir Logo"
+              class="w-14 h-14 rounded-full border border-gray-200 shadow-sm">
+            <div>
+              <div class="text-lg font-semibold text-gray-900 leading-tight">Shri Vitthal Rukmini Mandir, Pandharpur
+              </div>
+              <div class="text-sm text-gray-600">Pooja Booking Receipt</div>
+            </div>
+          </div>
+          <div class="text-right">
+            <div class="text-xs text-gray-500">Booking ID</div>
+            <div id="bookingId" class="text-sm font-semibold text-gray-900 tracking-wide"></div>
+            <div id="receiptIssuedAt" class="text-xs text-gray-500 mt-1"></div>
+          </div>
+        </div>
+
+        <div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="md:col-span-2">
+            <div class="bg-gray-50 border border-gray-200 rounded-xl p-4">
+              <div class="text-sm font-semibold text-gray-900 mb-3">Devotee Details</div>
+              <div id="previewDetails" class="grid grid-cols-2 gap-x-6 gap-y-2 text-sm"></div>
+            </div>
+          </div>
+
+          <div class="md:col-span-1">
+            <div class="bg-gray-50 border border-gray-200 rounded-xl p-4">
+              <div class="text-sm font-semibold text-gray-900 mb-3">Photo</div>
+              <img id="previewPhoto" alt="Uploaded Photo"
+                class="w-full h-40 object-cover rounded-lg border border-gray-200 hidden" />
+              <div id="noPhoto" class="text-xs text-gray-500">No photo</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
+          <div class="md:col-span-2 bg-gray-50 border border-gray-200 rounded-xl p-4">
+            <div class="text-sm font-semibold text-gray-900 mb-2">Instructions</div>
+            <div class="text-xs text-gray-600 leading-relaxed">
+              Please carry this receipt on the day of pooja. Show the QR code at the entry counter for verification.
+            </div>
+          </div>
+          <div class="md:col-span-1 bg-gray-50 border border-gray-200 rounded-xl p-4">
+            <div class="text-sm font-semibold text-gray-900 mb-3">QR Code</div>
+            <div class="flex items-center justify-center">
+              <canvas id="qrCode" class="border border-gray-200 rounded-lg p-2 bg-white"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-4 pt-4 border-t border-gray-200 flex items-center justify-between">
+          <div class="text-xs text-gray-500">Thank you for booking your pooja.</div>
+          <button onclick="window.print()"
+            class="bg-purple-700 hover:bg-purple-800 text-white px-5 py-2.5 rounded-lg font-semibold text-sm shadow-sm transition-all duration-200">
+            Print Receipt
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+
+
+  <!-- Script -->
+  <script>
+    const yearEl = document.getElementById("year");
+    if (yearEl) yearEl.textContent = new Date().getFullYear();
+
+    const form = document.getElementById("poojaForm");
+    const preview = document.getElementById("bookingPreview");
+    const previewDetails = document.getElementById("previewDetails");
+    const qrCanvas = document.getElementById("qrCode");
+
+    const poojaPhotoInput = document.getElementById('photo');
+    const poojaCamStartBtn = document.getElementById('poojaCamStart');
+    const poojaCamCaptureBtn = document.getElementById('poojaCamCapture');
+    const poojaCamStopBtn = document.getElementById('poojaCamStop');
+    const poojaCamBox = document.getElementById('poojaCamBox');
+    const poojaCamVideo = document.getElementById('poojaCamVideo');
+    const poojaCamCanvas = document.getElementById('poojaCamCanvas');
+    const poojaCamPreview = document.getElementById('poojaCamPreview');
+
+    const dateDisplayInput = document.getElementById('date_display');
+    const dateHiddenInput = document.getElementById('date');
+    const dateCalendarIcon = document.getElementById('date_calendar_icon');
+    const calEl = document.getElementById('poojaCalendar');
+    const calMonthEl = document.getElementById('poojaCalendarMonth');
+    const calPrevBtn = document.getElementById('poojaCalendarPrev');
+    const calNextBtn = document.getElementById('poojaCalendarNext');
+    const calGridEl = document.getElementById('poojaCalendarGrid');
+    if (dateDisplayInput && dateHiddenInput) {
+      dateDisplayInput.setAttribute('placeholder', 'dd-mm-yyyy');
+      dateDisplayInput.value = '';
+      dateHiddenInput.value = '';
+
+      const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+      let viewYear = new Date().getFullYear();
+      let viewMonth = new Date().getMonth();
+
+      function pad(n) { return String(n).padStart(2, '0'); }
+      function toIso(y, m, d) { return `${y}-${pad(m + 1)}-${pad(d)}`; }
+      function toDdMmYyyy(iso) {
+        if (!iso) return '';
+        const parts = String(iso).split('-');
+        if (parts.length !== 3) return '';
+        return `${parts[2]}-${parts[1]}-${parts[0]}`;
+      }
+
+      function openCalendar() {
+        if (!calEl) return;
+        renderCalendar();
+      }
+      function closeCalendar() {
+        if (!calEl) return;
+      }
+
+      async function fetchAvailability(y, m) {
+        try {
+          const poojaType = (document.getElementById('poojaType')?.value || '').trim();
+          if (!poojaType) return null;
+          const token = localStorage.getItem('accessToken') || localStorage.getItem('access_token');
+          const apiBase = localStorage.getItem('API_BASE') || window.location.origin;
+          const url = `${apiBase}/api/booking/poojas/availability/?pooja_type=${encodeURIComponent(poojaType)}&year=${y}&month=${m + 1}`;
+          const resp = await fetch(url, { headers: token ? { 'Authorization': `Bearer ${token}` } : {} });
+          if (!resp.ok) return null;
+          return await resp.json();
+        } catch (_) {
+          return null;
+        }
+      }
+
+      let lastAvailKey = '';
+      let availMap = {};
+
+      async function ensureAvailability() {
+        const key = `${viewYear}-${viewMonth}`;
+        if (key === lastAvailKey) return;
+        lastAvailKey = key;
+        availMap = {};
+        const data = await fetchAvailability(viewYear, viewMonth);
+        if (data && Array.isArray(data.days)) {
+          data.days.forEach(d => { if (d && d.date) availMap[d.date] = d; });
+        }
+      }
+
+      function renderCalendar() {
+        if (!calGridEl || !calMonthEl) return;
+        calMonthEl.textContent = `${monthNames[viewMonth]} ${viewYear}`;
+        calGridEl.innerHTML = '';
+        const first = new Date(viewYear, viewMonth, 1);
+        const startDow = first.getDay();
+        const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
+
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        for (let i = 0; i < startDow; i++) {
+          const spacer = document.createElement('div');
+          spacer.className = 'cal-cell disabled';
+          calGridEl.appendChild(spacer);
+        }
+
+        for (let day = 1; day <= daysInMonth; day++) {
+          const iso = toIso(viewYear, viewMonth, day);
+          const meta = availMap[iso];
+
+          let capacity = 4;
+          let booked = 0;
+          if (meta && typeof meta.booked === 'number') {
+            booked = meta.booked;
+          }
+          if (meta && typeof meta.capacity === 'number') {
+            capacity = meta.capacity;
+          }
+
+          const remaining = Math.max(0, capacity - booked);
+          const isFull = remaining <= 0;
+          const isPast = (new Date(viewYear, viewMonth, day)) < today;
+
+          const cell = document.createElement('div');
+          cell.className = 'cal-cell';
+          const isSelected = dateHiddenInput.value === iso;
+
+          if (isSelected) {
+            cell.classList.add('selected');
+          }
+
+          if (isPast) {
+            cell.classList.add('disabled');
+            cell.innerHTML = `<div class="day">${day}</div><div class="status">—</div>`;
+          } else {
+            if (isFull) {
+              cell.innerHTML = `<div class="day">${day}</div><div class="status"><span class="dot red"></span> Full<br><span class="text-[9px] text-gray-600">${booked}/${capacity}</span></div>`;
+              cell.classList.add('full');
+            } else {
+              cell.innerHTML = `<div class="day">${day}</div><div class="status"><span class="dot green"></span> Available<br><span class="text-[9px] text-gray-600">${booked}/${capacity}</span></div>`;
+              cell.classList.add('available');
+              cell.addEventListener('click', function () {
+                dateHiddenInput.value = iso;
+                dateDisplayInput.value = toDdMmYyyy(iso);
+                const selectedDateDisplay = document.getElementById('selectedDateDisplay');
+                if (selectedDateDisplay) {
+                  const opts = { day: '2-digit', month: 'long', year: 'numeric' };
+                  const dt = new Date(viewYear, viewMonth, day);
+                  selectedDateDisplay.textContent = `Selected: ${dt.toLocaleDateString(undefined, opts)}`;
+                }
+                closeCalendar();
+                renderCalendar();
+              });
+            }
+          }
+
+          calGridEl.appendChild(cell);
+        }
+      }
+
+      async function renderWithAvailability() {
+        await ensureAvailability();
+        renderCalendar();
+      }
+
+      async function openWithAvailability() {
+        openCalendar();
+        await renderWithAvailability();
+      }
+
+      dateDisplayInput.addEventListener('click', openWithAvailability);
+      dateDisplayInput.addEventListener('focus', openWithAvailability);
+      if (dateCalendarIcon) dateCalendarIcon.addEventListener('click', openWithAvailability);
+
+      if (calPrevBtn) calPrevBtn.addEventListener('click', async function () {
+        viewMonth -= 1;
+        if (viewMonth < 0) { viewMonth = 11; viewYear -= 1; }
+        await renderWithAvailability();
+      });
+      if (calNextBtn) calNextBtn.addEventListener('click', async function () {
+        viewMonth += 1;
+        if (viewMonth > 11) { viewMonth = 0; viewYear += 1; }
+        await renderWithAvailability();
+      });
+
+      // Calendar is always visible; do not auto-close on outside click
+
+      const poojaTypeSelect = document.getElementById('poojaType');
+      const slotTimeSelect = document.getElementById('slotTime');
+      
+      if (poojaTypeSelect) {
+        poojaTypeSelect.addEventListener('change', async function () {
+          const selectedPooja = this.value;
+          
+          // Filter slots based on pooja type
+          if (selectedPooja === 'Nitya Pooja Vitthal' || selectedPooja === 'Nitya Pooja Rukmini Mata') {
+            // Show only morning slot for Nitya poojas
+            slotTimeSelect.innerHTML = `
+              <option value="">--Select--</option>
+              <option value="morning">Morning</option>
+            `;
+          } else {
+            // Show all slots for other poojas
+            slotTimeSelect.innerHTML = `
+              <option value="">--Select--</option>
+              <option value="morning">Morning</option>
+              <option value="afternoon">Afternoon</option>
+              <option value="evening">Evening</option>
+            `;
+          }
+          
+          lastAvailKey = '';
+          await renderWithAvailability();
+        });
+      }
+
+      // Initial render
+      renderWithAvailability();
+    }
+
+    let poojaCamStream = null;
+
+    function poojaStopCamera() {
+      if (poojaCamStream) {
+        try { poojaCamStream.getTracks().forEach(t => t.stop()); } catch (_) { }
+      }
+      poojaCamStream = null;
+      if (poojaCamVideo) poojaCamVideo.srcObject = null;
+      if (poojaCamCaptureBtn) poojaCamCaptureBtn.classList.add('hidden');
+      if (poojaCamStopBtn) poojaCamStopBtn.classList.add('hidden');
+      if (poojaCamBox) poojaCamBox.classList.add('hidden');
+    }
+
+    function setFileOnInput(fileInput, file) {
+      const dt = new DataTransfer();
+      dt.items.add(file);
+      fileInput.files = dt.files;
+      try { fileInput.dispatchEvent(new Event('change', { bubbles: true })); } catch (_) { }
+    }
+
+    async function poojaStartCamera() {
+      if (!poojaCamBox || !poojaCamVideo || !poojaCamCaptureBtn || !poojaCamStopBtn) return;
+      try {
+        poojaCamStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: false });
+        poojaCamVideo.srcObject = poojaCamStream;
+        poojaCamBox.classList.remove('hidden');
+        poojaCamCaptureBtn.classList.remove('hidden');
+        poojaCamStopBtn.classList.remove('hidden');
+      } catch (e) {
+        alert('Failed to start camera: ' + e.message);
+      }
+    }
+
+    async function poojaCapturePhoto() {
+      if (!poojaCamStream || !poojaCamVideo || !poojaCamCanvas || !poojaPhotoInput) return;
+      const w = poojaCamVideo.videoWidth || 640;
+      const h = poojaCamVideo.videoHeight || 480;
+      poojaCamCanvas.width = w;
+      poojaCamCanvas.height = h;
+      const ctx = poojaCamCanvas.getContext('2d');
+      ctx.drawImage(poojaCamVideo, 0, 0, w, h);
+      const blob = await new Promise(resolve => poojaCamCanvas.toBlob(resolve, 'image/jpeg', 0.92));
+      if (!blob) {
+        alert('Failed to capture photo.');
+        return;
+      }
+
+      // If availability is available, block booking on full dates (client-side)
+      try {
+        const parts = String(date || '').split('-').map(Number);
+        const y = parts[0];
+        const m = (parts[1] || 1);
+        const poojaType = (pooja || '').trim();
+        if (poojaType && y && m) {
+          const url = `${API_BASE}/api/booking/poojas/availability/?pooja_type=${encodeURIComponent(poojaType)}&year=${y}&month=${m}`;
+          const avResp = await fetch(url, { headers: { 'Authorization': `Bearer ${token}` } });
+          if (avResp.ok) {
+            const av = await avResp.json();
+            if (av && Array.isArray(av.days)) {
+              const dayMeta = av.days.find(d => d && d.date === date);
+              if (dayMeta && dayMeta.status === 'full') {
+                alert('Selected date is full. Please choose another date.');
+                return;
+              }
+            }
+          }
+        }
+      } catch (_) { }
+      const file = new File([blob], (function(){
+        const uid = localStorage.getItem('userId') || 'user';
+        return `${uid}_${Date.now()}.jpg`;
+      })(), { type: blob.type || 'image/jpeg' });
+      setFileOnInput(poojaPhotoInput, file);
+      if (poojaCamPreview) {
+        poojaCamPreview.src = URL.createObjectURL(blob);
+        poojaCamPreview.classList.remove('hidden');
+      }
+      poojaStopCamera();
+    }
+
+    if (poojaCamStartBtn) poojaCamStartBtn.addEventListener('click', poojaStartCamera);
+    if (poojaCamCaptureBtn) poojaCamCaptureBtn.addEventListener('click', poojaCapturePhoto);
+    if (poojaCamStopBtn) poojaCamStopBtn.addEventListener('click', poojaStopCamera);
+
+    let bookingId = 1;
+    let bookings = [];
+
+    const API_BASE = localStorage.getItem('API_BASE') || window.location.origin;
+
+    form.addEventListener("submit", async function (e) {
+      e.preventDefault();
+      // Ensure built-in required validations (including photo) are enforced
+      if (!form.reportValidity()) {
+        return;
+      }
+
+      const pooja = document.getElementById("poojaType").value;
+      const name = document.getElementById("name").value;
+      const email = document.getElementById("email").value;
+      const mobile = document.getElementById("mobile").value;
+
+      const gender = document.getElementById("gender").value;
+      const slotTime = document.getElementById("slotTime").value;
+
+      // --- Field validation ---
+      let valid = true;
+      if (!pooja || !name.trim() || !email.trim() || !mobile.trim() || !gender || !slotTime) {
+        if (!gender) {
+          document.getElementById('gender_error').textContent = 'Please select a gender';
+          document.getElementById('gender').classList.add('border-red-500');
+        }
+        if (!slotTime) {
+          const slotErr = document.getElementById('slotTime_error');
+          slotErr.textContent = 'Please select a slot time';
+          slotErr.className = 'text-red-500 text-xs mt-1';
+          document.getElementById('slotTime').classList.add('border-red-500');
+        }
+        if (!pooja || !name.trim() || !email.trim() || !mobile.trim()) {
+          alert('All fields are required.');
+        }
+        valid = false;
+      }
+      if (valid && window.Validator && !Validator.validateName(name)) {
+        Validator.showError('name', 'Name must contain only alphabets');
+        valid = false;
+      }
+      if (valid && window.Validator && !Validator.validateEmail(email)) {
+        Validator.showError('email', 'Enter a valid email address');
+        valid = false;
+      }
+      if (valid && window.Validator && !Validator.validateMobile(mobile)) {
+        Validator.showError('mobile', 'Mobile number must be exactly 10 digits');
+        valid = false;
+      }
+      if (!valid) return;
+      if (dateDisplayInput && dateHiddenInput && dateDisplayInput.value && !dateHiddenInput.value) {
+        try {
+          if (typeof window.parseDateString === 'function' && typeof window.formatDateForInput === 'function') {
+            const d = window.parseDateString(dateDisplayInput.value);
+            if (d instanceof Date && !Number.isNaN(d.getTime())) {
+              dateHiddenInput.value = window.formatDateForInput(d);
+            }
+          }
+        } catch (_) { }
+      }
+      const date = (dateHiddenInput && dateHiddenInput.value) ? dateHiddenInput.value : document.getElementById("date").value;
+      try {
+        const iso = String(date || '');
+        if (!iso) {
+          alert('Please select a valid date.');
+          return;
+        }
+        const parts = iso.split('-').map(Number);
+        const sel = new Date(parts[0], (parts[1] || 1) - 1, parts[2] || 1);
+        sel.setHours(0, 0, 0, 0);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        if (sel < today) {
+          alert('Please select a valid future date.');
+          if (dateDisplayInput) dateDisplayInput.value = '';
+          if (dateHiddenInput) dateHiddenInput.value = '';
+          return;
+        }
+      } catch (_) { }
+      const photoFile = document.getElementById("photo").files[0];
+      if (!photoFile) {
+        alert('Please upload a photo to proceed.');
+        return;
+      }
+
+      // Build form data for backend
+      const aadhaar = document.getElementById('aadhaar').value.trim();
+      if (!aadhaar || aadhaar.length !== 12) {
+        alert('Please enter a valid 12-digit Aadhaar number');
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('pooja_type', pooja);
+      formData.append('full_name', name);
+      formData.append('email', email);
+      formData.append('mobile', mobile);
+      formData.append('aadhaar', aadhaar);
+      formData.append('children_count', '0');
+      formData.append('gender', gender);
+      formData.append('slot_time', slotTime);
+      formData.append('preferred_date', date);
+      formData.append('photo', photoFile);
+
+      const token = (window.__auth && typeof window.__auth.getToken === 'function')
+        ? window.__auth.getToken()
+        : (localStorage.getItem('accessToken') || localStorage.getItem('access_token'));
+      if (!token || token === 'null' || token === 'undefined') {
+        if (window.__auth && typeof window.__auth.requireAuth === 'function') {
+          window.__auth.requireAuth({ redirectTo: 'index.html', message: 'Please login to book a pooja.' });
+          return;
+        }
+        if (typeof window.showAuthRequiredModal === 'function') {
+          showAuthRequiredModal('Pooja Services');
+          return;
+        }
+        alert('Please login to book a pooja.');
+        return;
+      }
+
+      // Clear any previous booking error
+      const bookingErrEl = document.getElementById('bookingErrorMsg');
+      if (bookingErrEl) { bookingErrEl.textContent = ''; bookingErrEl.classList.add('hidden'); }
+
+      try {
+        const resp = await fetch(`${API_BASE}/api/booking/poojas/`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`
+            // NOTE: Do not set Content-Type; browser will set multipart boundary
+          },
+          body: formData
+        });
+
+        if (resp.status === 401) {
+          try {
+            localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('currentUser');
+            localStorage.removeItem('accessToken');
+            localStorage.removeItem('refreshToken');
+            localStorage.removeItem('access_token');
+            localStorage.removeItem('refresh_token');
+          } catch (_) { }
+          if (typeof window.showAuthRequiredModal === 'function') {
+            showAuthRequiredModal('Pooja Services');
+            return;
+          }
+          if (window.__auth && typeof window.__auth.requireAuth === 'function') {
+            window.__auth.requireAuth({ redirectTo: 'index.html', message: 'Your session expired. Please login again.' });
+            return;
+          }
+        }
+
+        if (!resp.ok) {
+          let message = '';
+          try {
+            const errJson = await resp.json();
+            message = errJson.detail || JSON.stringify(errJson);
+          } catch (_) {
+            message = await resp.text();
+          }
+          showBookingError(message || `Booking failed (HTTP ${resp.status})`);
+          return;
+        }
+
+        const data = await resp.json();
+
+        if (typeof window.showSuccessPopup === 'function') {
+          window.showSuccessPopup({
+            title: 'Booking Confirmed!',
+            message: 'Your pooja has been booked successfully.',
+            meta: [
+              { label: 'Booking ID', value: data.booking_id || '' },
+              { label: 'Pooja Type', value: data.pooja_type || '' },
+              { label: 'Preferred Date', value: data.preferred_date || '' }
+            ]
+          });
+        }
+
+        // Show preview
+        preview.classList.remove("hidden");
+
+        // Set Booking ID
+        const bookingIdEl = document.getElementById('bookingId');
+        if (bookingIdEl && data.booking_id) {
+          bookingIdEl.textContent = data.booking_id;
+        }
+
+        const issuedAtEl = document.getElementById('receiptIssuedAt');
+        if (issuedAtEl) {
+          const now = new Date();
+          const pad2 = (n) => String(n).padStart(2, '0');
+          issuedAtEl.textContent = `Issued: ${pad2(now.getDate())}-${pad2(now.getMonth() + 1)}-${now.getFullYear()} ${pad2(now.getHours())}:${pad2(now.getMinutes())}`;
+        }
+
+        const displayDate = (iso) => {
+          const s = String(iso || '');
+          const parts = s.split('-');
+          if (parts.length === 3) return `${parts[2]}-${parts[1]}-${parts[0]}`;
+          return s;
+        };
+
+        previewDetails.innerHTML = `
+          <div class="text-gray-600 font-semibold">Name</div>
+          <div class="text-gray-900">${data.full_name || ''}</div>
+
+          <div class="text-gray-600 font-semibold">Email</div>
+          <div class="text-gray-900">${data.email || ''}</div>
+
+          <div class="text-gray-600 font-semibold">Mobile</div>
+          <div class="text-gray-900">${data.mobile || ''}</div>
+
+          <div class="text-gray-600 font-semibold">Pooja Type</div>
+          <div class="text-gray-900">${data.pooja_type || ''}</div>
+
+          <div class="text-gray-600 font-semibold">Preferred Date</div>
+          <div class="text-gray-900">${displayDate(data.preferred_date)}</div>
+        `;
+
+        // Show preview image from server
+        const previewPhoto = document.getElementById("previewPhoto");
+        const noPhotoEl = document.getElementById('noPhoto');
+        if (data.image_base64) {
+          previewPhoto.src = data.image_base64;
+          previewPhoto.classList.remove("hidden");
+          if (noPhotoEl) noPhotoEl.classList.add('hidden');
+        } else {
+          previewPhoto.classList.add("hidden");
+          previewPhoto.removeAttribute("src");
+          if (noPhotoEl) noPhotoEl.classList.remove('hidden');
+        }
+
+        // Generate QR Code with essential fields
+        const qrPayload = { id: data.booking_id, pooja: data.pooja_type, name: data.full_name, mobile: data.mobile, date: data.preferred_date };
+        QRCode.toCanvas(qrCanvas, JSON.stringify(qrPayload), function (error) {
+          if (error) console.error(error);
+        });
+
+        // Reset form
+        form.reset();
+        window.scrollTo({ top: preview.offsetTop - 100, behavior: "smooth" });
+      } catch (err) {
+        console.error('Pooja booking error:', err);
+        const msg = (err && err.message) ? err.message : String(err || '');
+        showBookingError(msg.toLowerCase().includes('failed to fetch') || msg.toLowerCase().includes('networkerror')
+          ? 'Cannot reach server. Please make sure the server is running and try again.'
+          : msg || 'Unexpected error. Please try again.');
+      }
+    });
+
+    function showBookingError(msg) {
+      const el = document.getElementById('bookingErrorMsg');
+      if (!el) return;
+      el.textContent = msg;
+      el.classList.remove('hidden');
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  </script>
+
+  <!-- External JavaScript -->
+  <script src="/static/js/date-picker.js"></script>
+  <script src="/static/js/mobile_validation.js"></script>
+  <script src="/static/js/script_fixed.js?v=5"></script>
+  <script src="/static/js/script.js"></script>
+  <script src="/static/js/tailwind.config.js"></script>
+  <script src="/static/js/navbar-fix.js"></script>
+  <script>
+    // Live validation for Pooja fields
+    document.addEventListener('DOMContentLoaded', function () {
+      // Clear gender error on change
+      var genderEl = document.getElementById('gender');
+      if (genderEl) {
+        genderEl.addEventListener('change', function () {
+          if (this.value) {
+            document.getElementById('gender_error').textContent = '';
+            this.classList.remove('border-red-500');
+          }
+        });
+      }
+      // Clear slot error on change
+      var slotEl = document.getElementById('slotTime');
+      if (slotEl) {
+        slotEl.addEventListener('change', function () {
+          if (this.value) {
+            const slotErr = document.getElementById('slotTime_error');
+            slotErr.textContent = 'Select date and slot to see availability.';
+            slotErr.className = 'text-xs text-gray-500 mt-1';
+            this.classList.remove('border-red-500');
+          }
+        });
+      }
+      var nameEl = document.getElementById('name');
+      if (nameEl) {
+        // Block numbers and special chars on keypress
+        nameEl.addEventListener('keypress', function (e) {
+          if (!/[A-Za-z\s]/.test(e.key)) e.preventDefault();
+        });
+        nameEl.addEventListener('blur', function () {
+          var err = document.getElementById('name_error');
+          if (!err) {
+            err = document.createElement('p');
+            err.id = 'name_error';
+            err.className = 'text-red-500 text-xs mt-1';
+            nameEl.parentNode.appendChild(err);
+          }
+          if (!nameEl.value.trim()) {
+            err.textContent = 'Name is required';
+            nameEl.classList.add('border-red-500');
+          } else if (!/^[A-Za-z\s]+$/.test(nameEl.value.trim())) {
+            err.textContent = 'Name must contain only alphabets';
+            nameEl.classList.add('border-red-500');
+          } else {
+            err.textContent = '';
+            nameEl.classList.remove('border-red-500');
+          }
+        });
+      }
+      if (window.Validator) {
+        Validator.attachLive('email', 'email');
+        Validator.attachLive('mobile', 'mobile');
+      }
+    });
+    // Gentle auth gate
+    (function () {
+      try {
+        var loggedIn = (window.isLoggedIn === true) || (typeof window.hasToken === 'function' && window.hasToken());
+        if (!loggedIn && typeof window.showAuthRequiredModal === 'function') {
+          showAuthRequiredModal('Pooja Services');
+        }
+      } catch (_) { }
+    })();
+  </script>
+  {% include 'footer.html' %}
+</body>
+
+</html>

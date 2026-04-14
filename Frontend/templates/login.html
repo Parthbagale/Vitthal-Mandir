@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login</title>
+
+  {% load static %}
+
+  <meta name="google-client-id" content="{{ GOOGLE_CLIENT_ID|default:'601983338218-8vmjc2q4jgta7ksjkfu8eu8tb90kd1lq.apps.googleusercontent.com' }}" />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+  <!-- Icons + Fonts -->
+  <script src="https://unpkg.com/@phosphor-icons/web@2.1.1/dist/phosphor.js" defer></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- External CSS -->
+  <link rel="stylesheet" href="/static/css/styles.css?v=3">
+</head>
+
+<body class="bg-gray-100 text-gray-800">
+  {% include 'navbar.html' %}
+
+  <style>
+    .login-hero-slide {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      opacity: 0;
+      transform: scale(1.02);
+      transition: opacity 900ms ease, transform 1400ms ease;
+      will-change: opacity, transform;
+    }
+    .login-hero-slide.is-active { opacity: 1; transform: scale(1); }
+    .login-hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.35) 45%, rgba(0,0,0,0.15) 100%);
+    }
+  </style>
+
+  <main class="w-full">
+    <section class="w-full min-h-[calc(100vh-120px)] grid grid-cols-1 lg:grid-cols-2">
+      <div class="relative min-h-[260px] lg:min-h-0">
+        <div class="absolute inset-0 overflow-hidden">
+          <div id="login-hero-slider" class="absolute inset-0">
+            <img class="login-hero-slide is-active" src="{% static 'images/s1.jpg' %}" alt="" />
+            <img class="login-hero-slide" src="{% static 'images/s2.jpg' %}" alt="" />
+            <img class="login-hero-slide" src="{% static 'images/s3.jpg' %}" alt="" />
+            <img class="login-hero-slide" src="{% static 'images/s4.jpg' %}" alt="" />
+          </div>
+          <div class="login-hero-overlay"></div>
+        </div>
+        <div class="relative z-10 h-full flex items-end p-10">
+          <div class="text-white max-w-xl">
+            <div class="text-3xl font-extrabold font-playfair leading-tight">Shri Vitthal Rukmini Mandir</div>
+            <div class="mt-2 text-white/90">Pandharpur</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="relative flex items-center justify-center px-4 py-10 bg-gradient-to-b from-orange-50 via-white to-orange-50">
+        <div class="w-full max-w-md">
+          <div class="bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-100">
+            <div class="px-8 pt-10 pb-6 text-center">
+              <div class="relative mx-auto w-16 h-16">
+                <div class="absolute inset-0 rounded-2xl bg-orange-500/10"></div>
+                <img src="/images/mandir logo.jpg" alt="Mandir Logo" class="relative h-16 w-16 rounded-2xl shadow mx-auto" />
+              </div>
+              <p class="mt-4 text-gray-600" data-i18n="login.signin_to_account">Sign in to your devotee account</p>
+            </div>
+
+            <div class="px-8 pb-10">
+              <form id="login-form" class="space-y-5">
+                <div class="space-y-4">
+                  <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                      <i class="fas fa-user text-gray-400"></i>
+                    </div>
+                    <input id="login-username" name="username" type="text" class="w-full pl-11 pr-4 py-3.5 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 bg-gray-50 hover:bg-white" placeholder="Username or Email" required data-i18n-attr="placeholder" data-i18n="login.username_or_email" />
+                  </div>
+
+                  <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                      <i class="fas fa-lock text-gray-400"></i>
+                    </div>
+                    <input id="login-password" name="password" type="password" class="w-full pl-11 pr-12 py-3.5 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 bg-gray-50 hover:bg-white" placeholder="Password" required data-i18n-attr="placeholder" data-i18n="login.password" />
+                    <button type="button" id="toggle-login-password" class="absolute inset-y-0 right-0 pr-4 flex items-center">
+                      <i class="fas fa-eye text-gray-400 hover:text-gray-600 cursor-pointer"></i>
+                    </button>
+                  </div>
+
+                  <div class="flex items-center justify-start">
+                    <div class="flex items-center space-x-2">
+                      <input id="remember-me" type="checkbox" class="w-4 h-4 text-primary border-gray-300 rounded focus:ring-orange-500" />
+                      <label for="remember-me" class="text-sm text-gray-600" data-i18n="login.remember_me">Remember me</label>
+                    </div>
+                  </div>
+                </div>
+
+                <button type="submit" class="w-full bg-orange-500 hover:bg-orange-600 text-white py-3.5 rounded-2xl font-semibold transition-all duration-200 shadow-lg hover:shadow-xl flex items-center justify-center space-x-2">
+                  <i class="fas fa-sign-in-alt"></i>
+                  <span data-i18n="login.sign_in">Sign In</span>
+                </button>
+
+                <div class="relative py-2">
+                  <div class="absolute inset-0 flex items-center">
+                    <div class="w-full border-t border-gray-200"></div>
+                  </div>
+                  <div class="relative flex justify-center">
+                    <span class="bg-white px-3 text-xs text-gray-500">OR</span>
+                  </div>
+                </div>
+
+                <div id="googleSignInBtn" class="w-full flex justify-center"></div>
+
+               
+              </form>
+
+              <div id="login-message" class="text-center mt-4 hidden"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="/static/js/auth.js"></script>
+  <script src="/static/js/script_fixed.js?v=4"></script>
+  <script>
+    (function () {
+      const slider = document.getElementById('login-hero-slider');
+      if (!slider) return;
+      const slides = Array.from(slider.querySelectorAll('.login-hero-slide'));
+      if (slides.length < 2) return;
+      let idx = 0;
+      setInterval(() => {
+        slides[idx].classList.remove('is-active');
+        idx = (idx + 1) % slides.length;
+        slides[idx].classList.add('is-active');
+      }, 3500);
+    })();
+
+    // Login Form Handler
+    const loginForm = document.getElementById('login-form');
+    const loginMessage = document.getElementById('login-message');
+    const togglePasswordBtn = document.getElementById('toggle-login-password');
+    const passwordInput = document.getElementById('login-password');
+
+    // Password toggle
+    if (togglePasswordBtn && passwordInput) {
+      togglePasswordBtn.addEventListener('click', function() {
+        const type = passwordInput.type === 'password' ? 'text' : 'password';
+        passwordInput.type = type;
+        const icon = this.querySelector('i');
+        icon.className = type === 'password' ? 'fas fa-eye' : 'fas fa-eye-slash';
+      });
+    }
+
+    // Login form submission
+    if (loginForm) {
+      loginForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const username = document.getElementById('login-username').value.trim();
+        const password = document.getElementById('login-password').value;
+
+        if (!username || !password) {
+          loginMessage.textContent = 'Please enter both username and password';
+          loginMessage.className = 'text-center mt-4 text-red-600 font-semibold';
+          loginMessage.classList.remove('hidden');
+          return;
+        }
+
+        // Show loading state
+        const submitBtn = loginForm.querySelector('button[type="submit"]');
+        const originalBtnText = submitBtn.innerHTML;
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Signing in...';
+
+        loginMessage.textContent = 'Signing in...';
+        loginMessage.className = 'text-center mt-4 text-blue-600 font-semibold';
+        loginMessage.classList.remove('hidden');
+
+        try {
+          const response = await fetch('http://127.0.0.1:8000/api/auth/login/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password })
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            // Store auth data
+            localStorage.setItem('isLoggedIn', 'true');
+            localStorage.setItem('currentUser', data.user?.full_name || data.user?.username || username);
+            localStorage.setItem('accessToken', data.tokens?.access || '');
+            localStorage.setItem('refreshToken', data.tokens?.refresh || '');
+            localStorage.setItem('access_token', data.tokens?.access || '');
+            localStorage.setItem('refresh_token', data.tokens?.refresh || '');
+            localStorage.setItem('userId', data.user?.id || '');
+
+            loginMessage.textContent = data.message || 'Login successful! Redirecting...';
+            loginMessage.className = 'text-center mt-4 text-green-600 font-semibold';
+
+            // Redirect after short delay
+            setTimeout(() => {
+              const redirect = sessionStorage.getItem('redirectAfterLogin') || '/index.html';
+              sessionStorage.removeItem('redirectAfterLogin');
+              window.location.href = redirect;
+            }, 1000);
+          } else {
+            throw new Error(data.detail || data.non_field_errors?.[0] || 'Login failed');
+          }
+        } catch (error) {
+          console.error('Login error:', error);
+          loginMessage.textContent = error.message || 'Login failed. Please check your credentials.';
+          loginMessage.className = 'text-center mt-4 text-red-600 font-semibold';
+          loginMessage.classList.remove('hidden');
+          
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = originalBtnText;
+        }
+      });
+    }
+
+    // Initialize Google Sign-In
+    function initGoogleSignIn() {
+      const clientId = document.querySelector('meta[name="google-client-id"]')?.content || '601983338218-8vmjc2q4jgta7ksjkfu8eu8tb90kd1lq.apps.googleusercontent.com';
+      
+      if (typeof google === 'undefined' || !google.accounts) {
+        console.warn('Google Sign-In library not loaded yet, retrying...');
+        setTimeout(initGoogleSignIn, 500);
+        return;
+      }
+
+      try {
+        google.accounts.id.initialize({
+          client_id: clientId,
+          callback: handleGoogleSignIn,
+          auto_select: false,
+          cancel_on_tap_outside: true
+        });
+
+        google.accounts.id.renderButton(
+          document.getElementById('googleSignInBtn'),
+          {
+            theme: 'outline',
+            size: 'large',
+            width: '100%',
+            text: 'continue_with',
+            shape: 'rectangular',
+            logo_alignment: 'left'
+          }
+        );
+
+        console.log('✅ Google Sign-In button rendered');
+      } catch (error) {
+        console.error('Error initializing Google Sign-In:', error);
+      }
+    }
+
+    async function handleGoogleSignIn(response) {
+      const messageDiv = document.getElementById('login-message');
+      
+      try {
+        const res = await fetch('http://127.0.0.1:8000/api/auth/google-login/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ credential: response.credential })
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          // Store auth data
+          localStorage.setItem('isLoggedIn', 'true');
+          localStorage.setItem('accessToken', data.tokens?.access || data.access || '');
+          localStorage.setItem('refreshToken', data.tokens?.refresh || data.refresh || '');
+          localStorage.setItem('currentUser', data.user?.full_name || data.user?.username || 'User');
+          localStorage.setItem('userId', data.user?.id || '');
+
+          messageDiv.textContent = data.message || 'Google Sign-In successful! Redirecting...';
+          messageDiv.className = 'text-center mt-4 text-green-600 font-semibold';
+          messageDiv.classList.remove('hidden');
+
+          // Redirect after short delay
+          setTimeout(() => {
+            const redirect = sessionStorage.getItem('redirectAfterLogin') || '/index.html';
+            sessionStorage.removeItem('redirectAfterLogin');
+            window.location.href = redirect;
+          }, 1000);
+        } else {
+          throw new Error(data.detail || data.error || 'Google Sign-In failed');
+        }
+      } catch (error) {
+        console.error('Google Sign-In error:', error);
+        messageDiv.textContent = 'Google Sign-In failed: ' + error.message;
+        messageDiv.className = 'text-center mt-4 text-red-600 font-semibold';
+        messageDiv.classList.remove('hidden');
+      }
+    }
+
+    // Initialize when page loads
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initGoogleSignIn);
+    } else {
+      initGoogleSignIn();
+    }
+  </script>
+</body>
+</html>

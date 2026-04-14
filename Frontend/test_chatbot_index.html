@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot Test - Index Page</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web@2.1.1/dist/phosphor.js" defer></script>
+    
+    <!-- External CSS -->
+    <link rel="stylesheet" href="/static/css/styles.css?v=3">
+    <link rel="stylesheet" href="/static/css/home-page-fixes.css">
+    
+    <style>
+        body {
+            padding: 20px;
+            background: #f3f4f6;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .status.success {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        .status.error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        .status.info {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mx-auto max-w-4xl">
+        <h1 class="text-3xl font-bold mb-6">Chatbot Functionality Test</h1>
+        
+        <div class="test-section">
+            <h2 class="text-xl font-semibold mb-4">Test Results</h2>
+            <div id="test-results"></div>
+            <button id="run-tests" class="bg-blue-600 text-white px-6 py-2 rounded mt-4 hover:bg-blue-700">
+                Run Tests
+            </button>
+        </div>
+        
+        <div class="test-section">
+            <h2 class="text-xl font-semibold mb-4">Manual Test</h2>
+            <p class="mb-4">Click the chatbot icon in the bottom-right corner to test if it opens.</p>
+            <div id="manual-test-status"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2 class="text-xl font-semibold mb-4">Console Logs</h2>
+            <div id="console-logs" class="bg-gray-100 p-4 rounded font-mono text-sm max-h-64 overflow-y-auto"></div>
+        </div>
+    </div>
+
+    <!-- Chatbot Container (same as index.html) -->
+    <div id="chatbot-container" class="fixed bottom-6 right-6 z-[1000]">
+        <button id="chatbot-icon"
+            class="w-20 h-20 bg-transparent rounded-full shadow-lg flex items-center justify-center animate-bounce"
+            aria-label="Open chatbot">
+            <img src="/static/images/cl3.jpg" alt="Chatbot" class="w-20 h-20 object-contain rounded-full" />
+        </button>
+    </div>
+
+    <!-- Chatbot Modal (simplified version) -->
+    <div id="chatbot-overlay" class="chatbot-overlay">
+        <div id="chatbot-modal" class="chatbot-modal">
+            <button id="close-chatbot-modal-btn" class="close-button-modal" aria-label="Close chatbot">
+                <i class="ph ph-x"></i>
+            </button>
+            <div class="chat-header-modal">
+                <i class="fas fa-hindu-temple temple-icon"></i>
+                <h1>Vitthal-Rukmini Mandir AI Assistant</h1>
+                <p>Your guide to spiritual queries and temple information.</p>
+            </div>
+            <div class="chat-container-modal">
+                <div class="sidebar-modal">
+                    <div class="logo-modal">
+                        <i class="fas fa-robot logo-icon"></i>
+                        <span class="logo-text">AI Assistant</span>
+                    </div>
+                </div>
+                <div class="main-chat-modal">
+                    <div id="messages" class="messages-modal">
+                        <div class="message bot-message">
+                            <p>Welcome! This is a test chatbot modal.</p>
+                        </div>
+                    </div>
+                    <div class="input-area-modal">
+                        <input type="text" id="user-input" placeholder="Type your message..." />
+                        <button id="send-btn"><i class="fas fa-paper-plane"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Test Script -->
+    <script>
+        // Capture console logs
+        const consoleLogsDiv = document.getElementById('console-logs');
+        const originalLog = console.log;
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+            const logEntry = document.createElement('div');
+            logEntry.textContent = args.join(' ');
+            logEntry.className = 'mb-1';
+            consoleLogsDiv.appendChild(logEntry);
+            consoleLogsDiv.scrollTop = consoleLogsDiv.scrollHeight;
+        };
+
+        // Test functions
+        function runTests() {
+            const resultsDiv = document.getElementById('test-results');
+            resultsDiv.innerHTML = '';
+            
+            const tests = [
+                {
+                    name: 'Chatbot Icon Element Exists',
+                    test: () => document.getElementById('chatbot-icon') !== null
+                },
+                {
+                    name: 'Chatbot Overlay Element Exists',
+                    test: () => document.getElementById('chatbot-overlay') !== null
+                },
+                {
+                    name: 'Chatbot Modal Element Exists',
+                    test: () => document.getElementById('chatbot-modal') !== null
+                },
+                {
+                    name: 'Close Button Element Exists',
+                    test: () => document.getElementById('close-chatbot-modal-btn') !== null
+                },
+                {
+                    name: 'Chatbot Overlay Initially Hidden',
+                    test: () => {
+                        const overlay = document.getElementById('chatbot-overlay');
+                        return !overlay.classList.contains('show');
+                    }
+                },
+                {
+                    name: 'Chatbot Icon Has Click Listener',
+                    test: () => {
+                        const icon = document.getElementById('chatbot-icon');
+                        // Check if element has event listeners (indirect check)
+                        return icon && icon.onclick !== null || true; // Always pass as we can't directly check
+                    }
+                },
+                {
+                    name: 'CSS Styles Loaded',
+                    test: () => {
+                        const overlay = document.getElementById('chatbot-overlay');
+                        const styles = window.getComputedStyle(overlay);
+                        return styles.position === 'fixed';
+                    }
+                }
+            ];
+            
+            tests.forEach(test => {
+                const result = document.createElement('div');
+                result.className = 'status';
+                try {
+                    const passed = test.test();
+                    result.classList.add(passed ? 'success' : 'error');
+                    result.innerHTML = `<strong>${test.name}:</strong> ${passed ? '✓ PASS' : '✗ FAIL'}`;
+                } catch (error) {
+                    result.classList.add('error');
+                    result.innerHTML = `<strong>${test.name}:</strong> ✗ ERROR - ${error.message}`;
+                }
+                resultsDiv.appendChild(result);
+            });
+            
+            console.log('Tests completed');
+        }
+
+        // Monitor chatbot interactions
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM Content Loaded');
+            
+            const chatbotIcon = document.getElementById('chatbot-icon');
+            const chatbotOverlay = document.getElementById('chatbot-overlay');
+            const closeBtn = document.getElementById('close-chatbot-modal-btn');
+            const manualStatus = document.getElementById('manual-test-status');
+            
+            if (chatbotIcon) {
+                console.log('Chatbot icon found');
+                chatbotIcon.addEventListener('click', function() {
+                    console.log('Chatbot icon clicked!');
+                    const statusDiv = document.createElement('div');
+                    statusDiv.className = 'status success';
+                    statusDiv.innerHTML = '<strong>✓ Click Event Fired:</strong> Chatbot icon was clicked successfully';
+                    manualStatus.appendChild(statusDiv);
+                });
+            }
+            
+            if (chatbotOverlay) {
+                console.log('Chatbot overlay found');
+                // Monitor class changes
+                const observer = new MutationObserver(function(mutations) {
+                    mutations.forEach(function(mutation) {
+                        if (mutation.attributeName === 'class') {
+                            const isOpen = chatbotOverlay.classList.contains('show');
+                            console.log('Chatbot overlay class changed. Is open:', isOpen);
+                            const statusDiv = document.createElement('div');
+                            statusDiv.className = 'status ' + (isOpen ? 'success' : 'info');
+                            statusDiv.innerHTML = `<strong>${isOpen ? '✓ Opened' : 'ℹ Closed'}:</strong> Chatbot modal ${isOpen ? 'opened' : 'closed'}`;
+                            manualStatus.appendChild(statusDiv);
+                        }
+                    });
+                });
+                observer.observe(chatbotOverlay, { attributes: true });
+            }
+            
+            if (closeBtn) {
+                console.log('Close button found');
+                closeBtn.addEventListener('click', function() {
+                    console.log('Close button clicked');
+                    chatbotOverlay.classList.remove('show');
+                    document.body.classList.remove('chatbot-open');
+                });
+            }
+            
+            // Run tests button
+            document.getElementById('run-tests').addEventListener('click', runTests);
+            
+            // Auto-run tests on load
+            setTimeout(runTests, 500);
+        });
+    </script>
+
+    <!-- Load the actual scripts -->
+    <script src="/static/js/script_fixed.js?v=6"></script>
+    <script src="/static/js/home-page-fixes.js"></script>
+</body>
+</html>

@@ -1,0 +1,514 @@
+<link rel="stylesheet" href="/static/css/translator.css">
+
+<header id="site-header" class="sticky top-0 z-50 nav-glass" role="banner" style="overflow: visible;">
+  <div class="w-full bg-gradient-to-r from-orange-600 via-orange-500 to-orange-600 text-white">
+    <div class="container mx-auto px-6 py-3 sm:py-4 flex items-center justify-between gap-4">
+      <div class="flex items-center gap-3 min-w-0">
+        <img src="/images/mandir logo.jpg" alt="Vitthal Mandir logo" class="rounded-full" loading="lazy" width="36"
+          height="36" />
+        <div class="font-extrabold text-base sm:text-lg tracking-wide truncate">Shri Vitthal Rukmini Mandire,Pandharpur
+        </div>
+      </div>
+      <div class="shrink-0">
+
+      </div>
+    </div>
+  </div>
+  <nav class="container mx-auto px-6 py-4 flex justify-between items-center" aria-label="Primary" style="overflow: visible; position: relative;">
+    <div class="flex items-center gap-2">
+      <img src="/images/mandir logo.jpg" alt="Vitthal Mandir logo" class="rounded-full" loading="lazy" width="50"
+        height="50" />
+      <a href="/index.html#home" class="text-xl font-bold text-gray-900 font-playfair">Vitthal Mandir</a>
+    </div>
+
+    <div class="hidden lg:flex items-center gap-6 xl:gap-8 flex-nowrap whitespace-nowrap">
+      <a href="/index.html#home" class="text-gray-600 hover:text-primary nav-link whitespace-nowrap">Home</a>
+      <a href="/About_temple.html" class="text-gray-600 hover:text-primary nav-link whitespace-nowrap">About Temple</a>
+      <a href="/E_library.html" class="text-gray-600 hover:text-primary nav-link whitespace-nowrap">E-Library</a>
+      <a href="/Gallery.html" class="text-gray-600 hover:text-primary nav-link whitespace-nowrap">Gallery</a>
+      <a href="/Contact.html" class="text-gray-600 hover:text-primary nav-link whitespace-nowrap">Contact Us</a>
+
+      <div class="relative" id="online-services-dropdown">
+        <button id="online-services-btn"
+          class="text-gray-600 hover:text-primary nav-link flex items-center whitespace-nowrap" aria-haspopup="true"
+          aria-expanded="false">
+          Online Services <i class="ph ph-caret-down ml-1"></i>
+        </button>
+        <div id="online-services-menu"
+          class="absolute hidden bg-white shadow-xl rounded-lg p-2 mt-2 w-52 dropdown-elevated"
+          style="z-index: 99999; position: absolute; top: 100%; left: 0;">
+          <button onclick="console.log('Live Darshan clicked'); accessService('Live Darshan', '/Live_darshan.html');"
+            class="block w-full text-left px-4 py-2 text-gray-700 hover:bg-orange-100 hover:text-orange-600 rounded-md transition cursor-pointer">
+            <i class="fas fa-video mr-2"></i>Live Darshan
+          </button>
+          <button onclick="console.log('Pooja Services clicked'); accessService('Pooja Services', '/Pooja_services.html');"
+            class="block w-full text-left px-4 py-2 text-gray-700 hover:bg-orange-100 hover:text-orange-600 rounded-md transition cursor-pointer">
+            <i class="fas fa-hands-praying mr-2"></i>Pooja Services
+          </button>
+          <button onclick="console.log('Pass Booking clicked'); accessService('Pass Booking', '/Pass_booking.html');"
+            class="block w-full text-left px-4 py-2 text-gray-700 hover:bg-orange-100 hover:text-orange-600 rounded-md transition cursor-pointer">
+            <i class="fas fa-ticket-alt mr-2"></i>Pass Booking
+          </button>
+          <button onclick="console.log('Bhakta Nivas clicked'); accessService('Bhakta Nivas', '/Bhakta_nivas.html');"
+            class="block w-full text-left px-4 py-2 text-gray-700 hover:bg-orange-100 hover:text-orange-600 rounded-md transition cursor-pointer">
+            <i class="fas fa-bed mr-2"></i>Bhakta Nivas
+          </button>
+          <button onclick="console.log('Donations clicked'); accessService('Donations', '/Donations.html');"
+            class="block w-full text-left px-4 py-2 text-gray-700 hover:bg-orange-100 hover:text-orange-600 rounded-md transition cursor-pointer">
+            <i class="fas fa-heart mr-2"></i>Donations
+          </button>
+        </div>
+      </div>
+
+      <a id="profileLink" href="/profile.html" class="text-gray-600 hover:text-primary nav-link hidden">
+        <i class="fas fa-user mr-2"></i>Profile
+      </a>
+      <span id="user-greeting" class="text-gray-600 hidden"></span>
+      <button id="logoutBtn"
+        class="bg-red-500 text-white py-2 px-6 rounded-full font-semibold hover:bg-red-600 transition duration-300 hidden">Logout</button>
+
+      {% include 'translator.html' %}
+
+      <button id="registerBtn"
+        class="bg-gray-200 text-gray-800 py-2 px-6 rounded-full font-semibold hover:bg-gray-300 transition duration-300">Register</button>
+      <button id="loginBtn"
+        class="bg-primary text-white py-2 px-6 rounded-full font-semibold hover:bg-primary-dark transition duration-300">Login</button>
+    </div>
+
+    <div class="lg:hidden">
+      <button id="mobile-menu-btn" class="text-gray-700 hover:text-primary" aria-controls="mobile-menu"
+        aria-expanded="false" aria-label="Toggle menu">
+        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+        </svg>
+      </button>
+    </div>
+  </nav>
+
+  <div id="mobile-menu" class="lg:hidden hidden bg-white shadow-inner py-4 mobile-menu-glass" role="menu">
+    <a href="/index.html#home" class="block py-2 px-6 text-gray-700 hover:bg-gray-100">Home</a>
+    <a href="/About_temple.html" class="block py-2 px-6 text-gray-700 hover:bg-gray-100">About Temple</a>
+    <a href="/E_library.html" class="block py-2 px-6 text-gray-700 hover:bg-gray-100">E-Library</a>
+    <a href="/Gallery.html" class="block py-2 px-6 text-gray-700 hover:bg-gray-100">Gallery</a>
+    <a href="/Contact.html" class="block py-2 px-6 text-gray-700 hover:bg-gray-100">Contact Us</a>
+    <button onclick="accessService('Live Darshan', '/Live_darshan.html')"
+      class="block w-full text-left py-2 px-6 text-gray-700 hover:bg-gray-100">Live Darshan</button>
+    <button onclick="accessService('Pooja Services', '/Pooja_services.html')"
+      class="block w-full text-left py-2 px-6 text-gray-700 hover:bg-gray-100">Pooja Services</button>
+    <button onclick="accessService('Pass Booking', '/Pass_booking.html')"
+      class="block w-full text-left py-2 px-6 text-gray-700 hover:bg-gray-100">Pass Booking</button>
+    <button onclick="accessService('Bhakta Nivas', '/Bhakta_nivas.html')"
+      class="block w-full text-left py-2 px-6 text-gray-700 hover:bg-gray-100">Bhakta Nivas</button>
+    <button onclick="accessService('Donations', '/Donations.html')"
+      class="block w-full text-left py-2 px-6 text-gray-700 hover:bg-gray-100">Donations</button>
+
+    <a id="mobile-profile-link" href="/profile.html" class="block py-2 px-6 text-gray-700 hover:bg-gray-100 hidden">
+      <i class="fas fa-user mr-2"></i>Profile
+    </a>
+    <span id="mobile-user-greeting" class="block py-2 px-6 text-gray-600 hidden"></span>
+    <button id="mobile-logout-btn"
+      class="w-full text-left py-2 px-6 text-red-600 hover:bg-gray-100 hidden">Logout</button>
+
+
+
+    <button id="mobile-register-btn"
+      class="w-full text-left py-2 px-6 text-gray-700 hover:bg-gray-100">Register</button>
+    <button id="mobile-login-btn" class="w-full text-left py-2 px-6 text-gray-700 hover:bg-gray-100">Login</button>
+  </div>
+</header>
+
+
+
+<script src="/static/js/translator.js"></script>
+
+<script src="/static/js/auth.js"></script>
+
+<script>
+  (function () {
+    function setupNavbarInteractions() {
+      const mobileBtn = document.getElementById('mobile-menu-btn');
+      const mobileMenu = document.getElementById('mobile-menu');
+      if (mobileBtn && mobileMenu) {
+        mobileBtn.addEventListener('click', function () {
+          const willOpen = mobileMenu.classList.contains('hidden');
+          mobileMenu.classList.toggle('hidden', !willOpen);
+          mobileBtn.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+        });
+      }
+
+      // Online Services dropdown is now handled by online-services-dropdown.js
+      // Do not initialize here to avoid conflicts
+    }
+
+    function getToken() {
+      try {
+        return localStorage.getItem('accessToken') || localStorage.getItem('access_token');
+      } catch (_) { return null; }
+    }
+
+    function isAuthed() {
+      let flag = false;
+      try { flag = localStorage.getItem('isLoggedIn') === 'true'; } catch (_) { flag = false; }
+      const t = getToken();
+      return flag && !!t && t !== 'null' && t !== 'undefined';
+    }
+
+    function setVisible(id, on) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.classList.toggle('hidden', !on);
+    }
+
+    function setText(id, text) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.textContent = text;
+    }
+
+    function clearAuth() {
+      try {
+        localStorage.removeItem('isLoggedIn');
+        localStorage.removeItem('currentUser');
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+        localStorage.removeItem('userId');
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
+        localStorage.removeItem('auth_user');
+      } catch (_) { }
+    }
+
+    function updateNavbarAuthUI() {
+      const authed = isAuthed();
+      const name = (function () {
+        try { return localStorage.getItem('currentUser') || ''; } catch (_) { return ''; }
+      })();
+
+      setVisible('profileLink', authed);
+      setVisible('logoutBtn', authed);
+      setVisible('user-greeting', authed);
+
+      setVisible('registerBtn', !authed);
+      setVisible('loginBtn', !authed);
+
+      setVisible('mobile-profile-link', authed);
+      setVisible('mobile-logout-btn', authed);
+      setVisible('mobile-user-greeting', authed);
+      setVisible('mobile-register-btn', !authed);
+      setVisible('mobile-login-btn', !authed);
+
+      if (authed) {
+        setText('user-greeting', name ? ('Welcome, ' + name) : 'Welcome');
+        setText('mobile-user-greeting', name ? ('Welcome, ' + name) : 'Welcome');
+      }
+    }
+
+    function wireLogout(btnId) {
+      const btn = document.getElementById(btnId);
+      if (!btn) return;
+      btn.addEventListener('click', function () {
+        clearAuth();
+        try { window.location.href = '/index.html'; } catch (_) { window.location.href = 'index.html'; }
+      });
+    }
+
+    function normalizeUrl(url) {
+      const u = (url || '').toString();
+      if (!u) return '/';
+      if (u.startsWith('http://') || u.startsWith('https://') || u.startsWith('/')) return u;
+      return '/' + u;
+    }
+
+    function wireNavRedirect(btnId, target) {
+      const btn = document.getElementById(btnId);
+      if (!btn) return;
+      btn.addEventListener('click', function () {
+        try { window.location.href = target; } catch (_) { window.location.href = target.replace(/^\//, ''); }
+      });
+    }
+
+    function ensureAccessService() {
+      if (typeof window.accessService !== 'undefined') {
+        console.log('accessService already defined');
+        return;
+      }
+      console.log('Defining accessService function');
+      window.accessService = function (serviceName, url) {
+        console.log('accessService called:', { serviceName, url });
+        const dest = normalizeUrl(url);
+        console.log('Normalized URL:', dest);
+        const authed = (typeof isAuthenticated === 'function') ? isAuthenticated() : isAuthed();
+        console.log('User authenticated:', authed);
+        
+        if (authed) {
+          console.log('Redirecting to:', dest);
+          window.location.href = dest;
+          return;
+        }
+        
+        try {
+          sessionStorage.setItem('redirectAfterLogin', dest);
+          console.log('Saved redirect URL:', dest);
+        } catch (_) { }
+
+        console.log('Redirecting to login');
+        window.location.href = '/login.html';
+      };
+      console.log('accessService function defined successfully');
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', function () {
+        setupNavbarInteractions();
+        window.__vitthalNavbarBound = true;
+        updateNavbarAuthUI();
+        ensureAccessService();
+        wireLogout('logoutBtn');
+        wireLogout('mobile-logout-btn');
+        wireNavRedirect('loginBtn', '/login.html');
+        // Open register modal instead of navigating
+        const regBtn = document.getElementById('registerBtn');
+        if (regBtn) {
+          regBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            const modalOverlay = document.getElementById('register-modal-overlay');
+            if (modalOverlay) {
+              modalOverlay.classList.remove('hidden');
+              modalOverlay.classList.add('flex');
+            }
+          });
+        }
+        wireNavRedirect('mobile-login-btn', '/login.html');
+        const mobileRegBtn = document.getElementById('mobile-register-btn');
+        if (mobileRegBtn) {
+          mobileRegBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            const modalOverlay = document.getElementById('register-modal-overlay');
+            if (modalOverlay) {
+              modalOverlay.classList.remove('hidden');
+              modalOverlay.classList.add('flex');
+            }
+          });
+        }
+      });
+    } else {
+      // DOM already loaded, run immediately
+      setupNavbarInteractions();
+      window.__vitthalNavbarBound = true;
+      updateNavbarAuthUI();
+      ensureAccessService();
+      wireLogout('logoutBtn');
+      wireLogout('mobile-logout-btn');
+      wireNavRedirect('loginBtn', '/login.html');
+      // Open register modal instead of navigating
+      const regBtn = document.getElementById('registerBtn');
+      if (regBtn) {
+        regBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          const modalOverlay = document.getElementById('register-modal-overlay');
+          if (modalOverlay) {
+            modalOverlay.classList.remove('hidden');
+            modalOverlay.classList.add('flex');
+          }
+        });
+      }
+      wireNavRedirect('mobile-login-btn', '/login.html');
+      const mobileRegBtn = document.getElementById('mobile-register-btn');
+      if (mobileRegBtn) {
+        mobileRegBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          const modalOverlay = document.getElementById('register-modal-overlay');
+          if (modalOverlay) {
+            modalOverlay.classList.remove('hidden');
+            modalOverlay.classList.add('flex');
+          }
+        });
+      }
+    }
+    
+    // Additional fallback - ensure dropdown works even if script runs multiple times
+    setTimeout(function() {
+      if (!window.__vitthalNavbarBound) {
+        console.log('Navbar not bound, running fallback initialization');
+        setupNavbarInteractions();
+        window.__vitthalNavbarBound = true;
+      }
+      
+      // Force re-check dropdown after all scripts load
+      const btn = document.getElementById('online-services-btn');
+      const menu = document.getElementById('online-services-menu');
+      if (btn && menu) {
+        console.log('Dropdown elements found in fallback check');
+      } else {
+        console.error('Dropdown elements still not found in fallback');
+      }
+    }, 500);
+  })();
+</script>
+
+
+<!-- Register Modal Popup -->
+<div id="register-modal-overlay" class="hidden fixed inset-0 bg-black/60 items-center justify-center z-50 p-4">
+  <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto">
+    
+    <!-- Modal Header -->
+    <div class="sticky top-0 bg-white border-b px-6 py-4 flex items-center justify-between rounded-t-2xl">
+      <div class="flex items-center gap-3">
+        <img src="/static/images/mandir logo.jpg" alt="Logo" class="w-12 h-12 rounded-full shadow">
+        <div>
+          <h2 class="text-xl font-bold text-gray-800">Create Account</h2>
+          <p class="text-xs text-gray-500">Join the Vitthal Mandir community</p>
+        </div>
+      </div>
+      <button type="button" id="close-register-modal" class="text-gray-400 hover:text-gray-600 text-2xl leading-none">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="px-6 py-5">
+      <form id="register-modal-form" novalidate>
+
+        <!-- Full Name -->
+        <div class="mb-3">
+          <label class="block text-sm font-medium text-gray-700 mb-1">Full Name <span class="text-red-500">*</span></label>
+          <input type="text" id="modal-reg-name" name="full_name"
+            placeholder="Enter your full name"
+            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400 text-sm"
+            required>
+          <p class="text-red-500 text-xs mt-1" id="modal-reg-name_error"></p>
+        </div>
+
+        <!-- Username -->
+        <div class="mb-3">
+          <label class="block text-sm font-medium text-gray-700 mb-1">Username <span class="text-red-500">*</span></label>
+          <input type="text" id="modal-reg-username" name="username"
+            placeholder="Letters, numbers, underscore only"
+            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400 text-sm"
+            required>
+          <p class="text-red-500 text-xs mt-1" id="modal-reg-username_error"></p>
+        </div>
+
+        <!-- Email -->
+        <div class="mb-3">
+          <label class="block text-sm font-medium text-gray-700 mb-1">Email <span class="text-red-500">*</span></label>
+          <div class="flex gap-2">
+            <input type="email" id="modal-reg-email" name="email"
+              placeholder="Enter your email"
+              class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400 text-sm"
+              required>
+            <button type="button" id="modal-send-email-otp" class="px-4 py-2 bg-blue-500 text-white rounded-lg text-sm font-semibold hover:bg-blue-600 transition whitespace-nowrap">
+              Send OTP
+            </button>
+          </div>
+          <p class="text-red-500 text-xs mt-1" id="modal-reg-email_error"></p>
+        </div>
+
+        <!-- Email OTP Verification -->
+        <div class="mb-3 hidden" id="modal-email-otp-section">
+          <label class="block text-sm font-medium text-gray-700 mb-1">Email OTP <span class="text-red-500">*</span></label>
+          <div class="flex gap-2">
+            <input type="text" id="modal-email-otp" name="email_otp"
+              placeholder="Enter 6-digit OTP"
+              maxlength="6" inputmode="numeric"
+              class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400 text-sm">
+            <button type="button" id="modal-verify-email-otp" class="px-4 py-2 bg-green-500 text-white rounded-lg text-sm font-semibold hover:bg-green-600 transition whitespace-nowrap">
+              Verify
+            </button>
+          </div>
+          <p class="text-xs text-gray-500 mt-1">OTP sent to your email. Check your inbox.</p>
+          <p class="text-red-500 text-xs mt-1" id="modal-email-otp_error"></p>
+          <p class="text-green-600 text-xs mt-1 hidden" id="modal-email-verified">✓ Email verified successfully</p>
+        </div>
+
+        <!-- Mobile -->
+        <div class="mb-3">
+          <label class="block text-sm font-medium text-gray-700 mb-1">Mobile Number <span class="text-red-500">*</span></label>
+          <input type="text" id="modal-reg-mobile" name="mobile"
+            placeholder="10-digit mobile number"
+            maxlength="10" inputmode="numeric"
+            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400 text-sm"
+            required>
+          <p class="text-red-500 text-xs mt-1" id="modal-reg-mobile_error"></p>
+        </div>
+
+        <!-- Aadhaar -->
+        <div class="mb-3">
+          <label class="block text-sm font-medium text-gray-700 mb-1">Aadhaar Card Number <span class="text-red-500">*</span></label>
+          <input type="text" id="modal-reg-aadhaar" name="aadhaar"
+            placeholder="12-digit Aadhaar number"
+            maxlength="12" inputmode="numeric"
+            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400 text-sm"
+            required>
+          <p class="text-red-500 text-xs mt-1" id="modal-reg-aadhaar_error"></p>
+        </div>
+
+        <!-- Password -->
+        <div class="mb-3">
+          <label class="block text-sm font-medium text-gray-700 mb-1">Password <span class="text-red-500">*</span></label>
+          <div class="relative">
+            <input type="password" id="modal-reg-password" name="password"
+              placeholder="Create a strong password"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400 pr-10 text-sm"
+              required>
+            <button type="button" id="modal-toggle-password" class="absolute inset-y-0 right-3 flex items-center text-gray-400 hover:text-gray-600">
+              <i class="fas fa-eye text-sm"></i>
+            </button>
+          </div>
+          <!-- Strength bar -->
+          <div class="flex gap-1 h-1.5 mt-2">
+            <div id="modal-str-1" class="flex-1 rounded bg-gray-200"></div>
+            <div id="modal-str-2" class="flex-1 rounded bg-gray-200"></div>
+            <div id="modal-str-3" class="flex-1 rounded bg-gray-200"></div>
+            <div id="modal-str-4" class="flex-1 rounded bg-gray-200"></div>
+          </div>
+          <p id="modal-strength-label" class="text-xs mt-1 text-gray-400">Enter a password</p>
+          <p class="text-red-500 text-xs mt-1" id="modal-reg-password_error"></p>
+        </div>
+
+        <!-- Confirm Password -->
+        <div class="mb-3">
+          <label class="block text-sm font-medium text-gray-700 mb-1">Confirm Password <span class="text-red-500">*</span></label>
+          <div class="relative">
+            <input type="password" id="modal-reg-confirm" name="password_confirm"
+              placeholder="Re-enter your password"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400 pr-10 text-sm"
+              required>
+            <button type="button" id="modal-toggle-confirm" class="absolute inset-y-0 right-3 flex items-center text-gray-400 hover:text-gray-600">
+              <i class="fas fa-eye text-sm"></i>
+            </button>
+          </div>
+          <p class="text-red-500 text-xs mt-1" id="modal-reg-confirm_error"></p>
+        </div>
+
+        <!-- Profile Image -->
+        <div class="mb-4">
+          <label class="block text-sm font-medium text-gray-700 mb-1">Profile Image <span class="text-gray-500 font-normal">(optional)</span></label>
+          <input type="file" id="modal-reg-image" name="profile_image" accept="image/*"
+            class="w-full text-xs text-gray-500 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:bg-orange-50 file:text-orange-700 hover:file:bg-orange-100 file:text-xs">
+        </div>
+
+        <!-- Status message -->
+        <div id="modal-reg-message" class="hidden mb-3 text-center text-sm rounded-lg px-4 py-2"></div>
+
+        <button type="submit" id="modal-reg-submit"
+          class="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2.5 rounded-lg transition-all shadow-md text-sm">
+          <i class="fas fa-user-plus mr-2"></i>Create Account
+        </button>
+      </form>
+
+      <p class="text-center text-xs text-gray-500 mt-4">
+        Already have an account?
+        <a href="/login.html" class="text-orange-500 font-semibold hover:underline">Sign In</a>
+      </p>
+    </div>
+
+  </div>
+</div>
+
+<script src="/static/js/register-modal.js"></script>
+<script src="/static/js/online-services-dropdown.js"></script>

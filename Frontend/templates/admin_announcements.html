@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Announcements & Alerts</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/styles.css?v=3">
+  <style>
+    body { font-family: Inter, "Noto Sans Devanagari", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji"; }
+  </style>
+</head>
+
+<body class="bg-gray-100 text-gray-800">
+  <div class="max-w-6xl mx-auto px-4 py-8">
+    <div class="flex items-center justify-between gap-4 mb-6">
+      <h1 class="text-2xl font-bold">Announcements & Emergency Alerts</h1>
+      <a class="px-4 py-2 rounded-full bg-orange-600 text-white font-semibold hover:bg-orange-700 transition"
+        href="/Admin_home.html">Back to Dashboard</a>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div class="bg-white rounded-2xl shadow p-5 lg:col-span-1">
+        <h2 class="text-lg font-semibold mb-4">Create Message</h2>
+
+        <form id="createForm" class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium mb-1">Type</label>
+            <select id="type" class="w-full border rounded-xl px-3 py-2">
+              <option value="announcement">Temple Announcement</option>
+              <option value="alert">Emergency Alert</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium mb-1">Title</label>
+            <input id="title" class="w-full border rounded-xl px-3 py-2" placeholder="Title" />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium mb-1">Message</label>
+            <textarea id="message" class="w-full border rounded-xl px-3 py-2" rows="4" placeholder="Message"></textarea>
+          </div>
+
+          <button type="submit"
+            class="w-full px-4 py-2 rounded-xl bg-orange-600 text-white font-semibold hover:bg-orange-700 transition">
+            Save
+          </button>
+
+          <div id="formStatus" class="text-sm"></div>
+        </form>
+      </div>
+
+      <div class="bg-white rounded-2xl shadow p-5 lg:col-span-2">
+        <div class="flex items-center justify-between mb-3">
+          <h2 class="text-lg font-semibold">All Messages</h2>
+          <button id="refreshBtn" type="button"
+            class="px-4 py-2 rounded-xl border font-semibold hover:bg-gray-50 transition">
+            Refresh
+          </button>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="min-w-full text-sm">
+            <thead>
+              <tr class="text-left border-b">
+                <th class="py-2 pr-4">Type</th>
+                <th class="py-2 pr-4">Title</th>
+                <th class="py-2 pr-4">Message</th>
+                <th class="py-2 pr-4">Active</th>
+                <th class="py-2 pr-4">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="rows">
+              <tr>
+                <td class="py-4" colspan="5">Loading...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div id="tableStatus" class="text-sm mt-3"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="modal" class="fixed inset-0 hidden items-center justify-center bg-black/40 p-4">
+    <div class="bg-white w-full max-w-md rounded-2xl shadow p-5">
+      <h3 class="text-lg font-semibold" id="modalTitle">Confirm</h3>
+      <p class="text-sm text-gray-700 mt-2" id="modalText">Are you sure?</p>
+      <div class="flex justify-end gap-3 mt-5">
+        <button id="modalCancel" type="button" class="px-4 py-2 rounded-xl border font-semibold">Cancel</button>
+        <button id="modalOk" type="button"
+          class="px-4 py-2 rounded-xl bg-red-600 text-white font-semibold">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="editModal" class="fixed inset-0 hidden items-center justify-center bg-black/40 p-4">
+    <div class="bg-white w-full max-w-lg rounded-2xl shadow p-5">
+      <div class="flex items-center justify-between gap-3">
+        <h3 class="text-lg font-semibold">Edit Message</h3>
+        <button id="editClose" type="button" class="px-3 py-1.5 rounded-xl border font-semibold">Close</button>
+      </div>
+
+      <form id="editForm" class="mt-4 space-y-4">
+        <input type="hidden" id="editId" />
+
+        <div>
+          <label class="block text-sm font-medium mb-1">Type</label>
+          <select id="editType" class="w-full border rounded-xl px-3 py-2">
+            <option value="announcement">Temple Announcement</option>
+            <option value="alert">Emergency Alert</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium mb-1">Title</label>
+          <input id="editTitle" class="w-full border rounded-xl px-3 py-2" placeholder="Title" />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium mb-1">Message</label>
+          <textarea id="editMessage" class="w-full border rounded-xl px-3 py-2" rows="4" placeholder="Message"></textarea>
+        </div>
+
+        <div class="flex justify-end gap-3">
+          <button id="editCancel" type="button" class="px-4 py-2 rounded-xl border font-semibold">Cancel</button>
+          <button id="editSave" type="submit" class="px-4 py-2 rounded-xl bg-orange-600 text-white font-semibold hover:bg-orange-700 transition">Save Changes</button>
+        </div>
+
+        <div id="editStatus" class="text-sm"></div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const API_BASE = localStorage.getItem('API_BASE') || 'http://127.0.0.1:8000';
+      const token = localStorage.getItem('admin_access_token') || localStorage.getItem('adminAccessToken');
+
+      if (!token) {
+        window.location.replace('/Admin_login.html');
+        return;
+      }
+
+      const qs = new URLSearchParams(window.location.search);
+      const preType = qs.get('type');
+      if (preType === 'alert' || preType === 'announcement') {
+        const sel = document.getElementById('type');
+        if (sel) sel.value = preType;
+      }
+
+      const rowsEl = document.getElementById('rows');
+      const tableStatus = document.getElementById('tableStatus');
+      const formStatus = document.getElementById('formStatus');
+
+      const editModal = document.getElementById('editModal');
+      const editClose = document.getElementById('editClose');
+      const editCancel = document.getElementById('editCancel');
+      const editForm = document.getElementById('editForm');
+      const editStatus = document.getElementById('editStatus');
+      const editId = document.getElementById('editId');
+      const editType = document.getElementById('editType');
+      const editTitle = document.getElementById('editTitle');
+      const editMessage = document.getElementById('editMessage');
+
+      const modal = document.getElementById('modal');
+      const modalText = document.getElementById('modalText');
+      const modalCancel = document.getElementById('modalCancel');
+      const modalOk = document.getElementById('modalOk');
+
+      let modalAction = null;
+
+      function openModal(text, okLabel, action) {
+        modalAction = action;
+        if (modalText) modalText.textContent = text;
+        if (modalOk) modalOk.textContent = okLabel || 'OK';
+        if (modal) {
+          modal.classList.remove('hidden');
+          modal.classList.add('flex');
+        }
+      }
+
+      function closeModal() {
+        modalAction = null;
+        if (modal) {
+          modal.classList.add('hidden');
+          modal.classList.remove('flex');
+        }
+      }
+
+      if (modalCancel) modalCancel.addEventListener('click', closeModal);
+      if (modalOk) modalOk.addEventListener('click', async function () {
+        if (typeof modalAction === 'function') {
+          await modalAction();
+        }
+        closeModal();
+      });
+
+      function setStatus(el, msg, kind) {
+        if (!el) return;
+        el.textContent = msg || '';
+        el.className = 'text-sm mt-1 ' + (kind === 'error' ? 'text-red-700' : (kind === 'ok' ? 'text-green-700' : 'text-gray-700'));
+      }
+
+      function openEditModal(ann) {
+        setStatus(editStatus, '', '');
+        if (editId) editId.value = String(ann.id || '');
+        if (editType) editType.value = (ann.type === 'alert' ? 'alert' : 'announcement');
+        if (editTitle) editTitle.value = (ann.title || '');
+        if (editMessage) editMessage.value = (ann.message || '');
+        if (editModal) {
+          editModal.classList.remove('hidden');
+          editModal.classList.add('flex');
+        }
+      }
+
+      function closeEditModal() {
+        if (editModal) {
+          editModal.classList.add('hidden');
+          editModal.classList.remove('flex');
+        }
+      }
+
+      if (editClose) editClose.addEventListener('click', closeEditModal);
+      if (editCancel) editCancel.addEventListener('click', closeEditModal);
+
+      function badge(type) {
+        if (type === 'alert') return '<span class="px-2 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-700">Alert</span>';
+        return '<span class="px-2 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-800">Announcement</span>';
+      }
+
+      function activePill(active) {
+        return active
+          ? '<span class="px-2 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700">Active</span>'
+          : '<span class="px-2 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-700">Inactive</span>';
+      }
+
+      async function fetchAll() {
+        setStatus(tableStatus, 'Loading...', '');
+        try {
+          const res = await fetch(`${API_BASE}/api/admin/announcements/`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+          });
+          const data = await res.json().catch(() => ([]));
+          if (!res.ok) {
+            setStatus(tableStatus, 'Failed to load. ' + (data.detail || res.status), 'error');
+            return;
+          }
+
+          if (!rowsEl) return;
+          rowsEl.innerHTML = '';
+
+          if (!data || data.length === 0) {
+            rowsEl.innerHTML = '<tr><td class="py-4" colspan="5">No messages yet.</td></tr>';
+            setStatus(tableStatus, '', '');
+            return;
+          }
+
+          data.forEach((a) => {
+            const tr = document.createElement('tr');
+            tr.className = 'border-b align-top';
+
+            const safeTitle = (a.title || '').toString();
+            const safeMsg = (a.message || '').toString();
+
+            tr.innerHTML = `
+              <td class="py-3 pr-4">${badge(a.type)}</td>
+              <td class="py-3 pr-4 font-semibold">${safeTitle}</td>
+              <td class="py-3 pr-4 text-gray-700">${safeMsg}</td>
+              <td class="py-3 pr-4">${activePill(!!a.active)}</td>
+              <td class="py-3 pr-4">
+                <div class="flex flex-wrap gap-2">
+                  <button type="button" class="px-3 py-1.5 rounded-xl border font-semibold hover:bg-gray-50" data-action="edit" data-id="${a.id}">
+                    Edit
+                  </button>
+                  <button type="button" class="px-3 py-1.5 rounded-xl border font-semibold hover:bg-gray-50" data-action="toggle" data-id="${a.id}" data-active="${a.active ? '1' : '0'}">
+                    ${a.active ? 'Deactivate' : 'Activate'}
+                  </button>
+                  <button type="button" class="px-3 py-1.5 rounded-xl bg-red-600 text-white font-semibold hover:bg-red-700" data-action="delete" data-id="${a.id}">
+                    Delete
+                  </button>
+                </div>
+              </td>
+            `;
+            rowsEl.appendChild(tr);
+          });
+
+          setStatus(tableStatus, 'Loaded ' + data.length + ' messages.', 'ok');
+        } catch (e) {
+          setStatus(tableStatus, 'Error: ' + e.message, 'error');
+        }
+      }
+
+      async function toggleActive(id, makeActive) {
+        setStatus(tableStatus, 'Saving...', '');
+        try {
+          const res = await fetch(`${API_BASE}/api/admin/announcements/${id}/`, {
+            method: 'PATCH',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ active: !!makeActive })
+          });
+          const data = await res.json().catch(() => ({}));
+          if (!res.ok) {
+            setStatus(tableStatus, 'Failed: ' + (data.detail || res.status), 'error');
+            return;
+          }
+          await fetchAll();
+        } catch (e) {
+          setStatus(tableStatus, 'Error: ' + e.message, 'error');
+        }
+      }
+
+      async function deleteAnnouncement(id) {
+        setStatus(tableStatus, 'Deleting...', '');
+        try {
+          const res = await fetch(`${API_BASE}/api/admin/announcements/${id}/`, {
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${token}` }
+          });
+          if (!res.ok && res.status !== 204) {
+            const data = await res.json().catch(() => ({}));
+            setStatus(tableStatus, 'Failed: ' + (data.detail || res.status), 'error');
+            return;
+          }
+          await fetchAll();
+        } catch (e) {
+          setStatus(tableStatus, 'Error: ' + e.message, 'error');
+        }
+      }
+
+      if (rowsEl) {
+        rowsEl.addEventListener('click', function (e) {
+          const btn = e.target && e.target.closest ? e.target.closest('button[data-action]') : null;
+          if (!btn) return;
+
+          const action = btn.getAttribute('data-action');
+          const id = btn.getAttribute('data-id');
+          if (!id) return;
+
+          if (action === 'edit') {
+            const row = btn.closest('tr');
+            if (!row) return;
+
+            const titleCell = row.querySelector('td:nth-child(2)');
+            const msgCell = row.querySelector('td:nth-child(3)');
+            const typeCell = row.querySelector('td:nth-child(1)');
+            const activeCell = row.querySelector('td:nth-child(4)');
+
+            const isAlert = typeCell && typeCell.textContent && typeCell.textContent.toLowerCase().includes('alert');
+            const isActive = activeCell && activeCell.textContent && activeCell.textContent.toLowerCase().includes('active');
+
+            openEditModal({
+              id,
+              type: isAlert ? 'alert' : 'announcement',
+              title: titleCell ? titleCell.textContent : '',
+              message: msgCell ? msgCell.textContent : '',
+              active: isActive
+            });
+            return;
+          }
+
+          if (action === 'toggle') {
+            const isActive = btn.getAttribute('data-active') === '1';
+            toggleActive(id, !isActive);
+          }
+
+          if (action === 'delete') {
+            openModal('Delete this message permanently?', 'Delete', function () { return deleteAnnouncement(id); });
+          }
+        });
+      }
+
+      const refreshBtn = document.getElementById('refreshBtn');
+      if (refreshBtn) refreshBtn.addEventListener('click', fetchAll);
+
+      const form = document.getElementById('createForm');
+      if (form) {
+        form.addEventListener('submit', async function (e) {
+          e.preventDefault();
+          setStatus(formStatus, '', '');
+
+          const type = (document.getElementById('type') || {}).value || 'announcement';
+          const title = (document.getElementById('title') || {}).value || '';
+          const message = (document.getElementById('message') || {}).value || '';
+
+          if (!title.trim() || !message.trim()) {
+            setStatus(formStatus, 'Title and message are required.', 'error');
+            return;
+          }
+
+          try {
+            const res = await fetch(`${API_BASE}/api/announcements/create/`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+              },
+              body: JSON.stringify({ type, title, message })
+            });
+            const data = await res.json().catch(() => ({}));
+            if (!res.ok) {
+              setStatus(formStatus, 'Failed: ' + (data.detail || res.status), 'error');
+              return;
+            }
+
+            (document.getElementById('title') || {}).value = '';
+            (document.getElementById('message') || {}).value = '';
+            setStatus(formStatus, 'Saved successfully.', 'ok');
+            await fetchAll();
+          } catch (err) {
+            setStatus(formStatus, 'Error: ' + err.message, 'error');
+          }
+        });
+      }
+
+      if (editForm) {
+        editForm.addEventListener('submit', async function (e) {
+          e.preventDefault();
+          setStatus(editStatus, 'Saving...', '');
+
+          const id = editId ? editId.value : '';
+          const payload = {
+            type: editType ? editType.value : 'announcement',
+            title: editTitle ? editTitle.value : '',
+            message: editMessage ? editMessage.value : ''
+          };
+
+          if (!id) {
+            setStatus(editStatus, 'Missing id.', 'error');
+            return;
+          }
+          if (!payload.title.trim() || !payload.message.trim()) {
+            setStatus(editStatus, 'Title and message are required.', 'error');
+            return;
+          }
+
+          try {
+            const res = await fetch(`${API_BASE}/api/admin/announcements/${id}/`, {
+              method: 'PATCH',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+              },
+              body: JSON.stringify(payload)
+            });
+            const data = await res.json().catch(() => ({}));
+            if (!res.ok) {
+              setStatus(editStatus, 'Failed: ' + (data.detail || res.status), 'error');
+              return;
+            }
+            setStatus(editStatus, 'Message successfully edited.', 'ok');
+            await fetchAll();
+            setTimeout(closeEditModal, 700);
+          } catch (err) {
+            setStatus(editStatus, 'Error: ' + err.message, 'error');
+          }
+        });
+      }
+
+      fetchAll();
+    })();
+  </script>
+</body>
+
+</html>

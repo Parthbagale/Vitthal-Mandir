@@ -1,0 +1,48 @@
+/* Contact Page Specific Styles */
+
+/* Contact form styling */
+.contact-form {
+    background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
+}
+
+.contact-form input:focus,
+.contact-form select:focus,
+.contact-form textarea:focus {
+    border-color: var(--brand-saffron);
+    box-shadow: 0 0 0 3px rgba(255, 122, 0, 0.1);
+}
+
+/* Contact info cards */
+.contact-info-card {
+    transition: all 0.3s ease;
+}
+
+.contact-info-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+}
+
+.contact-info-card .icon-circle {
+    transition: transform 0.3s ease;
+}
+
+.contact-info-card:hover .icon-circle {
+    transform: rotate(360deg);
+}
+
+/* Map container */
+.map-container {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Guidelines list */
+.guidelines-list li {
+    padding-left: 8px;
+    transition: transform 0.2s ease;
+}
+
+.guidelines-list li:hover {
+    transform: translateX(4px);
+}

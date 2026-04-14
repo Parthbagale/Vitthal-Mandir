@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Aadhaar Validation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-100 p-8">
+    <div class="max-w-2xl mx-auto">
+        <div class="bg-white rounded-lg shadow-lg p-8">
+            <h1 class="text-2xl font-bold mb-6">Aadhaar Validation Test</h1>
+            
+            <div id="status" class="mb-6 p-4 rounded-lg bg-gray-50">
+                <p class="text-gray-600">Checking your Aadhaar status...</p>
+            </div>
+
+            <div class="space-y-4">
+                <button onclick="checkAadhaar()" class="w-full bg-blue-500 text-white py-3 rounded-lg hover:bg-blue-600">
+                    <i class="fas fa-sync mr-2"></i>Check Aadhaar Status
+                </button>
+                
+                <button onclick="testPassBooking()" class="w-full bg-orange-500 text-white py-3 rounded-lg hover:bg-orange-600">
+                    <i class="fas fa-ticket-alt mr-2"></i>Test Pass Booking (Without Aadhaar)
+                </button>
+
+                <button onclick="goToProfile()" class="w-full bg-green-500 text-white py-3 rounded-lg hover:bg-green-600">
+                    <i class="fas fa-user-edit mr-2"></i>Go to Profile (Add Aadhaar)
+                </button>
+            </div>
+
+            <div id="response" class="mt-6 p-4 rounded-lg bg-gray-50 hidden">
+                <h3 class="font-semibold mb-2">API Response:</h3>
+                <pre id="responseText" class="text-xs overflow-auto"></pre>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://127.0.0.1:8000';
+
+        async function checkAadhaar() {
+            const statusDiv = document.getElementById('status');
+            const accessToken = localStorage.getItem('accessToken') || localStorage.getItem('access_token');
+            
+            if (!accessToken) {
+                statusDiv.innerHTML = `
+                    <div class="bg-red-50 border border-red-200 rounded p-4">
+                        <p class="text-red-800"><i class="fas fa-times-circle mr-2"></i>Not logged in. Please login first.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            statusDiv.innerHTML = '<p class="text-gray-600"><i class="fas fa-spinner fa-spin mr-2"></i>Checking...</p>';
+
+            try {
+                const response = await fetch(`${API_BASE}/api/auth/profile/`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    const user = data.user || data;
+                    
+                    if (user.aadhaar) {
+                        statusDiv.innerHTML = `
+                            <div class="bg-green-50 border border-green-200 rounded p-4">
+                                <p class="text-green-800 font-semibold"><i class="fas fa-check-circle mr-2"></i>Aadhaar Found!</p>
+                                <p class="text-green-700 text-sm mt-2">Aadhaar: ${user.aadhaar}</p>
+                                <p class="text-green-600 text-sm mt-1">✅ You can make bookings</p>
+                            </div>
+                        `;
+                    } else {
+                        statusDiv.innerHTML = `
+                            <div class="bg-yellow-50 border border-yellow-200 rounded p-4">
+                                <p class="text-yellow-800 font-semibold"><i class="fas fa-exclamation-triangle mr-2"></i>No Aadhaar Found</p>
+                                <p class="text-yellow-700 text-sm mt-2">You need to add your Aadhaar number to make bookings.</p>
+                                <button onclick="goToProfile()" class="mt-3 bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600">
+                                    Add Aadhaar Now
+                                </button>
+                            </div>
+                        `;
+                    }
+                } else {
+                    statusDiv.innerHTML = `
+                        <div class="bg-red-50 border border-red-200 rounded p-4">
+                            <p class="text-red-800"><i class="fas fa-times-circle mr-2"></i>Error: ${response.status}</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                statusDiv.innerHTML = `
+                    <div class="bg-red-50 border border-red-200 rounded p-4">
+                        <p class="text-red-800"><i class="fas fa-times-circle mr-2"></i>Network Error: ${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        async function testPassBooking() {
+            const responseDiv = document.getElementById('response');
+            const responseText = document.getElementById('responseText');
+            const accessToken = localStorage.getItem('accessToken') || localStorage.getItem('access_token');
+            
+            if (!accessToken) {
+                alert('Please login first');
+                return;
+            }
+
+            responseDiv.classList.remove('hidden');
+            responseText.textContent = 'Sending request...';
+
+            try {
+                const formData = new FormData();
+                formData.append('full_name', 'Test User');
+                formData.append('email', 'test@test.com');
+                formData.append('mobile', '9876543210');
+                formData.append('gender', 'Male');
+                formData.append('darshan_date', '2026-05-01');
+                formData.append('slot', '06:00 AM - 09:00 AM');
+                formData.append('children_count', '0');
+
+                const response = await fetch(`${API_BASE}/api/bookings/passes/`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`
+                    },
+                    body: formData
+                });
+
+                const data = await response.json();
+                
+                responseText.textContent = JSON.stringify({
+                    status: response.status,
+                    statusText: response.statusText,
+                    data: data
+                }, null, 2);
+
+                if (response.status === 400 && data.detail && data.detail.includes('Aadhaar')) {
+                    responseDiv.className = 'mt-6 p-4 rounded-lg bg-green-50 border border-green-200';
+                    alert('✅ SUCCESS! Aadhaar validation is working!\n\n' + data.detail);
+                } else if (response.ok) {
+                    responseDiv.className = 'mt-6 p-4 rounded-lg bg-blue-50 border border-blue-200';
+                    alert('Booking created (you have Aadhaar)');
+                } else {
+                    responseDiv.className = 'mt-6 p-4 rounded-lg bg-red-50 border border-red-200';
+                }
+            } catch (error) {
+                responseText.textContent = 'Error: ' + error.message;
+                responseDiv.className = 'mt-6 p-4 rounded-lg bg-red-50 border border-red-200';
+            }
+        }
+
+        function goToProfile() {
+            window.location.href = 'templates/profile.html';
+        }
+
+        // Auto-check on load
+        window.addEventListener('DOMContentLoaded', checkAadhaar);
+    </script>
+</body>
+</html>

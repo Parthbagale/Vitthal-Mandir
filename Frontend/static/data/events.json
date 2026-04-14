@@ -1,0 +1,111 @@
+{
+  "meta": {
+    "source": "Manual seed; extend as needed",
+    "timezone": "Asia/Kolkata",
+    "notes": "Dates that follow the lunar calendar (e.g., Ekadashi) vary yearly; verify yearly and update."
+  },
+  "events": [
+    { "date": "2025-01-01", "title": "New Year", "type": "celebration" },
+    { "date": "2025-01-14", "title": "Makar Sankranti / Pongal / Uttarayan / Magh Bihu", "type": "festival" },
+    { "date": "2025-01-26", "title": "Republic Day", "type": "national" },
+
+    { "date": "2025-02-26", "title": "Maha Shivaratri", "type": "festival" },
+
+    { "date": "2025-03-14", "title": "Holi (Dhulandi)", "type": "festival" },
+    { "date": "2025-03-13", "title": "Holika Dahan", "type": "festival" },
+    { "date": "2025-03-30", "title": "Rama Navami", "type": "festival" },
+
+    { "date": "2025-04-18", "title": "Hanuman Jayanti", "type": "festival" },
+    { "date": "2025-04-14", "title": "Dr. Ambedkar Jayanti / Baisakhi / Puthandu / Vishu / Pohela Boishakh", "type": "festival" },
+
+    { "date": "2025-08-15", "title": "Independence Day", "type": "national" },
+    { "date": "2025-08-27", "title": "Ganesh Chaturthi", "type": "festival" },
+
+    { "date": "2025-10-02", "title": "Gandhi Jayanti", "type": "national" },
+    { "date": "2025-10-02", "title": "Navaratri Begins (approx)", "type": "festival" },
+    { "date": "2025-10-10", "title": "Dussehra (Vijayadashami)", "type": "festival" },
+
+    { "date": "2025-10-20", "title": "Karva Chauth", "type": "festival" },
+
+    { "date": "2025-10-21", "title": "Dhanteras (approx)", "type": "festival" },
+    { "date": "2025-10-22", "title": "Naraka Chaturdashi (Chhoti Diwali)", "type": "festival" },
+    { "date": "2025-10-23", "title": "Diwali / Lakshmi Puja (approx)", "type": "festival" },
+    { "date": "2025-10-24", "title": "Govardhan Puja / Annakut", "type": "festival" },
+    { "date": "2025-10-25", "title": "Bhai Dooj", "type": "festival" },
+
+    { "date": "2025-11-01", "title": "Chhath Puja (Sanjh Arghya)", "type": "festival", "region": "Bihar/UP" },
+    { "date": "2025-11-02", "title": "Chhath Puja (Suryodaya Arghya)", "type": "festival", "region": "Bihar/UP" },
+
+    { "date": "2025-12-25", "title": "Christmas", "type": "celebration" },
+
+    { "date": "2025-07-08", "title": "Rath Yatra", "type": "festival" },
+
+    { "date": "2025-08-09", "title": "Naag Panchami (approx)", "type": "festival" },
+    { "date": "2025-08-18", "title": "Raksha Bandhan", "type": "festival" },
+    { "date": "2025-08-27", "title": "Janmashtami (Smarta)", "type": "festival" },
+
+    { "date": "2025-09-06", "title": "Onam (Thiruvonam)", "type": "festival", "region": "Kerala" },
+
+    { "date": "2025-03-30", "title": "Gudi Padwa / Ugadi (Lunar New Year)", "type": "festival" },
+
+    { "date": "2025-04-06", "title": "Mahavir Jayanti", "type": "festival" },
+
+    { "date": "2025-05-12", "title": "Buddha Purnima", "type": "festival" },
+
+    { "date": "2025-11-06", "title": "Guru Nanak Jayanti (Gurpurab)", "type": "festival" },
+
+    { "date": "2025-08-31", "title": "Teachers' Day (Sep 5 observed in schools)", "type": "observance" },
+
+    { "date": "2025-01-26", "title": "Vasant Panchami (approx Feb 1, variable)", "type": "festival" },
+
+    { "date": "2025-01-09", "title": "Putrada Ekadashi", "type": "ekadashi" },
+    { "date": "2025-01-24", "title": "Shattila Ekadashi", "type": "ekadashi" },
+    { "date": "2025-02-08", "title": "Jaya Ekadashi", "type": "ekadashi" },
+    { "date": "2025-02-24", "title": "Vijaya Ekadashi", "type": "ekadashi" },
+    { "date": "2025-03-10", "title": "Amalaki Ekadashi", "type": "ekadashi" },
+    { "date": "2025-03-26", "title": "Papmochani Ekadashi", "type": "ekadashi" },
+    { "date": "2025-04-09", "title": "Kamada Ekadashi", "type": "ekadashi" },
+    { "date": "2025-04-24", "title": "Varuthini Ekadashi", "type": "ekadashi" },
+    { "date": "2025-05-09", "title": "Mohini Ekadashi", "type": "ekadashi" },
+    { "date": "2025-05-24", "title": "Apara Ekadashi", "type": "ekadashi" },
+    { "date": "2025-06-07", "title": "Nirjala Ekadashi", "type": "ekadashi" },
+    { "date": "2025-06-23", "title": "Yogini Ekadashi", "type": "ekadashi" },
+    { "date": "2025-07-07", "title": "Devshayani (Ashadhi) Ekadashi", "type": "ekadashi" },
+    { "date": "2025-07-22", "title": "Kamika Ekadashi", "type": "ekadashi" },
+    { "date": "2025-08-06", "title": "Putrada (Shravana) Ekadashi", "type": "ekadashi" },
+    { "date": "2025-08-21", "title": "Aja Ekadashi", "type": "ekadashi" },
+    { "date": "2025-09-04", "title": "Parsva (Vamana) Ekadashi", "type": "ekadashi" },
+    { "date": "2025-09-20", "title": "Indira Ekadashi", "type": "ekadashi" },
+    { "date": "2025-10-04", "title": "Papankusha Ekadashi", "type": "ekadashi" },
+    { "date": "2025-10-20", "title": "Rama Ekadashi", "type": "ekadashi" },
+    { "date": "2025-11-03", "title": "Devutthana (Prabodhini) Ekadashi", "type": "ekadashi" },
+    { "date": "2025-11-19", "title": "Utpanna Ekadashi", "type": "ekadashi" },
+    { "date": "2025-12-03", "title": "Mokshada Ekadashi", "type": "ekadashi" },
+    { "date": "2025-12-19", "title": "Saphala Ekadashi", "type": "ekadashi" },
+
+    { "date": "2026-01-14", "title": "Shattila Ekadashi", "type": "ekadashi" },
+    { "date": "2026-01-29", "title": "Jaya Ekadashi", "type": "ekadashi" },
+    { "date": "2026-02-13", "title": "Vijaya Ekadashi", "type": "ekadashi" },
+    { "date": "2026-02-27", "title": "Amalaki Ekadashi", "type": "ekadashi" },
+    { "date": "2026-03-15", "title": "Papamochani Ekadashi", "type": "ekadashi" },
+    { "date": "2026-03-29", "title": "Kamada Ekadashi", "type": "ekadashi" },
+    { "date": "2026-04-13", "title": "Varuthini Ekadashi", "type": "ekadashi" },
+    { "date": "2026-04-27", "title": "Mohini Ekadashi", "type": "ekadashi" },
+    { "date": "2026-05-13", "title": "Apara Ekadashi", "type": "ekadashi" },
+    { "date": "2026-05-27", "title": "Padmini Ekadashi", "type": "ekadashi" },
+    { "date": "2026-06-11", "title": "Parama Ekadashi", "type": "ekadashi" },
+    { "date": "2026-06-25", "title": "Nirjala Ekadashi", "type": "ekadashi" },
+    { "date": "2026-07-10", "title": "Yogini / Vaishnava Yogini Ekadashi", "type": "ekadashi" },
+    { "date": "2026-07-25", "title": "Devshayani / Shayani Ekadashi (Ashadi Ekadashi)", "type": "ekadashi" },
+    { "date": "2026-08-09", "title": "Kamika Ekadashi", "type": "ekadashi" },
+    { "date": "2026-08-23", "title": "Shravana Putrada Ekadashi", "type": "ekadashi" },
+    { "date": "2026-09-06", "title": "Aja Ekadashi", "type": "ekadashi" },
+    { "date": "2026-09-21", "title": "Parsva Ekadashi", "type": "ekadashi" },
+    { "date": "2026-10-06", "title": "Indira Ekadashi", "type": "ekadashi" },
+    { "date": "2026-10-21", "title": "Papankusha Ekadashi", "type": "ekadashi" },
+    { "date": "2026-11-05", "title": "Rama Ekadashi (Prabodhini begins)", "type": "ekadashi" },
+    { "date": "2026-11-20", "title": "Utthana / Prabodhini Ekadashi (Kartiki Ekadashi period)", "type": "ekadashi" },
+    { "date": "2026-12-04", "title": "Pashankusha Ekadashi", "type": "ekadashi" },
+    { "date": "2026-12-20", "title": "Mokshada / Vaikuntha Ekadashi", "type": "ekadashi" }
+  ]
+}

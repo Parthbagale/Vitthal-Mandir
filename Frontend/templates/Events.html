@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Upcoming Events - Shri Vitthal Rukmini Mandir, Pandharpur</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web@2.1.1/dist/phosphor.js" defer></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="/static/css/styles.css?v=3">
+</head>
+
+<body class="bg-gray-100 text-gray-800">
+    {% include 'navbar.html' %}
+
+    <main class="py-12 md:py-16">
+        <section class="container mx-auto px-6">
+            <div class="text-center mb-10">
+                <h1 class="text-4xl md:text-5xl font-bold text-gray-900 font-playfair mb-4">Upcoming Events</h1>
+                <p class="text-lg text-gray-600 max-w-2xl mx-auto">All upcoming events and festivals related to Shri Vitthal Rukmini Mandir, Pandharpur.</p>
+            </div>
+
+            <div class="max-w-4xl mx-auto bg-white rounded-2xl shadow-lg p-6 md:p-8">
+                <div id="all-events-list" class="space-y-4">
+                    <div class="text-gray-600 text-sm">Loading upcoming events...</div>
+                </div>
+            </div>
+
+            <div class="text-center mt-8">
+                <a href="/index.html#events" class="inline-flex items-center gap-2 bg-orange-100 text-orange-700 border border-orange-200 py-3 px-8 rounded-full font-semibold text-lg hover:bg-orange-200 hover:border-orange-300 transition duration-300 shadow-sm">
+                    <i class="ph ph-arrow-left"></i>
+                    Back to Home
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        (function () {
+            const listEl = document.getElementById('all-events-list');
+
+            function startOfTodayLocal() {
+                const d = new Date();
+                d.setHours(0, 0, 0, 0);
+                return d;
+            }
+
+            function parseISODateLocal(isoDate) {
+                const m = /^([0-9]{4})-([0-9]{2})-([0-9]{2})$/.exec(String(isoDate || ''));
+                if (!m) return null;
+                const year = Number(m[1]);
+                const monthIndex = Number(m[2]) - 1;
+                const day = Number(m[3]);
+                const d = new Date(year, monthIndex, day);
+                d.setHours(0, 0, 0, 0);
+                return d;
+            }
+
+            function monthLabel(d) {
+                return d.toLocaleString('en-US', { month: 'short' }).toUpperCase();
+            }
+
+            function formatFullDate(d) {
+                return d.toLocaleDateString('en-US', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+            }
+
+            function typeStyles(type) {
+                const t = (type || '').toLowerCase();
+                if (t === 'national') return { bg: 'from-blue-100 to-indigo-100', border: 'border-blue-500', chip: 'bg-blue-500' };
+                if (t === 'observance') return { bg: 'from-gray-100 to-slate-100', border: 'border-slate-500', chip: 'bg-slate-600' };
+                if (t === 'celebration') return { bg: 'from-green-100 to-emerald-100', border: 'border-emerald-500', chip: 'bg-emerald-600' };
+                if (t === 'ekadashi') return { bg: 'from-purple-100 to-pink-100', border: 'border-purple-500', chip: 'bg-purple-500' };
+                return { bg: 'from-orange-100 to-yellow-100', border: 'border-primary', chip: 'bg-primary' };
+            }
+
+            async function loadAndRender() {
+                if (!listEl) return;
+
+                try {
+                    const resp = await fetch('/static/data/events.json', { cache: 'no-store' });
+                    const json = resp.ok ? await resp.json() : {};
+                    const list = Array.isArray(json.events) ? json.events : [];
+
+                    const today = startOfTodayLocal();
+                    const upcoming = list
+                        .map(e => ({
+                            meta: e,
+                            date: parseISODateLocal(e?.date)
+                        }))
+                        .filter(x => x.meta && x.date && x.date.getTime() >= today.getTime() && x.meta.title)
+                        .sort((a, b) => a.date.getTime() - b.date.getTime());
+
+                    if (!upcoming.length) {
+                        listEl.innerHTML = '<div class="text-gray-600 text-sm">No upcoming events scheduled.</div>';
+                        return;
+                    }
+
+                    listEl.innerHTML = upcoming.map(item => {
+                        const d = item.date;
+                        const styles = typeStyles(item.meta?.type);
+                        const day = String(d.getDate()).padStart(2, '0');
+                        const mon = monthLabel(d);
+                        const title = item.meta?.title || '';
+                        const type = item.meta?.type || 'festival';
+                        const region = item.meta?.region;
+                        const fullDate = formatFullDate(d);
+
+                        return `
+                            <div class="event-card bg-gradient-to-r ${styles.bg} p-5 rounded-xl border-l-4 ${styles.border}">
+                                <div class="flex items-start gap-4">
+                                    <div class="${styles.chip} text-white rounded-lg p-3 text-center min-w-[72px]">
+                                        <div class="text-xs font-semibold">${mon}</div>
+                                        <div class="text-2xl font-bold leading-tight">${day}</div>
+                                    </div>
+                                    <div class="flex-1">
+                                        <div class="flex items-start justify-between gap-4">
+                                            <div>
+                                                <h3 class="text-xl font-semibold text-gray-900">${title}</h3>
+                                                <p class="text-sm text-gray-600">${type}${region ? ` • ${region}` : ''}</p>
+                                                <p class="text-sm text-gray-700 mt-2"><i class="fas fa-calendar-day mr-2 text-gray-500"></i>${fullDate}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                } catch (_) {
+                    if (listEl) listEl.innerHTML = '<div class="text-gray-600 text-sm">No upcoming events scheduled.</div>';
+                }
+            }
+
+            loadAndRender();
+        })();
+    </script>
+
+    <script src="/static/js/script_fixed.js?v=4"></script>
+
+    {% include 'footer.html' %}
+</body>
+</html>

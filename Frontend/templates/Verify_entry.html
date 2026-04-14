@@ -1,0 +1,400 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Verification - Admin Panel</title>
+  <!-- Tailwind CSS and common fonts/icons to match main site -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/@phosphor-icons/web@2.1.1/dist/phosphor.js" defer></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="/static/css/styles.css?v=3" />
+  <style>
+    body {
+      background: radial-gradient(1200px 600px at 10% 0%, rgba(255,122,0,0.10), transparent 55%),
+                  radial-gradient(900px 500px at 90% 20%, rgba(245,158,11,0.08), transparent 60%),
+                  linear-gradient(180deg, #0b0f1a, #070a12);
+      color: #e5e7eb;
+    }
+    .verify-container { max-width: 960px; margin: 24px auto; padding: 16px; }
+    .panel { background: rgba(17,24,39,0.72); border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; box-shadow: 0 18px 60px rgba(0,0,0,0.45); padding: 24px; }
+    .controls { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+    .controls input[type="text"],
+    .controls select{
+      background: rgba(2,6,23,0.7);
+      color: #e5e7eb;
+      color-scheme: dark;
+      padding: 10px 12px;
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 10px;
+      min-width: 260px;
+      outline: none;
+    }
+    .controls select{ background: #ffffff; color: #111827; color-scheme: light; }
+    .controls select option{ background: #ffffff; color: #111827; }
+    .controls select option:disabled{ color: rgba(107,114,128,0.8); }
+    .controls select{ min-width: unset; }
+    .controls input[type="text"]{ background: #ffffff; color: #111827; }
+    .controls input[type="text"]::placeholder{ color: rgba(107,114,128,0.8); }
+    .controls input[type="text"]:focus,
+    .controls select:focus{ border-color: rgba(249,115,22,0.55); box-shadow: 0 0 0 4px rgba(249,115,22,0.12); }
+    .btn { cursor: pointer; border: none; padding: 10px 14px; border-radius: 8px; font-weight: 600; transition: all 0.2s; }
+    .btn-primary { background: #f97316; color: #fff; }
+    .btn-primary:hover { background: #ea580c; }
+    .btn-neutral { background: rgba(148,163,184,0.18); color: #e5e7eb; border: 1px solid rgba(255,255,255,0.10); }
+    .btn-neutral:hover { background: rgba(148,163,184,0.26); }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .media { background: #0b0f1a; border-radius: 12px; overflow: hidden; aspect-ratio: 4/3; display: flex; align-items: center; justify-content: center; }
+    video, img { max-width: 100%; height: auto; }
+    .status { margin-top: 16px; padding: 12px; border-radius: 10px; display: none; }
+    .status.ok { display: block; background: #ecfdf5; color: #065f46; border: 1px solid #10b981; }
+    .status.err { display: block; background: #fef2f2; color: #991b1b; border: 1px solid #ef4444; }
+    .muted { color: rgba(203,213,225,0.78); font-size: 0.9rem; }
+    .page-title { font-size: 2rem; font-weight: 800; color: #f8fafc; margin-bottom: 8px; letter-spacing: 0.2px; }
+  </style>
+  <script src="/static/js/auth.js"></script>
+  <script>
+    // Enforce admin auth on load
+    (function(){
+      if (typeof requireAdminAuth === 'function') {
+        requireAdminAuth({ redirectTo: 'Admin_login.html', message: 'Please login as admin to access verification.' });
+      }
+    })();
+  </script>
+</head>
+<body>
+  <!-- Admin Navigation -->
+  <div id="admin-navbar-container"></div>
+
+  <div class="verify-container">
+    <h1 class="page-title">Verification</h1>
+    <p class="muted">Select service, enter the Booking ID and capture a live face image from the webcam to verify.</p>
+
+    <div class="panel">
+      <div class="controls">
+        <select id="serviceType" class="border rounded-md p-2" aria-label="Service">
+          <option value="pass">Pass Booking</option>
+          <option value="pooja">Pooja Services</option>
+          <option value="bhaktnivas">Bhakta Nivas</option>
+        </select>
+        <input id="bookingId" type="text" placeholder="Enter Booking ID (e.g., BKXXXXXXXXXX)" />
+        <button id="startCam" class="btn btn-neutral">Start Camera</button>
+        <button id="capture" class="btn btn-neutral">Capture</button>
+        <button id="verify" class="btn btn-primary">Verify</button>
+      </div>
+
+      <div class="grid" style="margin-top: 16px;">
+        <div>
+          <div class="media">
+            <video id="video" autoplay playsinline></video>
+          </div>
+          <p class="muted" style="margin-top:8px">Live Camera</p>
+        </div>
+        <div>
+          <div class="media" style="background:#111827;">
+            <img id="preview" alt="Captured frame will appear here" />
+          </div>
+          <p class="muted" style="margin-top:8px">Captured Image</p>
+        </div>
+      </div>
+
+      <div id="status" class="status" role="status"></div>
+
+      <div id="detailsPanel" class="mt-4 hidden">
+        <div class="text-sm font-semibold text-gray-100 mb-2">Booking Details</div>
+        <div id="bookingDetails" class="text-sm text-gray-200"></div>
+      </div>
+
+      <canvas id="canvas" width="640" height="480" style="display:none"></canvas>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = localStorage.getItem('API_BASE') || 'http://127.0.0.1:8000';
+
+    const serviceTypeEl = document.getElementById('serviceType');
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const preview = document.getElementById('preview');
+    const startCamBtn = document.getElementById('startCam');
+    const captureBtn = document.getElementById('capture');
+    const verifyBtn = document.getElementById('verify');
+    const bookingIdEl = document.getElementById('bookingId');
+    const statusEl = document.getElementById('status');
+    const detailsPanelEl = document.getElementById('detailsPanel');
+    const bookingDetailsEl = document.getElementById('bookingDetails');
+
+    let stream = null;
+    let capturedDataUrl = '';
+
+    (function applyServiceFromQuery(){
+      try {
+        const params = new URLSearchParams(window.location.search || '');
+        const svc = (params.get('service') || '').toLowerCase().trim();
+        if (!svc) return;
+        if (serviceTypeEl && (svc === 'pass' || svc === 'pooja' || svc === 'bhaktnivas')) {
+          serviceTypeEl.value = svc;
+        }
+      } catch (_) {}
+    })();
+
+    function setStatus(type, message){
+      statusEl.className = 'status ' + (type === 'ok' ? 'ok' : 'err');
+      statusEl.textContent = message;
+    }
+
+    function setDetails(details) {
+      if (!detailsPanelEl || !bookingDetailsEl) return;
+      if (!details) {
+        detailsPanelEl.classList.add('hidden');
+        bookingDetailsEl.innerHTML = '';
+        return;
+      }
+
+      const svc = details.service;
+      const row = (label, value) => {
+        const v = (value === null || value === undefined || value === '') ? '-' : String(value);
+        return `<div class="flex gap-3 py-1 border-b border-gray-100"><div class="w-40 text-gray-500">${label}</div><div class="text-gray-900 font-medium">${v}</div></div>`;
+      };
+
+      const blocks = [];
+      blocks.push(row('Purpose', details.purpose));
+      blocks.push(row('Booking ID', details.booking_id));
+      blocks.push(row('Name', details.full_name));
+      blocks.push(row('Mobile', details.mobile));
+      blocks.push(row('Email', details.email));
+
+      if (svc === 'pass') {
+        blocks.push(row('Darshan Date', details.darshan_date));
+        blocks.push(row('Slot', details.slot));
+        blocks.push(row('Gender', details.gender));
+      } else if (svc === 'pooja') {
+        blocks.push(row('Pooja Type', details.pooja_type));
+        blocks.push(row('Preferred Date', details.preferred_date));
+      } else if (svc === 'bhaktnivas') {
+        blocks.push(row('Room Type', details.room_type));
+        blocks.push(row('AC Type', details.ac_type));
+        blocks.push(row('People Count', details.people_count));
+        blocks.push(row('Gender', details.gender));
+        blocks.push(row('Members', details.member_names));
+        blocks.push(row('Check-in Date', details.checkin_date));
+        blocks.push(row('Check-in Time', details.checkin_time));
+        blocks.push(row('Check-out Date', details.checkout_date));
+        blocks.push(row('Check-out Time', details.checkout_time));
+      }
+
+      bookingDetailsEl.innerHTML = `<div class="border rounded-lg bg-white">${blocks.join('')}</div>`;
+      detailsPanelEl.classList.remove('hidden');
+    }
+
+    function getServiceConfig(serviceKey) {
+      if (serviceKey === 'pooja') {
+        return {
+          key: 'pooja',
+          endpoint: `${API_BASE}/api/booking/poojas/verify-face/`,
+          placeholder: 'Enter Pooja Booking ID (e.g., PJXXXXXXXXXX)',
+          verifyLabel: 'Verify Pooja'
+        };
+      }
+      if (serviceKey === 'bhaktnivas') {
+        return {
+          key: 'bhaktnivas',
+          endpoint: `${API_BASE}/api/booking/bhaktnivas/verify-face/`,
+          placeholder: 'Enter Bhakta Nivas Booking ID (e.g., BNXXXXXXXXXX)',
+          verifyLabel: 'Verify Bhakta Nivas'
+        };
+      }
+      return {
+        key: 'pass',
+        endpoint: `${API_BASE}/api/booking/passes/verify-face/`,
+        placeholder: 'Enter Booking ID (e.g., BKXXXXXXXXXX)',
+        verifyLabel: 'Verify Pass'
+      };
+    }
+
+    function applyServiceUI() {
+      const cfg = getServiceConfig(serviceTypeEl.value);
+      bookingIdEl.placeholder = cfg.placeholder;
+      verifyBtn.textContent = cfg.verifyLabel;
+      setDetails(null);
+      setStatus('ok', '');
+      statusEl.className = 'status';
+    }
+
+    async function startCamera(){
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: false });
+        video.srcObject = stream;
+        setStatus('ok', 'Camera started.');
+      } catch (e) {
+        setStatus('err', 'Failed to start camera: ' + e.message);
+      }
+    }
+
+    function captureFrame(){
+      if(!stream){ setStatus('err','Camera is not started.'); return; }
+      const ctx = canvas.getContext('2d');
+      const w = video.videoWidth || 640;
+      const h = video.videoHeight || 480;
+      canvas.width = w; canvas.height = h;
+      ctx.drawImage(video, 0, 0, w, h);
+      capturedDataUrl = canvas.toDataURL('image/jpeg', 0.9);
+      preview.src = capturedDataUrl;
+      setStatus('ok', 'Captured image ready for verification.');
+    }
+
+    function pad2(n){ return String(n).padStart(2,'0'); }
+
+    function parseDateYMD(s){
+      const m = /^\s*(\d{4})-(\d{2})-(\d{2})\s*$/.exec(String(s || ''));
+      if (!m) return null;
+      const y = Number(m[1]), mo = Number(m[2]) - 1, d = Number(m[3]);
+      const dt = new Date(y, mo, d);
+      if (isNaN(dt.getTime())) return null;
+      return dt;
+    }
+
+    function parseTime12hToMinutes(s){
+      const m = /^\s*(\d{1,2}):(\d{2})\s*(AM|PM)\s*$/i.exec(String(s || ''));
+      if (!m) return null;
+      let hh = Number(m[1]);
+      const mm = Number(m[2]);
+      const ap = m[3].toUpperCase();
+      if (hh < 1 || hh > 12 || mm < 0 || mm > 59) return null;
+      if (hh === 12) hh = 0;
+      let mins = hh * 60 + mm;
+      if (ap === 'PM') mins += 12 * 60;
+      return mins;
+    }
+
+    function parseSlotRange(slotStr){
+      const m = /^\s*(.+?)\s*-\s*(.+?)\s*$/.exec(String(slotStr || ''));
+      if (!m) return null;
+      const start = parseTime12hToMinutes(m[1]);
+      const end = parseTime12hToMinutes(m[2]);
+      if (start === null || end === null) return null;
+      return { start, end };
+    }
+
+    function getPassSlotStatus(details){
+      const darshanDate = parseDateYMD(details && details.darshan_date);
+      const slot = parseSlotRange(details && details.slot);
+      if (!darshanDate || !slot) return null;
+
+      const now = new Date();
+      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      const targetDay = new Date(darshanDate.getFullYear(), darshanDate.getMonth(), darshanDate.getDate());
+
+      const dayDiff = targetDay.getTime() - today.getTime();
+      if (dayDiff > 0) {
+        return { ok: false, message: 'This is not your time slot. Your darshan date is not today.' };
+      }
+      if (dayDiff < 0) {
+        return { ok: false, message: 'Your time slot is over.' };
+      }
+
+      const nowMin = now.getHours() * 60 + now.getMinutes();
+      if (nowMin < slot.start) {
+        return { ok: false, message: 'This is not your time slot.' };
+      }
+      if (nowMin > slot.end) {
+        return { ok: false, message: 'Your time slot is over.' };
+      }
+      return { ok: true, message: 'Face verified and you are within your time slot.' };
+    }
+
+    async function verifyBooking(){
+      const booking_id = (bookingIdEl.value || '').trim();
+      if(!booking_id){ setStatus('err','Please enter a valid Booking ID.'); return; }
+      if(!capturedDataUrl){ setStatus('err','Please capture an image first.'); return; }
+
+      try{
+        const cfg = getServiceConfig(serviceTypeEl.value);
+        const resp = await fetch(cfg.endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ booking_id, image_data_url: capturedDataUrl })
+        });
+        const data = await resp.json().catch(() => ({}));
+        if(!resp.ok){
+          if (resp.status === 409 && data && data.detail) {
+            setStatus('err', data.detail);
+            if (data && data.booking_details) setDetails(data.booking_details);
+            return;
+          }
+          setStatus('err', (data && data.detail) ? ('Verification failed: ' + data.detail) : 'Verification failed.');
+          setDetails(null);
+          return;
+        }
+
+        if (data && data.booking_details) {
+          setDetails(data.booking_details);
+        } else {
+          setDetails(null);
+        }
+
+        if (data.match) {
+          // Check if entry was already used (for pooja services)
+          if (data.entry_used === true) {
+            setStatus('err', data.entry_message || 'User already exists with the same face and booking ID.');
+            return;
+          }
+          
+          if (data.entry_allowed === true) {
+            setStatus('ok', data.entry_message || 'Entry allowed.');
+          } else if (data.entry_allowed === false) {
+            setStatus('err', data.entry_message || 'Entry not allowed.');
+          } else {
+            const details = data && data.booking_details;
+            if (details && details.service === 'pass') {
+              const slotStatus = getPassSlotStatus(details);
+              if (slotStatus && !slotStatus.ok) {
+                setStatus('err', slotStatus.message);
+              } else if (slotStatus && slotStatus.ok) {
+                setStatus('ok', slotStatus.message);
+              } else {
+                setStatus('ok', `Match confirmed. Verification passed. (distance=${data.distance?.toFixed?.(4)}, threshold=${data.threshold?.toFixed?.(4)})`);
+              }
+            } else {
+              setStatus('ok', `Match confirmed. Verification passed. (distance=${data.distance?.toFixed?.(4)}, threshold=${data.threshold?.toFixed?.(4)})`);
+            }
+          }
+        } else {
+          // Check if entry was already used even when face doesn't match (shouldn't happen but handle it)
+          if (data.entry_used === true) {
+            setStatus('err', data.entry_message || 'User already exists with the same face and booking ID.');
+          } else {
+            setStatus('err', `Face did not match. Verification failed. (distance=${data.distance?.toFixed?.(4)}, threshold=${data.threshold?.toFixed?.(4)})`);
+          }
+        }
+      } catch(e){
+        setStatus('err', 'Network error: ' + e.message);
+        setDetails(null);
+      }
+    }
+
+    startCamBtn.addEventListener('click', startCamera);
+    captureBtn.addEventListener('click', captureFrame);
+    verifyBtn.addEventListener('click', verifyBooking);
+
+    serviceTypeEl.addEventListener('change', applyServiceUI);
+
+    (function initServiceFromQuery(){
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const svc = (params.get('service') || '').toLowerCase();
+        if (svc === 'pass' || svc === 'pooja' || svc === 'bhaktnivas') {
+          serviceTypeEl.value = svc;
+        }
+      } catch(_) {}
+      applyServiceUI();
+    })();
+
+    // Optional: auto-start camera on load
+    // startCamera();
+  </script>
+
+  <script src="/static/js/admin-mount-navbar.js?v=1"></script>
+</body>
+</html>

@@ -1,0 +1,61 @@
+﻿<!-- Admin Navigation Sidebar -->
+<link rel="stylesheet" href="/static/css/admin-navbar.css?v=1" />
+
+<aside id="admin-header" class="fixed left-0 top-0 z-50 h-screen w-72 bg-gradient-to-b from-gray-950 via-gray-900 to-black border-r border-white/10 shadow-2xl" role="banner" aria-label="Admin Sidebar">
+  <div class="h-full flex flex-col">
+    <div class="px-6 pt-8 pb-6 border-b border-white/10">
+      <div class="flex flex-col items-center text-center">
+        <img src="images/mandir logo.jpg" alt="Vitthal Mandir logo" class="rounded-full border-2 border-white/80 shadow-md" loading="lazy" width="78" height="78" />
+        <a href="Admin_home.html" class="mt-4 text-2xl font-extrabold text-white font-playfair tracking-wide hover:text-gray-200 transition">Admin Panel</a>
+        <div class="text-sm text-gray-300">Verification System</div>
+      </div>
+    </div>
+
+    <div class="admin-sidebar-scroll flex-1 overflow-y-auto">
+      <div class="px-6 py-5 border-b border-white/10">
+        <div id="admin-user-greeting" class="flex items-center gap-3 text-white/90 hidden">
+          <div class="h-10 w-10 rounded-full bg-white/10 border border-white/10 flex items-center justify-center">
+            <i class="fas fa-user-shield"></i>
+          </div>
+          <div class="text-left">
+            <div class="text-xs text-gray-300">Signed in as</div>
+            <div class="text-sm font-semibold text-white" id="admin-username">Admin</div>
+          </div>
+        </div>
+      </div>
+
+      <nav class="px-3 py-3" aria-label="Admin Navigation">
+        <a href="Admin_home.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-white hover:bg-white/10 transition">
+          <i class="fas fa-home w-5 text-center"></i>
+          <span class="font-medium">Dashboard</span>
+        </a>
+        <a href="Verify_entry.html?service=pass" class="mt-2 flex items-center gap-3 px-4 py-3 rounded-xl text-white hover:bg-white/10 transition">
+          <i class="fas fa-ticket-alt w-5 text-center"></i>
+          <span class="font-medium">Pass Booking</span>
+        </a>
+        <a href="Verify_entry.html?service=pooja" class="mt-2 flex items-center gap-3 px-4 py-3 rounded-xl text-white hover:bg-white/10 transition">
+          <i class="fas fa-hands-praying w-5 text-center"></i>
+          <span class="font-medium">Pooja Services</span>
+        </a>
+        <a href="Verify_entry.html?service=bhaktnivas" class="mt-2 flex items-center gap-3 px-4 py-3 rounded-xl text-white hover:bg-white/10 transition">
+          <i class="fas fa-bed w-5 text-center"></i>
+          <span class="font-medium">Bhakta Nivas</span>
+        </a>
+      </nav>
+    </div>
+
+    <div class="p-6 border-t border-white/10">
+      <button id="admin-logout-btn" class="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white py-3 px-4 rounded-xl font-semibold transition duration-300 flex items-center justify-center gap-2">
+        <i class="fas fa-sign-out-alt"></i>
+        <span>Logout</span>
+      </button>
+      <button id="admin-mobile-logout-btn" class="hidden"></button>
+      <button id="admin-mobile-menu-btn" class="hidden" aria-controls="admin-mobile-menu" aria-expanded="false" aria-label="Toggle menu"></button>
+      <div id="admin-mobile-menu" class="hidden" role="menu"></div>
+    </div>
+  </div>
+</aside>
+
+<script src="/static/js/admin-navbar.js?v=1"></script>
+
+

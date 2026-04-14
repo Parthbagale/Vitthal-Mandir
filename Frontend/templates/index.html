@@ -1,0 +1,972 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shri Vitthal Rukmini Mandir, Pandharpur</title>
+
+    <meta name="google-client-id"
+        content="{{ GOOGLE_CLIENT_ID|default:'601983338218-8vmjc2q4jgta7ksjkfu8eu8tb90kd1lq.apps.googleusercontent.com' }}" />
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+    <!-- Icons + Fonts -->
+    <script src="https://unpkg.com/@phosphor-icons/web@2.1.1/dist/phosphor.js" defer></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- External CSS -->
+    <link rel="stylesheet" href="/static/css/styles.css?v=3">
+    
+    <!-- Home Page Fixes CSS -->
+    <link rel="stylesheet" href="/static/css/home-page-fixes.css">
+    
+    <!-- Hero Slideshow Fix CSS -->
+    <link rel="stylesheet" href="/static/css/hero-slideshow-fix.css">
+
+    <!-- Flatpickr for Calendar Highlighting -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <style>
+        .ekadashi-date {
+            position: relative;
+            background: #fff8f1 !important;
+            border-bottom: 2px solid #ff6b00 !important;
+            color: #ff6b00 !important;
+            font-weight: bold !important;
+        }
+
+        .ekadashi-date::after {
+            content: '';
+            position: absolute;
+            bottom: 2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 4px;
+            background: #ff6b00;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 text-gray-800">
+    <!-- Announcement Marquee -->
+    <div id="announcement-bar" class="hidden sticky top-0 z-[60] py-2 px-4 shadow-md overflow-hidden">
+        <div class="container mx-auto">
+            <div class="marquee-container flex items-center whitespace-nowrap">
+                <div id="marquee-content" class="inline-flex animate-marquee font-bold text-sm sm:text-base">
+                    <!-- Announcements will be injected here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    {% include 'navbar.html' %}
+    <main>
+        <!-- Hero -->
+        <section id="home"
+            class="hero-bg no-hero-overlay h-screen flex items-center justify-center text-center text-white"
+            style="background-image: none;">
+            <div id="home-hero-slider" class="hero-bg-slider" aria-hidden="true">
+                <div class="hero-bg-slide is-active" style="background-image:url('/static/images/slider_1.jpg')"></div>
+                <div class="hero-bg-slide" style="background-image:url('/static/images/s3.jpg')"></div>
+                <div class="hero-bg-slide" style="background-image:url('/static/images/s4.jpg')"></div>
+            </div>
+            <div class="relative z-10 w-full">
+                <div class="container mx-auto px-6">
+                    <div class="max-w-4xl mx-auto text-center">
+                        <h1
+                            class="text-3xl sm:text-5xl md:text-6xl font-extrabold font-playfair leading-tight drop-shadow animate-fade-in-up">
+                            Welcome to the
+                            <br>
+                            Shri Vitthal Rukmini Mandir , Pandharpur
+                        </h1>
+                    </div>
+                </div>
+
+                <!-- Right-side social icons -->
+                <div
+                    class="flex flex-col gap-3 fixed right-3 top-32 sm:right-4 sm:top-40 z-[1100] animate-slide-in-right float-slow">
+                    <a href="https://www.facebook.com/vitthalrukminimandiresamiti?mibextid=qi2Omg&rdid=AhnjnOOhXxndhSWp&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F15tqVij6Q8%2F%3Fmibextid%3Dqi2Omg#"
+                        target="_blank" rel="noopener noreferrer"
+                        class="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-blue-600 text-white flex items-center justify-center shadow transition transform hover:scale-110 hover:-translate-y-0.5"
+                        aria-label="Facebook">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="https://www.instagram.com/vitthalrukminimandir_official/?igsh=NWkxd2RtOTBrM21h#"
+                        target="_blank" rel="noopener noreferrer"
+                        class="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-gradient-to-br from-pink-500 via-red-500 to-yellow-400 text-white flex items-center justify-center shadow transition transform hover:scale-110 hover:-translate-y-0.5"
+                        aria-label="Instagram">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="https://www.youtube.com/@svrmsp" target="_blank" rel="noopener noreferrer"
+                        class="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-red-600 text-white flex items-center justify-center shadow transition transform hover:scale-110 hover:-translate-y-0.5"
+                        aria-label="YouTube">
+                        <i class="fab fa-youtube"></i>
+                    </a>
+                </div>
+
+                <!-- Right-side quick buttons -->
+                <div
+                    class="fixed right-3 top-72 sm:right-4 sm:top-80 z-[1100] flex flex-col gap-3 animate-slide-in-right">
+                    <button type="button" onclick="accessService('Pass Booking','Pass_booking.html')"
+                        class="px-6 py-3 sm:px-7 sm:py-3 rounded-full bg-orange-600 text-white text-base sm:text-lg font-semibold shadow hover:bg-orange-700 transition transform hover:scale-[1.03] hover:-translate-y-0.5">
+                        Pass Booking
+                    </button>
+                    <button type="button" onclick="accessService('Bhakta Nivas','Bhakta_nivas.html')"
+                        class="px-6 py-3 sm:px-7 sm:py-3 rounded-full bg-orange-600 text-white text-base sm:text-lg font-semibold shadow hover:bg-orange-700 transition transform hover:scale-[1.03] hover:-translate-y-0.5">
+                        Bhakt Nivas
+                    </button>
+                    <button type="button" onclick="accessService('Pooja Services','Pooja_services.html')"
+                        class="px-6 py-3 sm:px-7 sm:py-3 rounded-full bg-orange-600 text-white text-base sm:text-lg font-semibold shadow hover:bg-orange-700 transition transform hover:scale-[1.03] hover:-translate-y-0.5">
+                        Pooja Services
+                    </button>
+                    <button type="button" onclick="accessService('Donations','Donations.html')"
+                        class="px-6 py-3 sm:px-7 sm:py-3 rounded-full bg-orange-600 text-white text-base sm:text-lg font-semibold shadow hover:bg-orange-700 transition transform hover:scale-[1.03] hover:-translate-y-0.5">
+                        Donate Now
+                    </button>
+                    <button type="button" onclick="accessService('Live Darshan','Live_darshan.html')"
+                        class="px-6 py-3 sm:px-7 sm:py-3 rounded-full bg-white/90 text-slate-900 text-base sm:text-lg font-semibold shadow hover:bg-white transition transform hover:scale-[1.03] hover:-translate-y-0.5">
+                        Live Darshan
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quick About Section -->
+        <section class="py-16 md:py-24 bg-white">
+            <div class="container mx-auto px-6 text-center reveal">
+                <h2 class="text-4xl font-bold text-gray-900 font-playfair mb-8 section-title animate-fade-in-up"
+                    data-i18n="about.title">Welcome to Shri Vitthal Rukmini Mandir</h2>
+                <p class="text-lg text-gray-600 leading-relaxed max-w-3xl mx-auto mb-8" data-i18n="about.description">
+                    Experience the divine presence of Lord Vitthal and Goddess Rukmini at this sacred temple in
+                    Pandharpur, Maharashtra.
+                    A beacon of devotion and the heart of the Warkari tradition for centuries.
+                </p>
+                <a href="About_temple.html"
+                    class="inline-block bg-primary text-white py-3 px-8 rounded-full font-semibold text-lg hover:bg-primary-dark transition duration-300"
+                    data-i18n="about.learn_more">
+                    Learn More About Our Temple
+                </a>
+            </div>
+        </section>
+
+        <!-- Gallery Preview -->
+        <section class="py-16 md:py-24 bg-gray-50">
+            <div class="container mx-auto px-6 text-center">
+                <h2 class="text-4xl font-bold text-gray-900 font-playfair mb-8 section-title animate-fade-in-up"
+                    data-i18n="gallery.title">Temple Gallery</h2>
+                <p class="text-lg text-gray-600 leading-relaxed max-w-2xl mx-auto mb-8" data-i18n="gallery.description">
+                    Explore the sacred beauty of our temple through our photo gallery featuring Lord Vitthal,
+                    temple architecture, festivals, and spiritual moments.
+                </p>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 reveal-stagger">
+                    <img src="/images/Vithal.jpg" alt="Lord Vitthal"
+                        class="w-full h-32 object-contain bg-white rounded-lg shadow-md transition duration-300 transform hover:scale-105 hover:brightness-105 reveal">
+                    <img src="/images/About.jpg" alt="Temple"
+                        class="w-full h-32 object-contain bg-white rounded-lg shadow-md transition duration-300 transform hover:scale-105 hover:brightness-105 reveal">
+                    <img src="/images/R.jpg" alt="Goddess Rukmini"
+                        class="w-full h-32 object-contain bg-white rounded-lg shadow-md transition duration-300 transform hover:scale-105 hover:brightness-105 reveal">
+                    <img src="/images/Wari.jpg" alt="Wari"
+                        class="w-full h-32 object-contain bg-white rounded-lg shadow-md transition duration-300 transform hover:scale-105 hover:brightness-105 reveal">
+                </div>
+                <a href="Gallery.html"
+                    class="inline-block bg-primary text-white py-3 px-8 rounded-full font-semibold text-lg hover:bg-primary-dark transition duration-300"
+                    data-i18n="gallery.view_full">
+                    View Full Gallery
+                </a>
+            </div>
+        </section>
+
+        <!-- E-Library Preview -->
+        <section class="py-16 md:py-24 bg-white">
+            <div class="container mx-auto px-6 text-center">
+                <h2 class="text-4xl font-bold text-gray-900 font-playfair mb-8 section-title animate-fade-in-up"
+                    data-i18n="elibrary.title">Digital E-Library</h2>
+                <p class="text-lg text-gray-600 leading-relaxed max-w-2xl mx-auto mb-8"
+                    data-i18n="elibrary.description">
+                    Access our collection of sacred texts including the Bhagavad Gita, works of Sant Dnyaneshwar,
+                    Sant Tukaram, and other spiritual literature. Read and download from anywhere.
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 max-w-4xl mx-auto reveal-stagger">
+                    <div class="bg-gray-50 p-6 rounded-xl reveal card-animate">
+                        <i class="fas fa-book text-4xl text-primary mb-4"></i>
+                        <h3 class="text-xl font-semibold mb-2" data-i18n="elibrary.bhagavad_gita_title">Bhagavad Gita
+                        </h3>
+                        <p class="text-gray-600 text-sm" data-i18n="elibrary.bhagavad_gita_desc">Sacred Hindu scripture
+                        </p>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-xl reveal card-animate">
+                        <i class="fas fa-scroll text-4xl text-primary mb-4"></i>
+                        <h3 class="text-xl font-semibold mb-2" data-i18n="elibrary.dnyaneshwari_title">Dnyaneshwari</h3>
+                        <p class="text-gray-600 text-sm" data-i18n="elibrary.dnyaneshwari_desc">Sant Dnyaneshwar's works
+                        </p>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-xl reveal card-animate">
+                        <i class="fas fa-music text-4xl text-primary mb-4"></i>
+                        <h3 class="text-xl font-semibold mb-2" data-i18n="elibrary.abhangas_title">Abhangas</h3>
+                        <p class="text-gray-600 text-sm" data-i18n="elibrary.abhangas_desc">Sant Tukaram's devotional
+                            songs</p>
+                    </div>
+                </div>
+                <a href="E_library.html"
+                    class="inline-block bg-primary text-white py-3 px-8 rounded-full font-semibold text-lg hover:bg-primary-dark transition duration-300"
+                    data-i18n="elibrary.browse">
+                    Browse E-Library
+                </a>
+            </div>
+        </section>
+
+        <!-- Events & Festival Announcements -->
+        <section class="py-16 md:py-24 bg-gradient-to-br from-orange-50 to-yellow-50">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-4xl font-bold text-gray-900 font-playfair mb-4 section-title animate-fade-in-up"
+                        data-i18n="events.title">Events & Festival Announcements</h2>
+                    <p class="text-lg text-gray-600 leading-relaxed max-w-2xl mx-auto mb-6"
+                        data-i18n="events.description">
+                        Stay updated with upcoming temple events, festivals, and special celebrations. Never miss an
+                        important occasion.
+                    </p>
+                    <!-- Notification Settings -->
+                    <div class="flex flex-wrap justify-center gap-4 mb-8">
+                        <button id="enable-notifications"
+                            class="bg-primary text-white py-2 px-6 rounded-full font-semibold hover:bg-primary-dark transition duration-300 flex items-center gap-2">
+                            <i class="fas fa-bell"></i>
+                            <span data-i18n="events.enable_notifications">Enable Notifications</span>
+                        </button>
+                        <button id="email-subscribe"
+                            class="bg-white text-primary border-2 border-primary py-2 px-6 rounded-full font-semibold hover:bg-primary hover:text-white transition duration-300 flex items-center gap-2">
+                            <i class="fas fa-envelope"></i>
+                            <span data-i18n="events.email_updates">Email Updates</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Calendar and Events Grid -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <!-- Mini Calendar -->
+                    <div class="lg:col-span-1">
+                        <div class="bg-white rounded-2xl shadow-lg p-6 reveal">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-xl font-semibold text-gray-900"
+                                    data-i18n="events.festival_calendar_title">Festival Calendar</h3>
+                                <div class="flex gap-2">
+                                    <button id="prev-month" class="p-2 rounded-lg hover:bg-gray-100 transition">
+                                        <i class="fas fa-chevron-left text-gray-600"></i>
+                                    </button>
+                                    <button id="next-month" class="p-2 rounded-lg hover:bg-gray-100 transition">
+                                        <i class="fas fa-chevron-right text-gray-600"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="mini-calendar" class="calendar-widget">
+                                <!-- Calendar will be generated by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Upcoming Events -->
+                    <div class="lg:col-span-2">
+                        <div class="bg-white rounded-2xl shadow-lg p-6 reveal">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-6"
+                                data-i18n="events.upcoming_events_title">Upcoming Events</h3>
+                            <div id="events-list" class="space-y-4">
+                                <!-- Events will be dynamically loaded here -->
+                            </div>
+
+                            <!-- View All Events Button -->
+                            <div class="text-center mt-6">
+                                <a href="/Events.html"
+                                    class="inline-block bg-orange-100 text-orange-700 border border-orange-200 py-3 px-8 rounded-full font-semibold text-lg hover:bg-orange-200 hover:border-orange-300 transition duration-300 shadow-sm"
+                                    data-i18n="events.view_all">
+                                    View All Events
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Online Services -->
+        <section id="online-services" class="py-16 md:py-24 bg-gray-50">
+            <div class="container mx-auto px-6">
+                <h2 class="text-4xl font-bold text-center text-gray-900 font-playfair mb-12 section-title animate-fade-in-up"
+                    data-i18n="online_services.title">Online Services</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 reveal-stagger">
+                    <div id="live-darshan-section"
+                        class="bg-orange-300 rounded-xl shadow-lg p-6 text-center card-animate card-tilt reveal">
+                        <!-- Circle with white background and image -->
+                        <div
+                            class="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-4 overflow-hidden shadow">
+                            <img src="images/live-darshan.jpg" alt="Live Darshan" class="w-10 h-10 object-contain" />
+                        </div>
+
+                        <h3 class="text-2xl font-semibold text-gray-900 mb-2"
+                            data-i18n="online_services.live_darshan_title">Live Darshan</h3>
+                        <p class="text-gray-600 mb-4" data-i18n="online_services.live_darshan_desc">Watch daily rituals
+                            live from the temple.</p>
+
+                        <!-- Orange button -->
+                        <button onclick="accessService('Live Darshan', 'Live_darshan.html')"
+                            class="inline-block bg-primary text-white py-2 px-6 rounded-full font-semibold hover:bg-primary-dark transition"
+                            data-i18n="online_services.watch_live">
+                            Watch Live
+                        </button>
+                    </div>
+
+                    <!-- Pooja Services -->
+                    <div id="pooja-services-section"
+                        class="bg-orange-300 rounded-xl shadow-lg p-6 text-center card-animate card-tilt reveal">
+                        <!-- Circle with image -->
+                        <div
+                            class="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-4 overflow-hidden shadow">
+                            <img src="images/pooja.jpg" alt="Pooja Services" class="w-10 h-10 object-contain" />
+                        </div>
+
+                        <h3 class="text-2xl font-semibold text-gray-900 mb-2"
+                            data-i18n="online_services.pooja_services_title">Pooja Services</h3>
+                        <p class="text-gray-600 mb-4" data-i18n="online_services.pooja_services_desc">Book a special
+                            pooja in your name.</p>
+
+                        <!-- Orange button -->
+                        <button onclick="accessService('Pooja Services', 'Pooja_services.html')"
+                            class="inline-block bg-primary text-white py-2 px-6 rounded-full font-semibold hover:bg-primary-dark transition"
+                            data-i18n="online_services.book_now">
+                            Book Now
+                        </button>
+                    </div>
+
+                    <!-- Pass Booking -->
+                    <div id="pass-booking-section"
+                        class="bg-orange-300 rounded-xl shadow-lg p-6 text-center card-animate card-tilt reveal">
+                        <!-- Circle with image -->
+                        <div
+                            class="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-4 overflow-hidden shadow">
+                            <img src="images/Image12.jpg" alt="Pass Booking" class="w-10 h-10 object-contain" />
+                        </div>
+
+                        <h3 class="text-2xl font-semibold text-gray-900 mb-2"
+                            data-i18n="online_services.pass_booking_title">Pass Booking</h3>
+                        <p class="text-gray-600 mb-4" data-i18n="online_services.pass_booking_desc">Reserve a time slot
+                            for darshan. Capacity: <span class="font-semibold">180 passes/day</span>.</p>
+
+                        <!-- Orange button -->
+                        <button onclick="accessService('Pass Booking', 'Pass_booking.html')"
+                            class="inline-block bg-primary text-white py-2 px-6 rounded-full font-semibold hover:bg-primary-dark transition"
+                            data-i18n="online_services.book_pass">
+                            Book Pass
+                        </button>
+                    </div>
+
+                    <!-- Bhakta Nivas -->
+                    <div id="bhakta-nivas-section"
+                        class="bg-orange-300 rounded-xl shadow-lg p-6 text-center card-animate card-tilt reveal">
+                        <!-- Circle with image -->
+                        <div
+                            class="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-4 overflow-hidden shadow">
+                            <img src="images/Wari.jpg" alt="Bhakta Nivas" class="w-10 h-10 object-contain" />
+                        </div>
+
+                        <h3 class="text-2xl font-semibold text-gray-900 mb-2"
+                            data-i18n="online_services.bhakta_nivas_title">Bhakta Nivas</h3>
+                        <p class="text-gray-600 mb-4" data-i18n="online_services.bhakta_nivas_desc">Comfortable,
+                            affordable accommodation.</p>
+
+                        <!-- Orange button -->
+                        <button onclick="accessService('Bhakta Nivas', 'Bhakta_nivas.html')"
+                            class="inline-block bg-primary text-white py-2 px-6 rounded-full font-semibold hover:bg-primary-dark transition"
+                            data-i18n="online_services.book_bhakta_nivas">
+                            Book Now
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Preview -->
+        <section class="py-16 md:py-24 bg-gray-100">
+            <div class="container mx-auto px-6 text-center">
+                <h2 class="text-4xl font-bold text-gray-900 font-playfair mb-8 section-title animate-fade-in-up"
+                    data-i18n="contact.title">Contact Us</h2>
+                <p class="text-lg text-gray-600 mb-8 max-w-2xl mx-auto" data-i18n="contact.description">
+                    We are here to assist you with your spiritual journey, temple visits, and any inquiries you may
+                    have.
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 max-w-4xl mx-auto reveal-stagger">
+                    <div class="bg-white p-6 rounded-xl shadow-lg reveal">
+                        <i class="fas fa-phone text-4xl text-primary mb-4"></i>
+                        <h3 class="text-xl font-semibold mb-2" data-i18n="contact.phone_title">Phone</h3>
+                        <p class="text-gray-600" data-i18n="contact.phone_number">+91 738506033</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-lg reveal">
+                        <i class="fas fa-envelope text-4xl text-primary mb-4"></i>
+                        <h3 class="text-xl font-semibold mb-2" data-i18n="contact.email_title">Email</h3>
+                        <p class="text-gray-600" data-i18n="contact.email_address">vitthalmandir04@gmail.com</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-lg reveal">
+                        <i class="fas fa-map-marker-alt text-4xl text-primary mb-4"></i>
+                        <h3 class="text-xl font-semibold mb-2" data-i18n="contact.location_title">Location</h3>
+                        <p class="text-gray-600" data-i18n="contact.location_address">Pandharpur, Maharashtra</p>
+                    </div>
+                </div>
+                <a href="Contact.html"
+                    class="inline-block bg-primary text-white py-3 px-8 rounded-full font-semibold text-lg hover:bg-primary-dark transition duration-300"
+                    data-i18n="contact.contact_us">
+                    Contact Us
+                </a>
+            </div>
+        </section>
+
+        <!-- AI Crowd Prediction Section -->
+        <section id="crowd-prediction-section" class="py-16 md:py-24 bg-white border-t border-gray-100">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-4xl font-bold text-gray-900 font-playfair mb-4 section-title">AI
+                        Crowd Prediction</h2>
+                    <p class="text-lg text-gray-600 leading-relaxed max-w-2xl mx-auto mb-4">
+                        Plan your visit with our AI-powered crowd prediction system. Select a date to see the expected
+                        number of devotees and the best time for darshan.
+                    </p>
+                    <div class="flex items-center justify-center gap-2 text-primary font-semibold">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Location: Pandharpur Vitthal Mandir</span>
+                    </div>
+                </div>
+
+                <div
+                    class="max-w-5xl mx-auto bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.1)] overflow-hidden border border-gray-100">
+                    <div class="md:flex">
+                        <!-- Control Panel -->
+                        <div
+                            class="md:w-1/3 bg-gradient-to-br from-orange-50 to-yellow-50 p-8 md:p-10 border-r border-gray-100">
+                            <h3 class="text-2xl font-bold text-gray-900 mb-8 font-playfair flex items-center gap-3">
+                                <i class="fas fa-calendar-alt text-primary"></i>
+                                Select Date
+                            </h3>
+                            <div class="space-y-6">
+                                <div>
+                                    <label for="prediction-date"
+                                        class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide">Visit
+                                        Date</label>
+                                    <input type="date" id="prediction-date"
+                                        class="w-full px-5 py-4 rounded-2xl border-2 border-white bg-white/80 shadow-inner focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-300 text-lg font-medium">
+                                </div>
+                                <button id="predict-btn"
+                                    class="w-full brand-gradient text-white py-4 rounded-2xl font-bold text-lg transition-all duration-300 transform hover:scale-[1.03] hover:shadow-2xl shadow-lg flex items-center justify-center gap-3 group">
+                                    <i
+                                        class="fas fa-wand-magic-sparkles group-hover:rotate-12 transition-transform"></i>
+                                    Predict Crowd
+                                </button>
+
+                                <div
+                                    class="mt-8 p-4 bg-white/50 rounded-2xl border border-white/80 text-sm text-gray-600 italic">
+                                    <p><i class="fas fa-info-circle mr-2 text-primary"></i> Our ML model uses historical
+                                        data, festival dates, and holiday patterns to provide accurate predictions.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Results Dashboard -->
+                        <div class="md:w-2/3 p-8 md:p-10 bg-white relative">
+                            <div id="prediction-results" class="hidden animate-fade-in">
+                                <!-- Festival Info if any -->
+                                <div id="res-festival-container"
+                                    class="hidden mb-8 p-5 bg-gradient-to-r from-purple-50 to-indigo-50 rounded-2xl border border-purple-100 flex items-center gap-4 transform transition-all hover:scale-[1.01]">
+                                    <div
+                                        class="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center text-purple-600">
+                                        <i class="fas fa-om text-2xl"></i>
+                                    </div>
+                                    <div>
+                                        <h4 id="res-festival-name"
+                                            class="text-lg font-bold text-purple-900 leading-tight">
+                                            Ekadashi Festival</h4>
+                                        <p class="text-sm text-purple-600 font-medium">Special auspicious day - Expected
+                                            high crowd</p>
+                                    </div>
+                                    <div class="ml-auto">
+                                        <span
+                                            class="px-3 py-1 bg-purple-600 text-white text-xs font-bold rounded-full uppercase tracking-tighter">Festival</span>
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-10">
+                                    <!-- Prediced Devotees -->
+                                    <div
+                                        class="p-6 bg-gradient-to-br from-gray-50 to-white rounded-2xl border border-gray-100 shadow-sm group hover:shadow-md transition-all">
+                                        <p class="text-xs text-gray-400 uppercase font-black tracking-widest mb-2">
+                                            Estimated Devotees</p>
+                                        <div class="flex items-baseline gap-2">
+                                            <span id="res-devotees" class="text-4xl font-black text-primary">0</span>
+                                            <span class="text-gray-400 text-sm font-medium">approx.</span>
+                                        </div>
+                                    </div>
+                                    <!-- Crowd Level -->
+                                    <div
+                                        class="p-6 bg-gradient-to-br from-gray-50 to-white rounded-2xl border border-gray-100 shadow-sm">
+                                        <p class="text-xs text-gray-400 uppercase font-black tracking-widest mb-2">Crowd
+                                            Intensity</p>
+                                        <div class="flex items-center gap-3">
+                                            <span id="res-level-badge"
+                                                class="px-4 py-1 rounded-full text-sm font-bold bg-green-100 text-green-700">Low</span>
+                                            <span id="res-level" class="text-2xl font-black text-gray-800">Normal</span>
+                                        </div>
+                                    </div>
+                                    <!-- Peak Hours -->
+                                    <div
+                                        class="p-6 bg-gradient-to-br from-gray-50 to-white rounded-2xl border border-gray-100 shadow-sm">
+                                        <p class="text-xs text-gray-400 uppercase font-black tracking-widest mb-2">
+                                            Expected Peak</p>
+                                        <div class="flex items-center gap-3">
+                                            <i class="fas fa-clock text-orange-400"></i>
+                                            <span id="res-peak" class="text-xl font-extrabold text-gray-800">9 AM - 12
+                                                PM</span>
+                                        </div>
+                                    </div>
+                                    <!-- Best Time -->
+                                    <div class="p-6 bg-orange-50 rounded-2xl border border-orange-100 shadow-sm">
+                                        <p class="text-xs text-orange-400 uppercase font-black tracking-widest mb-2">
+                                            Ideal Darshan Window</p>
+                                        <div class="flex items-center gap-3">
+                                            <i class="fas fa-heart text-primary animate-pulse"></i>
+                                            <span id="res-best" class="text-xl font-extrabold text-primary">3 PM - 5
+                                                PM</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="relative">
+                                    <h4
+                                        class="text-sm font-bold text-gray-900 mb-4 uppercase tracking-wider flex items-center gap-2">
+                                        <i class="fas fa-chart-area text-primary text-xs"></i>
+                                        Hourly Predictions
+                                    </h4>
+                                    <div class="h-[280px] w-full">
+                                        <canvas id="crowdChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Empty State -->
+                            <div id="prediction-placeholder"
+                                class="h-full flex flex-col items-center justify-center text-center py-20 animate-pulse">
+                                <div class="w-24 h-24 bg-orange-50 rounded-full flex items-center justify-center mb-6">
+                                    <i class="fas fa-chart-line text-4xl text-orange-200"></i>
+                                </div>
+                                <h3 class="text-xl font-bold text-gray-900 mb-2">Ready for Prediction</h3>
+                                <p class="text-gray-400 max-w-xs mx-auto">Choose your preferred visit date to generate a
+                                    detailed crowd forecast.</p>
+                            </div>
+
+                            <!-- Loading Overlay -->
+                            <div id="prediction-loading"
+                                class="absolute inset-0 bg-white/80 backdrop-blur-sm z-20 flex flex-col items-center justify-center hidden">
+                                <div
+                                    class="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mb-4">
+                                </div>
+                                <p class="text-primary font-bold">Consulting AI Model...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+
+
+
+    <!-- Login Modal -->
+    <div id="login-modal"
+        class="fixed inset-0 bg-gradient-to-br from-gray-900/80 to-black/90 hidden items-center justify-center z-50 p-4"
+        aria-hidden="true" role="dialog" aria-modal="true">
+        <div
+            class="bg-white rounded-2xl shadow-2xl max-w-md w-full relative modal transform scale-95 opacity-0 overflow-hidden">
+            <!-- Header with gradient background -->
+            <div class="px-8 py-6 relative border-b border-gray-100">
+                <button id="close-login-modal-btn"
+                    class="absolute top-4 right-4 text-white/80 hover:text-white transition-colors"
+                    aria-label="Close login modal">
+                    <i class="ph ph-x text-2xl"></i>
+                </button>
+                <div class="text-center">
+                    <img src="/images/mandir logo.jpg" alt="Mandir Logo"
+                        class="h-16 w-16 rounded-xl shadow mx-auto mb-3" />
+                    <p class="text-gray-600 text-sm" data-i18n="login.signin_to_account">Sign in to your devotee account
+                    </p>
+                </div>
+            </div>
+
+            <!-- Form content -->
+            <div class="px-8 py-6">
+                <form id="login-form" class="space-y-5">
+                    <!-- Form Fields -->
+                    <div class="space-y-4">
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-user text-gray-400"></i>
+                            </div>
+                            <input id="login-username" name="username" type="text"
+                                class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 bg-gray-50 hover:bg-white"
+                                placeholder="Username or Email" required data-i18n-attr="placeholder"
+                                data-i18n="login.username_or_email" />
+                        </div>
+
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-lock text-gray-400"></i>
+                            </div>
+                            <input id="login-password" name="password" type="password"
+                                class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 bg-gray-50 hover:bg-white"
+                                placeholder="Password" required data-i18n-attr="placeholder"
+                                data-i18n="login.password" />
+                            <button type="button" id="toggle-login-password"
+                                class="absolute inset-y-0 right-0 pr-3 flex items-center">
+                                <i class="fas fa-eye text-gray-400 hover:text-gray-600 cursor-pointer"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Remember Me -->
+                    <div class="flex items-center justify-start mt-4">
+                        <div class="flex items-center space-x-2">
+                            <input id="remember-me" type="checkbox"
+                                class="w-4 h-4 text-primary border-gray-300 rounded focus:ring-orange-500" />
+                            <label for="remember-me" class="text-sm text-gray-600"
+                                data-i18n="login.remember_me">Remember me</label>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit"
+                        class="w-full brand-gradient text-white py-3 rounded-xl font-semibold transition-all duration-200 transform hover:scale-[1.02] shadow-lg hover:shadow-xl flex items-center justify-center space-x-2">
+                        <i class="fas fa-sign-in-alt"></i>
+                        <span data-i18n="login.sign_in">Sign In</span>
+                    </button>
+
+                    <div class="relative py-2">
+                        <div class="absolute inset-0 flex items-center">
+                            <div class="w-full border-t border-gray-200"></div>
+                        </div>
+                        <div class="relative flex justify-center">
+                            <span class="bg-white px-3 text-xs text-gray-500">OR</span>
+                        </div>
+                    </div>
+
+                    <div id="googleSignInBtn" class="w-full flex justify-center"></div>
+
+                    <!-- Admin Login Link -->
+                    <div class="text-center mt-3">
+                        <a href="Admin_login.html" class="text-sm text-primary hover:text-primary font-medium"
+                            data-i18n="login.admin_login">Admin Login</a>
+                    </div>
+
+                </form>
+
+                <!-- Register Link -->
+                <div class="text-center mt-6 pt-4 border-t border-gray-200">
+                    <p class="text-gray-600 text-sm" data-i18n="login.no_account">
+                        Don't have an account?
+                        <button id="switch-to-register" class="text-orange-500 hover:text-orange-600 font-medium ml-1"
+                            data-i18n="login.create_account">Create Account</button>
+                    </p>
+                </div>
+
+                <div id="login-message" class="text-center mt-4 hidden"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div id="register-modal"
+        class="fixed inset-0 bg-gradient-to-br from-gray-900/80 to-black/90 hidden items-center justify-center z-50 p-4"
+        aria-hidden="true" role="dialog" aria-modal="true">
+        <div
+            class="bg-white rounded-2xl shadow-2xl max-w-md w-full relative modal transform scale-95 opacity-0 overflow-hidden">
+            <!-- Header with gradient background -->
+            <div class="px-8 py-6 relative border-b border-gray-100">
+                <button id="close-register-modal-btn"
+                    class="absolute top-4 right-4 text-white/80 hover:text-white transition-colors"
+                    aria-label="Close register modal">
+                    <i class="ph ph-x text-2xl"></i>
+                </button>
+                <div class="text-center">
+                    <img src="/images/mandir logo.jpg" alt="Mandir Logo"
+                        class="h-16 w-16 rounded-xl shadow mx-auto mb-3" />
+                    <h2 class="text-2xl font-bold text-gray-900 mb-1" data-i18n="register.join_temple">Join Our Temple
+                    </h2>
+                    <p class="text-gray-600 text-sm" data-i18n="register.create_devotee_account">Create your devotee
+                        account</p>
+                </div>
+            </div>
+
+            <!-- Form content -->
+            <div class="px-8 py-6">
+                <form id="register-form" class="space-y-4">
+                    <!-- Profile Image Upload Section -->
+                    <div class="text-center mb-4">
+                        <div class="relative inline-block">
+                            <div id="image-preview"
+                                class="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-2 border-2 border-gray-200 shadow-lg overflow-hidden">
+                                <i class="fas fa-camera text-2xl text-primary" id="camera-icon"></i>
+                                <img id="image-preview-img" class="w-full h-full object-cover hidden"
+                                    alt="Profile preview">
+                            </div>
+                            <label for="profile-image"
+                                class="absolute -bottom-1 -right-1 w-6 h-6 bg-primary rounded-full flex items-center justify-center cursor-pointer hover:bg-primary-dark transition-colors shadow-lg">
+                                <i class="fas fa-plus text-white text-xs"></i>
+                            </label>
+                            <input id="profile-image" name="profile_image" type="file" accept="image/*"
+                                class="hidden" />
+                        </div>
+                        <p class="text-[10px] text-gray-500" data-i18n="register.upload_profile_photo">Upload your
+                            profile photo</p>
+                    </div>
+
+                    <!-- Form Fields -->
+                    <div class="space-y-3">
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-user text-gray-400"></i>
+                            </div>
+                            <input id="register-name" name="full_name" type="text"
+                                class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 bg-gray-50 hover:bg-white text-xs"
+                                placeholder="Full Name" required data-i18n-attr="placeholder"
+                                data-i18n="register.full_name" />
+                            <p id="register-name_error" class="text-red-500 text-xs mt-1"></p>
+                        </div>
+
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-at text-gray-400"></i>
+                            </div>
+                            <input id="register-username" name="username" type="text"
+                                class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 bg-gray-50 hover:bg-white text-xs"
+                                placeholder="Username" required data-i18n-attr="placeholder"
+                                data-i18n="register.username" />
+                            <p id="register-username_error" class="text-red-500 text-xs mt-1"></p>
+                        </div>
+
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-envelope text-gray-400"></i>
+                            </div>
+                            <input id="register-email" name="email" type="email"
+                                class="w-full pl-10 pr-24 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 bg-gray-50 hover:bg-white text-xs"
+                                placeholder="Email Address" required data-i18n-attr="placeholder"
+                                data-i18n="register.email_address" />
+                            <button type="button" id="send-otp-btn"
+                                class="absolute right-2 top-1/2 -translate-y-1/2 px-3 py-1 bg-orange-500 text-white text-xs rounded-lg hover:bg-orange-600 transition">
+                                Send OTP
+                            </button>
+                            <p id="register-email_error" class="text-red-500 text-xs mt-1"></p>
+                        </div>
+
+                        <!-- OTP Verification Field (hidden by default) -->
+                        <div id="otp-verification-section" class="relative hidden">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-shield-alt text-gray-400"></i>
+                            </div>
+                            <input id="register-otp" name="otp" type="text" inputmode="numeric" maxlength="6"
+                                class="w-full pl-10 pr-24 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 bg-gray-50 hover:bg-white text-xs"
+                                placeholder="Enter 6-digit OTP" />
+                            <button type="button" id="verify-otp-btn"
+                                class="absolute right-2 top-1/2 -translate-y-1/2 px-3 py-1 bg-green-500 text-white text-xs rounded-lg hover:bg-green-600 transition">
+                                Verify
+                            </button>
+                            <p id="register-otp_error" class="text-red-500 text-xs mt-1"></p>
+                            <p id="otp-status" class="text-xs mt-1"></p>
+                        </div>
+
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-phone text-gray-400"></i>
+                            </div>
+                            <input id="register-mobile" name="mobile" type="tel" inputmode="numeric" maxlength="10"
+                                class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 bg-gray-50 hover:bg-white text-xs"
+                                placeholder="Mobile Number" required pattern="^[6-9][0-9]{9}$" />
+                            <p id="register-mobile_error" class="text-red-500 text-xs mt-1"></p>
+                        </div>
+
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-id-card text-gray-400"></i>
+                            </div>
+                            <input id="register-aadhaar" name="aadhaar" type="text" inputmode="numeric" maxlength="12"
+                                class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 bg-gray-50 hover:bg-white text-xs"
+                                placeholder="Aadhaar Card Number (12 digits)" required pattern="^[0-9]{12}$" />
+                            <p id="register-aadhaar_error" class="text-red-500 text-xs mt-1"></p>
+                        </div>
+
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-lock text-gray-400"></i>
+                            </div>
+                            <input id="register-password" name="password" type="password"
+                                class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 bg-gray-50 hover:bg-white text-xs"
+                                placeholder="Create Password" required data-i18n-attr="placeholder"
+                                data-i18n="register.create_password" />
+                            <button type="button" id="toggle-register-password"
+                                class="absolute inset-y-0 right-0 pr-3 flex items-center">
+                                <i class="fas fa-eye text-gray-400 hover:text-gray-600 cursor-pointer"></i>
+                            </button>
+                            <p id="register-password_error" class="text-red-500 text-xs mt-1"></p>
+                        </div>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-lock text-gray-400"></i>
+                            </div>
+                            <input id="register-password-confirm" name="password_confirm" type="password"
+                                class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 bg-gray-50 hover:bg-white text-xs"
+                                placeholder="Confirm Password" required data-i18n-attr="placeholder"
+                                data-i18n="register.confirm_password" />
+                            <p id="register-password-confirm_error" class="text-red-500 text-xs mt-1"></p>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit"
+                        class="w-full brand-gradient text-white py-2 rounded-xl font-semibold transition-all duration-200 transform hover:scale-[1.02] shadow-lg hover:shadow-xl flex items-center justify-center space-x-2 text-xs">
+                        <i class="fas fa-user-plus"></i>
+                        <span data-i18n="register.create_account">Create Account</span>
+                    </button>
+
+                    <div class="relative py-2">
+                        <div class="absolute inset-0 flex items-center">
+                            <div class="w-full border-t border-gray-200"></div>
+                        </div>
+                        <div class="relative flex justify-center">
+                            <span class="bg-white px-3 text-xs text-gray-500">OR</span>
+                        </div>
+                    </div>
+
+                    <div id="googleSignUpBtn" class="w-full flex justify-center"></div>
+                </form>
+
+                <!-- Login Link -->
+                <div class="text-center mt-3 pt-2 border-t border-gray-200">
+                    <p class="text-gray-600 text-[11px]" data-i18n="register.already_have_account">
+                        Already have an account?
+                        <button id="switch-to-login" class="text-primary hover:text-primary font-medium ml-1"
+                            data-i18n="register.sign_in">Sign In</button>
+                    </p>
+                </div>
+
+                <div id="register-message" class="text-center mt-2 text-xs hidden"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chatbot Container -->
+    <div id="chatbot-container" class="fixed bottom-6 right-6 z-[1000]">
+        <button id="chatbot-icon"
+            class="w-20 h-20 bg-transparent rounded-full shadow-lg flex items-center justify-center animate-bounce"
+            aria-label="Open chatbot">
+            <img src="/static/images/cl3.jpg" alt="Chatbot" class="w-20 h-20 object-contain rounded-full" />
+        </button>
+    </div>
+
+    <!-- Chatbot Modal -->
+    <div id="chatbot-overlay" class="chatbot-overlay">
+        <div id="chatbot-modal" class="chatbot-modal">
+            <button id="close-chatbot-modal-btn" class="close-button-modal" aria-label="Close chatbot">
+                <i class="ph ph-x"></i>
+            </button>
+            <div class="chat-header-modal">
+                <i class="fas fa-hindu-temple temple-icon"></i>
+                <h1>Vitthal-Rukmini Mandir AI Assistant</h1>
+                <p>Your guide to spiritual queries and temple information.</p>
+            </div>
+            <div class="chat-container-modal">
+                <div class="sidebar-modal">
+                    <div class="logo-modal ">
+                        <i class="fas fa-robot logo-icon"></i>
+                        <span class="logo-text">AI Assistant</span>
+                    </div>
+                    <div class="language-selector-modal">
+                        <h3>Select Language</h3>
+                        <div class="lang-buttons-modal">
+                            <button class="lang-btn-modal active" data-lang="en">English</button>
+                            <button class="lang-btn-modal" data-lang="mr">Marathi</button>
+                        </div>
+                    </div>
+                    <div class="quick-actions-modal">
+                        <h3>Quick Actions</h3>
+                        <button class="action-btn-modal" data-query="Tell me about Lord Vitthal.">
+                            <i class="fas fa-info-circle"></i> About Lord Vitthal
+                        </button>
+                        <button class="action-btn-modal" data-query="How to book darshan?">
+                            <i class="fas fa-calendar-alt"></i> Book Darshan
+                        </button>
+                        <button class="action-btn-modal" data-query="What are the temple timings?">
+                            <i class="fas fa-clock"></i> Temple Timings
+                        </button>
+                        <button class="action-btn-modal" data-query="How can I donate?">
+                            <i class="fas fa-hand-holding-usd"></i> Donate
+                        </button>
+                    </div>
+                </div>
+                <div class="chat-area-modal">
+                    <div class="chat-header">
+
+                    </div>
+                    <div id="messages" class="chat-messages-modal">
+                        <!-- Messages will be appended here -->
+                        <div class="message-box-modal bot-message-modal">
+                            <div class="message-header-modal">
+                                <div class="avatar-modal bot-avatar-modal"><img src="/static/images/cl3.jpg" alt="AI"
+                                        class="bot-avatar-img" loading="lazy" /></div>
+                                <span>Vitthal Assistant</span>
+                            </div>
+                            <p>🙏 Welcome to Shri Vitthal Rukmini Mandir! How can I assist you today?</p>
+                            <span class="message-time-modal"></span>
+                        </div>
+                    </div>
+                    <div class="input-area-modal">
+                        <input type="text" id="user-input" class="user-input-modal"
+                            placeholder="Type your message..." />
+                        <button id="voice-btn" class="action-icon-modal voice" type="button" aria-label="Voice input">
+                            <i class="fas fa-microphone"></i>
+                        </button>
+                        <button id="send-btn" class="action-icon-modal send">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- External JS -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="/static/js/crowd_prediction.js?v=2"></script>
+    <script src="/static/js/management.js?v=2"></script>
+    <script src="/static/js/register-index-modal.js"></script>
+    <script src="/static/js/button-enhancements.js"></script>
+    <script src="/static/js/ekadashi-events.js"></script>
+    <script src="/static/js/script_fixed.js?v=6"></script>
+    <script src="/static/js/tailwind.config.js"></script>
+    
+    <!-- Home Page Fixes JS -->
+    <script src="/static/js/home-page-fixes.js"></script>
+    
+    <!-- Hero Slideshow JS -->
+    <script src="/static/js/hero-slideshow.js"></script>
+    
+    <!-- Complete Chatbot Fix - Overrides chatbot functionality only -->
+    <script src="/static/js/chatbot-complete-fix.js"></script>
+
+    {% include 'footer.html' %}
+</body>
+
+</html>

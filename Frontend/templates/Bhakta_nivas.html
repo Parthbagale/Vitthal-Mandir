@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bhakta Nivas - Shri Vitthal Rukmini Mandir, Pandharpur</title>
+
+  <!-- Tailwind CSS + Icons + Fonts -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/@phosphor-icons/web@2.1.1/dist/phosphor.js" defer></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Site styles -->
+  <link rel="stylesheet" href="/static/css/styles.css?v=3">
+  <link rel="stylesheet" href="css/date-picker.css">
+  <!-- Auth Guard -->
+  <script src="/static/js/auth.js"></script>
+  <script src="/static/js/validation.js"></script>
+  <!-- Aadhaar Validation -->
+  <script src="/static/js/aadhaar-validation.js"></script>
+  <!-- Aadhaar Field Validation -->
+  <script src="/static/js/aadhaar-field-validation.js"></script>
+  <script>
+    // Enforce user auth on load
+    (function(){
+      if (typeof requireAuth === 'function') {
+        requireAuth({ redirectTo: 'index.html', message: 'Please login to access Bhakta Nivas.' });
+      }
+    })();
+  </script>
+
+  <!-- Page-specific helpers -->
+  <style>
+    :root{ --accent:#6a0dad; }
+    .booking-card{ border:2px solid var(--accent); }
+    .pass-card{ border:2px solid var(--accent); }
+    #qrcode{ width:120px;height:120px;display:flex;justify-content:center;align-items:center;border:2px dashed var(--accent);border-radius:8px;padding:5px;background:#fafafa; }
+    .photo{ width:120px;height:120px;border-radius:8px;object-fit:cover;border:2px solid #e5e7eb; }
+    
+    @media print {
+      @page { size: A4 portrait; margin: 10mm; }
+      html, body { margin: 0 !important; padding: 0 !important; overflow: visible !important; background: #fff !important; }
+      /* Hide non-receipt sections without hiding #pass ancestors */
+      nav, header { display: none !important; }
+      main > section:first-of-type { display: none !important; }
+      .booking-card, .booking-card * { display: none !important; }
+      #bookingForm, #bookingForm * { display: none !important; }
+      footer, footer * { display: none !important; }
+
+      /* Show receipt only */
+      #pass { display: block !important; visibility: visible !important; }
+      #pass * { visibility: visible !important; }
+      #pass { position: static !important; margin-left: auto; margin-right: auto; width: 190mm; max-width: 190mm; height: auto !important; max-height: none !important; overflow: visible !important; box-sizing: border-box; transform: none !important; transform-origin: top center; page-break-inside: avoid; break-inside: avoid; }
+      #pass > * { page-break-inside: avoid; break-inside: avoid; }
+      #pass .shadow-lg, #pass [class*="shadow-"] { box-shadow: none !important; }
+      #pass .bg-gray-50 { background: #fff !important; }
+      #pass .border, #pass [class*="border-"] { border-color: #d1d5db !important; }
+      #pass button { display: none !important; }
+    }
+  </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+   <!-- Navigation -->
+    {% include 'navbar.html' %}
+
+    <main>
+        <!-- Hero -->
+        <section class="relative h-[30vh] flex items-center justify-center text-center text-white" style="background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);">
+            <div class="relative z-10">
+                <h1 class="text-3xl md:text-4xl font-bold font-playfair" data-i18n="bhakta_nivas.header_title">Bhakta Nivas <span class="text-yellow-300">Pass</span></h1>
+                <p class="mt-2 text-sm md:text-base" data-i18n="bhakta_nivas.header_subtitle">Book rooms and generate a QR-enabled pass</p>
+                <button onclick="accessService('Bhakt_Nivas_Images', 'Bhakt_Nivas_Images.html')" class="inline-block bg-white text-orange-600 py-2 px-6 rounded-full font-semibold hover:bg-gray-100 transition mt-3" data-i18n="bhakta_nivas.about_button">
+                    About Bhakt Nivas
+                </button>
+            </div>
+        </section>
+
+        <!-- Booking + Pass -->
+        <section class="py-10">
+            <div class="container mx-auto px-6 grid lg:grid-cols-2 gap-8">
+                <!-- Form -->
+                <div class="bg-white rounded-2xl shadow booking-card p-6">
+                    <h2 class="text-xl font-semibold text-gray-800 mb-4" data-i18n="bhakta_nivas.booking_form_title">Booking Form</h2>
+                    <form id="bookingForm" class="space-y-4">
+                        <div class="grid sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700" data-i18n="bhakta_nivas.checkin_date_label">Check-in Date</label>
+                                <input type="date" id="checkinDate" required class="mt-1 w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary p-2" />
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700" data-i18n="bhakta_nivas.checkin_time_label">Check-in Time</label>
+                                <input type="time" id="checkinTime" required class="mt-1 w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary p-2" />
+                            </div>
+                        </div>
+                        <div class="grid sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700" data-i18n="bhakta_nivas.outgoing_date_label">Outgoing Date</label>
+                                <input type="date" id="checkoutDate" required class="mt-1 w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary p-2" />
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700" data-i18n="bhakta_nivas.outgoing_time_label">Outgoing Time</label>
+                                <input type="time" id="checkoutTime" required class="mt-1 w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary p-2" />
+                            </div>
+                        </div>
+                        <div class="grid sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700" data-i18n="bhakta_nivas.full_name_label">Full Name</label>
+                                <input type="text" id="name" required class="mt-1 w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary p-2" />
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700" data-i18n="bhakta_nivas.email_label">Email</label>
+                                <input type="email" id="email" required class="mt-1 w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary p-2" />
+                            </div>
+                        </div>
+                        <div class="grid sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700" data-i18n="bhakta_nivas.mobile_label">Mobile</label>
+                                <input type="text" id="mobile" required pattern="[6-9][0-9]{9}" maxlength="10" inputmode="numeric" class="mt-1 w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary p-2" title="Mobile number must be 10 digits and start with 6, 7, 8, or 9" onkeypress="return event.charCode >= 48 && event.charCode <= 57" />
+                             </div>
+                        </div>
+
+                        <!-- Aadhaar Card Number -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Aadhaar Card Number <span class="text-red-500">*</span></label>
+                            <input type="text" id="aadhaar" name="aadhaar" required pattern="[0-9]{12}" maxlength="12" inputmode="numeric" class="mt-1 w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary p-2" placeholder="Enter 12-digit Aadhaar number" title="Aadhaar number must be exactly 12 digits" onkeypress="return event.charCode >= 48 && event.charCode <= 57" />
+                            <p id="aadhaar_error" class="text-red-500 text-xs mt-1"></p>
+                            <p class="text-xs text-gray-500 mt-1"><i class="fas fa-id-card"></i> Required for identity verification</p>
+                        </div>
+
+                        <div class="grid sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700" data-i18n="bhakta_nivas.gender_label">Gender <span class="text-red-500">*</span></label>
+                                <select id="gender" required class="mt-1 w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary p-2">
+                                    <option value="" data-i18n="bhakta_nivas.select_option">--Select--</option>
+                                    <option data-i18n="bhakta_nivas.male_option">Male</option>
+                                    <option data-i18n="bhakta_nivas.female_option">Female</option>
+                                    <option data-i18n="bhakta_nivas.other_option">Other</option>
+                                </select>
+                                <p id="gender_error" class="text-red-500 text-xs mt-1"></p>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700" data-i18n="bhakta_nivas.room_type_label">Room Type <span class="text-red-500">*</span></label>
+                            <select id="slot" required class="mt-1 w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary p-2">
+                                <option value="" data-i18n="bhakta_nivas.select_option">--Select--</option>
+                                <option data-i18n="bhakta_nivas.single_room">Single Room</option>
+                                <option data-i18n="bhakta_nivas.double_room">Double Room</option>
+                                <option data-i18n="bhakta_nivas.dormitory">Dormitory</option>
+                            </select>
+                            <p id="slot_error" class="text-red-500 text-xs mt-1"></p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700" data-i18n="bhakta_nivas.ac_preference_label">AC Preference <span class="text-red-500">*</span></label>
+                            <select id="acType" required class="mt-1 w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary p-2">
+                                <option value="" data-i18n="bhakta_nivas.select_option">--Select--</option>
+                                <option data-i18n="bhakta_nivas.ac_option">AC</option>
+                                <option data-i18n="bhakta_nivas.non_ac_option">Non-AC</option>
+                            </select>
+                            <p id="acType_error" class="text-red-500 text-xs mt-1"></p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700" data-i18n="bhakta_nivas.people_count_label">No. of People</label>
+                            <input type="number" id="people" max="4" required class="mt-1 w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary p-2" />
+                            <p id="peopleLimitMsg" class="text-xs text-gray-500 mt-1"></p>
+                        </div>
+                        <div id="memberNamesBlock">
+                            <label class="block text-sm font-medium text-gray-700" data-i18n="bhakta_nivas.member_names_label">Member Names</label>
+                            <div id="memberNamesContainer" class="mt-1 space-y-2"></div>
+                            <p class="text-xs text-gray-500 mt-1" data-i18n="bhakta_nivas.member_names_instruction">Enter each member's full name in a separate box.</p>
+                        </div>
+                        <div id="bookingErrorMsg" class="hidden bg-red-50 border border-red-300 text-red-700 text-sm rounded-md px-4 py-3"></div>
+                        <button type="submit" class="w-full bg-purple-700 hover:bg-purple-800 text-white font-semibold py-2.5 rounded-md" data-i18n="bhakta_nivas.book_pass_button">Book Bhakta Nivas Pass</button>
+                    </form>
+                </div>
+
+                <!-- Camera Modal (shared for all member photos) -->
+                <div id="bnCamModal" class="hidden fixed inset-0 bg-black/60 z-50 items-center justify-center">
+                    <div class="bg-white rounded-xl shadow-lg p-4 w-[95%] max-w-lg">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="font-semibold text-gray-800">Capture Member Photo</div>
+                            <button type="button" id="bnCamClose" class="text-gray-600 hover:text-gray-900">✖</button>
+                        </div>
+                        <video id="bnCamVideo" class="w-full rounded-md border" autoplay playsinline></video>
+                        <img id="bnCamPreview" class="w-full rounded-md border mt-2 hidden" alt="Captured photo preview" />
+                        <canvas id="bnCamCanvas" class="hidden"></canvas>
+                        <div class="mt-3 flex flex-wrap gap-2 justify-end">
+                            <button type="button" id="bnCamCapture" class="bg-indigo-600 text-white px-4 py-2 rounded-md text-sm font-semibold hover:bg-indigo-700">Capture</button>
+                            <button type="button" id="bnCamStop" class="bg-gray-200 text-gray-800 px-4 py-2 rounded-md text-sm font-semibold hover:bg-gray-300">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pass Receipt -->
+                <div class="space-y-6">
+                    <div class="bg-white shadow-lg rounded-2xl p-6 border border-gray-200 relative overflow-hidden" id="pass" style="display:none;">
+
+                        <div class="absolute inset-0 flex items-center justify-center opacity-[0.04] pointer-events-none">
+                            <img src="images/mandir logo.jpg" alt="Watermark" class="w-[520px] h-[520px] object-contain">
+                        </div>
+
+                        <div class="relative z-10">
+                            <div class="flex items-start justify-between gap-4 pb-4 border-b border-gray-200">
+                                <div class="flex items-center gap-3">
+                                    <img src="images/mandir logo.jpg" alt="Vitthal Mandir Logo" class="w-14 h-14 rounded-full border border-gray-200 shadow-sm">
+                                    <div>
+                                        <div class="text-lg font-semibold text-gray-900 leading-tight">Shri Vitthal Rukmini Mandir, Pandharpur</div>
+                                        <div class="text-sm text-gray-600">Bhakta Nivas Booking Receipt</div>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-xs text-gray-500">Booking ID</div>
+                                    <div id="bookingId" class="text-sm font-semibold text-gray-900 tracking-wide"></div>
+                                    <div id="receiptIssuedAt" class="text-xs text-gray-500 mt-1"></div>
+                                </div>
+                            </div>
+
+                            <div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div class="md:col-span-2">
+                                    <div class="bg-gray-50 border border-gray-200 rounded-xl p-4">
+                                        <div class="text-sm font-semibold text-gray-900 mb-3">Booking Details</div>
+                                        <div class="grid grid-cols-2 gap-x-6 gap-y-2 text-sm">
+                                            <div class="text-gray-600 font-semibold">Name</div>
+                                            <div id="pName" class="text-gray-900"></div>
+
+                                            <div class="text-gray-600 font-semibold">Email</div>
+                                            <div id="pEmail" class="text-gray-900"></div>
+
+                                            <div class="text-gray-600 font-semibold">Mobile</div>
+                                            <div id="pMobile" class="text-gray-900"></div>
+
+                                            <div class="text-gray-600 font-semibold">Gender</div>
+                                            <div id="pGender" class="text-gray-900"></div>
+
+                                            <div class="text-gray-600 font-semibold">Room Type</div>
+                                            <div id="pSlot" class="text-gray-900"></div>
+
+                                            <div class="text-gray-600 font-semibold">AC Type</div>
+                                            <div id="pAc" class="text-gray-900"></div>
+
+                                            <div class="text-gray-600 font-semibold">People</div>
+                                            <div id="pPeople" class="text-gray-900"></div>
+
+                                            <div class="text-gray-600 font-semibold">Members</div>
+                                            <div id="pMembers" class="text-gray-900"></div>
+
+                                            <div class="text-gray-600 font-semibold">Check-in</div>
+                                            <div id="pCheckin" class="text-gray-900"></div>
+
+                                            <div class="text-gray-600 font-semibold">Outgoing</div>
+                                            <div id="pCheckout" class="text-gray-900"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="md:col-span-1">
+                                    <div class="bg-gray-50 border border-gray-200 rounded-xl p-4">
+                                        <div class="text-sm font-semibold text-gray-900 mb-3">Photo</div>
+                                        <img src="" id="pPhoto" alt="User Photo" class="w-full h-40 object-cover rounded-lg border border-gray-200 hidden" />
+                                        <div id="noPhoto" class="text-xs text-gray-500">No photo</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
+                                <div class="md:col-span-2 bg-gray-50 border border-gray-200 rounded-xl p-4">
+                                    <div class="text-sm font-semibold text-gray-900 mb-2">Instructions</div>
+                                    <div class="text-xs text-gray-600 leading-relaxed">
+                                        Please carry this receipt during your stay. Show the QR code at the reception for verification.
+                                    </div>
+                                </div>
+                                <div class="md:col-span-1 bg-gray-50 border border-gray-200 rounded-xl p-4">
+                                    <div class="text-sm font-semibold text-gray-900 mb-3">QR Code</div>
+                                    <div class="flex items-center justify-center">
+                                        <div id="qrcode" class="border border-gray-200 rounded-lg p-2 bg-white"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Thumbnails strip for all member photos (screen only) -->
+                            <div id="thumbStrip" class="mt-4 flex flex-wrap gap-2"></div>
+
+                            <div class="mt-4 pt-4 border-t border-gray-200 flex items-center justify-between">
+                                <div class="text-xs text-gray-500">Thank you for booking Bhakta Nivas.</div>
+                                <button onclick="window.print()" class="bg-purple-700 hover:bg-purple-800 text-white px-5 py-2.5 rounded-lg font-semibold text-sm shadow-sm transition-all duration-200" data-i18n="bhakta_nivas.print_button">
+                                    <i class="ph ph-printer"></i> Print Receipt
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    
+                </div>
+            </div>
+        </section>
+    </main>
+
+
+    <!-- Libs -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
+    <script>
+    // Dynamically render a separate input for each member name based on People count
+    function renderMemberInputs(n){
+      const container = document.getElementById('memberNamesContainer');
+      container.innerHTML = '';
+      for(let i=1;i<=n;i++){
+        const wrapper = document.createElement('div');
+        wrapper.className = 'mb-3';
+
+        const nameInput=document.createElement('input');
+        nameInput.type='text';
+        nameInput.placeholder=`Member ${i} Name`;
+        nameInput.className='member-name-input w-full border rounded px-3 py-2';
+        nameInput.addEventListener('keypress', function(e){
+          if(!/[A-Za-z\s]/.test(e.key)) e.preventDefault();
+        });
+
+        const photoLabel = document.createElement('label');
+        photoLabel.className = 'block text-sm font-medium text-gray-700 mt-2';
+        photoLabel.innerHTML = `Member ${i} Photo <span class="text-red-500">*</span>`;
+
+        const photoInput=document.createElement('input');
+        photoInput.type='file';
+        photoInput.accept='image/*';
+        photoInput.className='member-photo-input mt-1 block w-full';
+        photoInput.setAttribute('data-index', i.toString());
+        photoInput.required = true;
+
+        const camBtn = document.createElement('button');
+        camBtn.type = 'button';
+        camBtn.className = 'mt-2 bg-gray-200 text-gray-800 px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-300';
+        camBtn.textContent = 'Use Camera';
+        camBtn.addEventListener('click', () => openBnCameraForInput(photoInput));
+
+        wrapper.appendChild(nameInput);
+        wrapper.appendChild(photoLabel);
+        wrapper.appendChild(photoInput);
+        wrapper.appendChild(camBtn);
+        container.appendChild(wrapper);
+      }
+    }
+
+    const bnCamModal = document.getElementById('bnCamModal');
+    const bnCamVideo = document.getElementById('bnCamVideo');
+    const bnCamCanvas = document.getElementById('bnCamCanvas');
+    const bnCamPreview = document.getElementById('bnCamPreview');
+    const bnCamClose = document.getElementById('bnCamClose');
+    const bnCamStop = document.getElementById('bnCamStop');
+    const bnCamCapture = document.getElementById('bnCamCapture');
+
+    let bnCamStream = null;
+    let bnCamTargetInput = null;
+
+    function bnSetFileOnInput(fileInput, file) {
+      const dt = new DataTransfer();
+      dt.items.add(file);
+      fileInput.files = dt.files;
+      try { fileInput.dispatchEvent(new Event('change', { bubbles: true })); } catch(_) {}
+    }
+
+    function bnStopCamera() {
+      if (bnCamStream) {
+        try { bnCamStream.getTracks().forEach(t => t.stop()); } catch(_) {}
+      }
+      bnCamStream = null;
+      if (bnCamVideo) bnCamVideo.srcObject = null;
+    }
+
+    function closeBnCamera() {
+      bnStopCamera();
+      bnCamTargetInput = null;
+      if (bnCamPreview) {
+        bnCamPreview.classList.add('hidden');
+        bnCamPreview.removeAttribute('src');
+      }
+      if (bnCamModal) {
+        bnCamModal.classList.add('hidden');
+        bnCamModal.classList.remove('flex');
+      }
+    }
+
+    async function openBnCameraForInput(fileInput) {
+      bnCamTargetInput = fileInput;
+      if (!bnCamModal || !bnCamVideo) return;
+      try {
+        bnCamStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: false });
+        bnCamVideo.srcObject = bnCamStream;
+        bnCamModal.classList.remove('hidden');
+        bnCamModal.classList.add('flex');
+      } catch (e) {
+        alert('Failed to start camera: ' + e.message);
+        bnCamTargetInput = null;
+      }
+    }
+
+    async function bnCaptureToTarget() {
+      if (!bnCamTargetInput || !bnCamStream || !bnCamVideo || !bnCamCanvas) return;
+      const w = bnCamVideo.videoWidth || 640;
+      const h = bnCamVideo.videoHeight || 480;
+      bnCamCanvas.width = w;
+      bnCamCanvas.height = h;
+      const ctx = bnCamCanvas.getContext('2d');
+      ctx.drawImage(bnCamVideo, 0, 0, w, h);
+      const blob = await new Promise(resolve => bnCamCanvas.toBlob(resolve, 'image/jpeg', 0.92));
+      if (!blob) {
+        alert('Failed to capture photo.');
+        return;
+      }
+      const uid = localStorage.getItem('userId') || 'user';
+      const file = new File([blob], `${uid}_${Date.now()}.jpg`, { type: blob.type || 'image/jpeg' });
+      bnSetFileOnInput(bnCamTargetInput, file);
+      if (bnCamPreview) {
+        bnCamPreview.src = URL.createObjectURL(blob);
+        bnCamPreview.classList.remove('hidden');
+      }
+      closeBnCamera();
+    }
+
+    if (bnCamClose) bnCamClose.addEventListener('click', closeBnCamera);
+    if (bnCamStop) bnCamStop.addEventListener('click', closeBnCamera);
+    if (bnCamCapture) bnCamCapture.addEventListener('click', bnCaptureToTarget);
+    if (bnCamModal) {
+      bnCamModal.addEventListener('click', (e) => {
+        if (e.target === bnCamModal) closeBnCamera();
+      });
+    }
+    const peopleInput = document.getElementById("people");
+    const roomSelect = document.getElementById("slot");
+    const peopleLimitMsg = document.getElementById("peopleLimitMsg");
+
+    const ROOM_LIMITS = { 'Single Room': 4, 'Double Room': 8, 'Dormitory': 20 };
+
+    function applyRoomLimit() {
+      const room = roomSelect ? roomSelect.value : '';
+      const limit = ROOM_LIMITS[room];
+      if (!peopleInput) return;
+      if (limit) {
+        peopleInput.max = limit;
+        peopleInput.disabled = false;
+        if (peopleLimitMsg) {
+          peopleLimitMsg.textContent = 'Max ' + limit + ' member' + (limit > 1 ? 's' : '') + ' allowed for ' + room + '.';
+          peopleLimitMsg.className = 'text-xs text-gray-500 mt-1';
+        }
+        const cur = parseInt(peopleInput.value, 10);
+        if (cur > limit) {
+          peopleInput.value = limit;
+          renderMemberInputs(limit);
+        }
+      } else {
+        peopleInput.max = '';
+        peopleInput.disabled = true;
+        peopleInput.value = '';
+        if (peopleLimitMsg) {
+          peopleLimitMsg.textContent = 'Select a room type first.';
+          peopleLimitMsg.className = 'text-xs text-gray-500 mt-1';
+        }
+        renderMemberInputs(0);
+      }
+    }
+
+    if (roomSelect) roomSelect.addEventListener('change', applyRoomLimit);
+    applyRoomLimit();
+
+    // Clear inline errors on select change
+    ['gender', 'slot', 'acType'].forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el) {
+        el.addEventListener('change', function() {
+          if (this.value) {
+            var err = document.getElementById(id + '_error');
+            if (err) err.textContent = '';
+            this.classList.remove('border-red-500');
+          }
+        });
+      }
+    });
+
+    // Clear red borders on input fields when user starts typing
+    ['name', 'email', 'mobile', 'checkinDate', 'checkinTime', 'checkoutDate', 'checkoutTime', 'people'].forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el) {
+        el.addEventListener('input', function() {
+          this.classList.remove('border-red-500');
+        });
+      }
+    });
+
+    // Clear red borders on member name inputs when typing
+    document.addEventListener('input', function(e) {
+      if (e.target.classList.contains('member-name-input')) {
+        e.target.classList.remove('border-red-500');
+      }
+    });
+
+    // Clear photo errors when a photo is selected
+    document.addEventListener('change', function(e) {
+      if (e.target.classList.contains('member-photo-input')) {
+        if (e.target.files && e.target.files[0]) {
+          e.target.classList.remove('border-red-500');
+          // Remove error message if exists
+          const wrapper = e.target.closest('div');
+          if (wrapper) {
+            const errorSpan = wrapper.querySelector('.photo-error');
+            if (errorSpan) {
+              errorSpan.remove();
+            }
+          }
+        }
+      }
+    });
+
+    if (peopleInput) {
+      peopleInput.addEventListener('input', function() {
+        const room = roomSelect ? roomSelect.value : '';
+        const limit = ROOM_LIMITS[room];
+        let n = parseInt(this.value, 10);
+        if (isNaN(n) || n < 0) n = 0;
+        if (limit && n > limit) {
+          this.value = limit;
+          n = limit;
+          if (peopleLimitMsg) {
+            peopleLimitMsg.textContent = 'Maximum ' + limit + ' member' + (limit > 1 ? 's' : '') + ' allowed for ' + room + '.';
+            peopleLimitMsg.className = 'text-xs text-red-500 mt-1 font-semibold';
+          }
+        } else if (peopleLimitMsg && limit) {
+          peopleLimitMsg.textContent = 'Max ' + limit + ' member' + (limit > 1 ? 's' : '') + ' allowed for ' + room + '.';
+          peopleLimitMsg.className = 'text-xs text-gray-500 mt-1';
+        }
+        renderMemberInputs(n);
+      });
+    }
+
+    // Initialize dates to a valid range (today -> tomorrow) and validate only on submit
+    (function initBnDates(){
+      try {
+        const checkinInput = document.getElementById('checkinDate');
+        const checkoutInput = document.getElementById('checkoutDate');
+        if (!checkinInput || !checkoutInput) return;
+
+        const today = new Date();
+        const tomorrow = new Date(today);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+
+        const pad = (n) => String(n).padStart(2, '0');
+        const toISO = (d) => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+
+        // Set defaults only if empty
+        if (!checkinInput.value) checkinInput.value = toISO(today);
+        if (!checkoutInput.value) checkoutInput.value = toISO(tomorrow);
+
+        // Keep min constraint in sync
+        checkoutInput.min = toISO(tomorrow);
+
+        function syncCheckoutMin() {
+          if (!checkinInput.value) return;
+          const ci = new Date(checkinInput.value);
+          const minCo = new Date(ci);
+          minCo.setDate(minCo.getDate() + 1);
+          const minStr = toISO(minCo);
+          checkoutInput.min = minStr;
+          // If current checkout is now invalid, gently move it (no popup)
+          if (checkoutInput.value && checkoutInput.value < minStr) {
+            checkoutInput.value = minStr;
+          }
+          try { checkoutInput.setCustomValidity(''); } catch(_) {}
+        }
+
+        checkinInput.addEventListener('change', syncCheckoutMin);
+        checkoutInput.addEventListener('change', () => {
+          try { checkoutInput.setCustomValidity(''); } catch(_) {}
+        });
+        syncCheckoutMin();
+      } catch(_) {}
+    })();
+
+    function bnValidateDateRangeOnSubmit(checkinInput, checkoutInput) {
+      if (!checkinInput || !checkoutInput) return true;
+      const ci = checkinInput.value;
+      const co = checkoutInput.value;
+      if (!ci || !co) return true;
+      const checkin = new Date(ci);
+      const checkout = new Date(co);
+      if (checkout <= checkin) {
+        try {
+          checkoutInput.setCustomValidity('Check-out date must be after check-in date');
+          checkoutInput.reportValidity();
+        } catch(_) {}
+        return false;
+      }
+      try { checkoutInput.setCustomValidity(''); } catch(_) {}
+      return true;
+    }
+
+    document.getElementById("bookingForm").onsubmit = async function(e){
+      e.preventDefault();
+
+      // Clear any previous booking error
+      const bookingErrEl = document.getElementById('bookingErrorMsg');
+      if (bookingErrEl) { bookingErrEl.textContent = ''; bookingErrEl.classList.add('hidden'); }
+      
+      // Validate date range
+      const checkinInput = document.getElementById("checkinDate");
+      const checkoutInput = document.getElementById("checkoutDate");
+      
+      if (!bnValidateDateRangeOnSubmit(checkinInput, checkoutInput)) return;
+      
+      // Ensure the user has a valid token before attempting booking
+      if (!(window.__auth && window.__auth.isAuthenticated && window.__auth.isAuthenticated())) {
+        try { window.__auth && window.__auth.requireAuth && window.__auth.requireAuth({ message: 'Please login to book Bhakta Nivas.' }); } catch(_) {}
+        return;
+      }
+
+      const name = document.getElementById("name").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const mobile = document.getElementById("mobile").value.trim();
+      const gender = document.getElementById("gender").value;
+      const roomType = document.getElementById("slot").value;
+      const acType = document.getElementById("acType").value;
+      const people = document.getElementById("people").value;
+      const ciDate = document.getElementById("checkinDate").value;
+      const ciTime = document.getElementById("checkinTime").value;
+      const coDate = document.getElementById("checkoutDate").value;
+      const coTime = document.getElementById("checkoutTime").value;
+
+      // --- Comprehensive Field Validation ---
+      let valid = true;
+      let errorMessages = [];
+
+      // Clear previous select errors
+      ['gender', 'slot', 'acType'].forEach(id => {
+        const el = document.getElementById(id);
+        const err = document.getElementById(id + '_error');
+        if (el) el.classList.remove('border-red-500');
+        if (err) err.textContent = '';
+      });
+
+      // Check all required fields
+      if (!ciDate) {
+        errorMessages.push('Check-in date is required');
+        document.getElementById('checkinDate').classList.add('border-red-500');
+        valid = false;
+      }
+      if (!ciTime) {
+        errorMessages.push('Check-in time is required');
+        document.getElementById('checkinTime').classList.add('border-red-500');
+        valid = false;
+      }
+      if (!coDate) {
+        errorMessages.push('Outgoing date is required');
+        document.getElementById('checkoutDate').classList.add('border-red-500');
+        valid = false;
+      }
+      if (!coTime) {
+        errorMessages.push('Outgoing time is required');
+        document.getElementById('checkoutTime').classList.add('border-red-500');
+        valid = false;
+      }
+      if (!name) {
+        errorMessages.push('Full name is required');
+        document.getElementById('name').classList.add('border-red-500');
+        valid = false;
+      }
+      if (!email) {
+        errorMessages.push('Email is required');
+        document.getElementById('email').classList.add('border-red-500');
+        valid = false;
+      }
+      if (!mobile) {
+        errorMessages.push('Mobile number is required');
+        document.getElementById('mobile').classList.add('border-red-500');
+        valid = false;
+      }
+      if (!gender) {
+        errorMessages.push('Gender is required');
+        document.getElementById('gender_error').textContent = 'Please select a gender';
+        document.getElementById('gender').classList.add('border-red-500');
+        valid = false;
+      }
+      if (!roomType) {
+        errorMessages.push('Room type is required');
+        document.getElementById('slot_error').textContent = 'Please select a room type';
+        document.getElementById('slot').classList.add('border-red-500');
+        valid = false;
+      }
+      if (!acType) {
+        errorMessages.push('AC preference is required');
+        document.getElementById('acType_error').textContent = 'Please select AC preference';
+        document.getElementById('acType').classList.add('border-red-500');
+        valid = false;
+      }
+      if (!people || parseInt(people, 10) <= 0) {
+        errorMessages.push('Number of people is required and must be greater than 0');
+        document.getElementById('people').classList.add('border-red-500');
+        valid = false;
+      }
+
+      // Validate member names
+      const memberNameInputs = document.querySelectorAll('.member-name-input');
+      const memberNames = Array.from(memberNameInputs).map(i => i.value.trim()).filter(Boolean);
+      const expectedCount = parseInt(people, 10);
+      
+      if (memberNameInputs.length > 0 && memberNames.length < expectedCount) {
+        errorMessages.push(`Please enter names for all ${expectedCount} member(s)`);
+        memberNameInputs.forEach(input => {
+          if (!input.value.trim()) {
+            input.classList.add('border-red-500');
+          }
+        });
+        valid = false;
+      }
+
+      // Validate member photos - REQUIRED for each member
+      const memberPhotoInputs = document.querySelectorAll('.member-photo-input');
+      const memberPhotos = Array.from(memberPhotoInputs)
+        .map((el) => el.files && el.files[0] ? el.files[0] : null);
+      
+      let missingPhotos = 0;
+      memberPhotoInputs.forEach((input, index) => {
+        if (!input.files || !input.files[0]) {
+          input.classList.add('border-red-500');
+          // Add visual indicator
+          const wrapper = input.closest('div');
+          if (wrapper && !wrapper.querySelector('.photo-error')) {
+            const errorSpan = document.createElement('span');
+            errorSpan.className = 'photo-error text-red-500 text-xs mt-1 block';
+            errorSpan.textContent = 'Photo is required';
+            wrapper.appendChild(errorSpan);
+          }
+          missingPhotos++;
+        }
+      });
+
+      if (missingPhotos > 0) {
+        errorMessages.push(`Please upload photo(s) for all ${expectedCount} member(s). ${missingPhotos} photo(s) missing.`);
+        valid = false;
+      }
+
+      // Show all validation errors
+      if (!valid) {
+        if (bookingErrEl) {
+          bookingErrEl.innerHTML = '<strong>Please fix the following errors:</strong><ul class="list-disc ml-5 mt-2">' + 
+            errorMessages.map(msg => `<li>${msg}</li>`).join('') + '</ul>';
+          bookingErrEl.classList.remove('hidden');
+          bookingErrEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        return;
+      }
+
+      // Validate field formats
+      if (window.Validator && !Validator.validateName(name)) {
+        Validator.showError('name', 'Name must contain only alphabets');
+        if (bookingErrEl) {
+          bookingErrEl.textContent = 'Name must contain only alphabets';
+          bookingErrEl.classList.remove('hidden');
+        }
+        return;
+      }
+      if (window.Validator && !Validator.validateEmail(email)) {
+        Validator.showError('email', 'Enter a valid email address');
+        if (bookingErrEl) {
+          bookingErrEl.textContent = 'Please enter a valid email address';
+          bookingErrEl.classList.remove('hidden');
+        }
+        return;
+      }
+      if (window.Validator && !Validator.validateMobile(mobile)) {
+        Validator.showError('mobile', 'Mobile number must be exactly 10 digits');
+        if (bookingErrEl) {
+          bookingErrEl.textContent = 'Mobile number must be exactly 10 digits and start with 6, 7, 8, or 9';
+          bookingErrEl.classList.remove('hidden');
+        }
+        return;
+      }
+
+      const memberNamesStr = memberNames.join(', ');
+      const memberPhotosFiltered = memberPhotos.filter(Boolean);
+
+      const aadhaar = document.getElementById('aadhaar').value.trim();
+      if (!aadhaar || aadhaar.length !== 12) {
+        alert('Please enter a valid 12-digit Aadhaar number');
+        return;
+      }
+
+      const form = new FormData();
+      form.append('full_name', name);
+      form.append('email', email);
+      form.append('mobile', mobile);
+      form.append('aadhaar', aadhaar);
+      form.append('children_count', '0');
+      form.append('gender', gender);
+      form.append('room_type', roomType);
+      form.append('ac_type', acType);
+      form.append('people_count', people);
+      form.append('member_names', memberNamesStr);
+      form.append('checkin_date', ciDate);
+      form.append('checkin_time', ciTime);
+      form.append('checkout_date', coDate);
+      form.append('checkout_time', coTime);
+      // append multiple member photos
+      for (const pf of memberPhotosFiltered){
+        form.append('photos', pf);
+      }
+
+      try{
+        const doFetch = (window.__auth && window.__auth.authFetch) ? window.__auth.authFetch : fetch;
+        const resp = await doFetch('http://127.0.0.1:8000/api/booking/bhaktnivas/', {
+          method: 'POST',
+          body: form
+        });
+        if(!resp.ok){
+          const txt = await resp.text();
+          let j = null;
+          try { j = JSON.parse(txt); } catch(_) { j = null; }
+
+          // If token is invalid/expired, clear auth and force re-login
+          if (resp.status === 401 && j && (j.code === 'token_not_valid' || (j.detail && String(j.detail).toLowerCase().includes('token')))) {
+            try { window.__auth && window.__auth.clearAuth && window.__auth.clearAuth(); } catch(_) {}
+            try { sessionStorage.setItem('redirectAfterLogin', location.href); } catch(_) {}
+            try { window.location.href = '/login.html'; } catch(_) { window.location.href = 'login.html'; }
+            return;
+          }
+
+          const errMsg = (j && (j.detail || j.message)) ? (j.detail || j.message) : txt;
+          const errEl = document.getElementById('bookingErrorMsg');
+          if (errEl) {
+            errEl.textContent = errMsg;
+            errEl.classList.remove('hidden');
+            errEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+          return;
+        }
+        const data = await resp.json();
+
+        if (typeof window.showSuccessPopup === 'function') {
+          window.showSuccessPopup({
+            title: 'Booking Confirmed!',
+            message: 'Your Bhakta Nivas booking has been confirmed.',
+            meta: [
+              { label: 'Booking ID', value: data.booking_id || '' },
+              { label: 'Check-in', value: `${data.checkin_date || ''}${data.checkin_time ? ' ' + data.checkin_time : ''}` },
+              { label: 'Outgoing', value: `${data.checkout_date || ''}${data.checkout_time ? ' ' + data.checkout_time : ''}` }
+            ]
+          });
+        }
+
+        // Fill pass preview from server response
+        document.getElementById("bookingId").textContent = data.booking_id;
+        const issuedAtEl = document.getElementById('receiptIssuedAt');
+        if (issuedAtEl) {
+          const now = new Date();
+          const pad2 = (n) => String(n).padStart(2, '0');
+          issuedAtEl.textContent = `Issued: ${pad2(now.getDate())}-${pad2(now.getMonth()+1)}-${now.getFullYear()} ${pad2(now.getHours())}:${pad2(now.getMinutes())}`;
+        }
+        document.getElementById("pName").textContent = data.full_name;
+        document.getElementById("pEmail").textContent = data.email;
+        document.getElementById("pMobile").textContent = data.mobile;
+        document.getElementById("pGender").textContent = data.gender;
+        document.getElementById("pSlot").textContent = data.room_type;
+        document.getElementById("pAc").textContent = data.ac_type;
+        document.getElementById("pPeople").textContent = data.people_count;
+        document.getElementById("pMembers").textContent = data.member_names || '-';
+        document.getElementById("pCheckin").textContent = `${data.checkin_date}${data.checkin_time ? ' ' + data.checkin_time : ''}`;
+        document.getElementById("pCheckout").textContent = `${data.checkout_date}${data.checkout_time ? ' ' + data.checkout_time : ''}`;
+        // Prefer primary image if available; else first member photo
+        const pPhotoEl = document.getElementById("pPhoto");
+        const noPhotoEl = document.getElementById('noPhoto');
+        let photoSrc = '';
+        if(data.image_base64){
+          photoSrc = data.image_base64;
+        } else if (Array.isArray(data.photos) && data.photos.length && data.photos[0].image_base64){
+          photoSrc = data.photos[0].image_base64;
+        }
+        if (pPhotoEl) {
+          if (photoSrc) {
+            pPhotoEl.src = photoSrc;
+            pPhotoEl.classList.remove('hidden');
+            if (noPhotoEl) noPhotoEl.classList.add('hidden');
+          } else {
+            pPhotoEl.removeAttribute('src');
+            pPhotoEl.classList.add('hidden');
+            if (noPhotoEl) noPhotoEl.classList.remove('hidden');
+          }
+        }
+
+        // Render thumbnail strip of all member photos
+        const strip = document.getElementById('thumbStrip');
+        if (strip) {
+          strip.innerHTML = '';
+          if (Array.isArray(data.photos)) {
+            data.photos.forEach(p => {
+              if (p && p.image_base64) {
+                const img = document.createElement('img');
+                img.src = p.image_base64;
+                img.alt = 'Member Photo';
+                img.className = 'w-16 h-16 rounded object-cover border';
+                strip.appendChild(img);
+              }
+            });
+          }
+        }
+
+        // Generate QR from server data
+        document.getElementById("qrcode").innerHTML = "";
+        new QRCode(document.getElementById("qrcode"),{
+          text:`BookingID:${data.booking_id} | Name:${data.full_name} | Room:${data.room_type} | AC:${data.ac_type} | People:${data.people_count} | Members:${data.member_names} | Checkin:${data.checkin_date}${data.checkin_time ? ' ' + data.checkin_time : ''} | Outgoing:${data.checkout_date}${data.checkout_time ? ' ' + data.checkout_time : ''}`,
+          width:100,height:100
+        });
+
+        document.getElementById("pass").style.display="block";
+        document.getElementById("bookingForm").reset();
+        document.getElementById('memberNamesContainer').innerHTML = '';
+      }catch(err){
+        console.error(err);
+        alert('Unexpected error. Please try again.');
+      }
+    }
+  </script>
+
+  <!-- Site scripts -->
+  <script src="/static/js/date-picker.js"></script>
+  <script src="/static/js/mobile_validation.js"></script>
+  <script src="/static/js/script_fixed.js?v=5"></script>
+  <script src="/static/js/script.js"></script>
+  <script src="/static/js/tailwind.config.js"></script>
+  <script src="/static/js/navbar-fix.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      if (window.Validator) {
+        Validator.attachLive('name', 'name');
+        Validator.attachLive('email', 'email');
+        Validator.attachLive('mobile', 'mobile');
+      }
+    });
+  </script>
+
+  {% include 'footer.html' %}
+</body>
+</html>

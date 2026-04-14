@@ -1,0 +1,94 @@
+/* Custom Date Picker Styles */
+
+.custom-date-picker {
+    position: relative;
+    background-color: white;
+    cursor: pointer;
+}
+
+.custom-date-picker::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+}
+
+.custom-date-picker::-webkit-calendar-picker-indicator:hover {
+    opacity: 1;
+}
+
+/* Style for the date input when it has a value */
+.custom-date-picker:valid {
+    color: #111827;
+}
+
+/* Style for the date input when empty */
+.custom-date-picker:invalid {
+    color: #6b7280;
+}
+
+/* Firefox date picker styling */
+.custom-date-picker::-moz-calendar-picker-indicator {
+    cursor: pointer;
+    opacity: 0.6;
+}
+
+.custom-date-picker::-moz-calendar-picker-indicator:hover {
+    opacity: 1;
+}
+
+/* Date display format hint */
+.custom-date-picker::before {
+    content: attr(placeholder);
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9ca3af;
+    pointer-events: none;
+    transition: all 0.2s;
+}
+
+.custom-date-picker:focus::before,
+.custom-date-picker:valid::before {
+    opacity: 0;
+}
+
+/* Calendar icon styling */
+.date-picker-wrapper {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+}
+
+.date-picker-wrapper .calendar-icon {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: auto;
+    color: #6b7280;
+    font-size: 18px;
+}
+
+/* Date range validation styles */
+.custom-date-picker:invalid {
+    border-color: #ef4444;
+}
+
+.custom-date-picker:valid {
+    border-color: #10b981;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+    .custom-date-picker {
+        font-size: 16px; /* Prevents zoom on iOS */
+    }
+}
+
+/* Print styles */
+@media print {
+    .custom-date-picker::-webkit-calendar-picker-indicator {
+        display: none;
+    }
+}

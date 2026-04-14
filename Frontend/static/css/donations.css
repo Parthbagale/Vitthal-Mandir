@@ -1,0 +1,54 @@
+/* Donations Page Specific Styles */
+
+.donation-card {
+    background: linear-gradient(135deg, #ffffff 0%, #fef3e7 100%);
+    border: 2px solid rgba(255, 122, 0, 0.2);
+    transition: all 0.3s ease;
+}
+
+.donation-card:hover {
+    border-color: var(--brand-saffron);
+    box-shadow: 0 12px 28px rgba(255, 122, 0, 0.15);
+    transform: translateY(-6px);
+}
+
+.donation-amount-btn {
+    border: 2px solid #e5e7eb;
+    transition: all 0.2s ease;
+}
+
+.donation-amount-btn:hover {
+    border-color: var(--brand-saffron);
+    background-color: rgba(255, 122, 0, 0.05);
+}
+
+.donation-amount-btn.active {
+    border-color: var(--brand-saffron);
+    background-color: var(--brand-saffron);
+    color: white;
+}
+
+/* Payment method cards */
+.payment-method {
+    border: 2px solid #e5e7eb;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.payment-method:hover {
+    border-color: var(--brand-saffron);
+    background-color: rgba(255, 122, 0, 0.05);
+}
+
+.payment-method.selected {
+    border-color: var(--brand-saffron);
+    background-color: rgba(255, 122, 0, 0.1);
+}
+
+/* QR code display */
+.qr-code-container {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}

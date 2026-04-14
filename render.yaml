@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: temple-backend
+    env: python
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn temple_backend.wsgi:application"
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: "False"
+      - key: PYTHON_VERSION
+        value: "3.10.0"
