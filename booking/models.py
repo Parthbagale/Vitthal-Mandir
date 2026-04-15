@@ -220,7 +220,7 @@ class Donation(models.Model):
 class DailyCapacity(models.Model):
     date = models.DateField(db_index=True)
     slot = models.CharField(max_length=64)
-    total_capacity = models.PositiveIntegerField(default=180)
+    total_capacity = models.PositiveIntegerField(default=30)
     booked_count = models.PositiveIntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
