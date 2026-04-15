@@ -77,7 +77,7 @@ class PassBookingViewSet(viewsets.ModelViewSet):
         # Enforce per-slot capacity: max 180 per (darshan_date, slot)
         darshan_date = serializer.validated_data.get('darshan_date')
         slot = serializer.validated_data.get('slot')
-        CAPACITY_PER_SLOT = 180
+        CAPACITY_PER_SLOT = 30
         
         if darshan_date and slot:
             # Prevent same user from booking the same date+slot twice
@@ -806,7 +806,7 @@ class BhaktaNivasViewSet(viewsets.ModelViewSet):
         except Exception:
             return Response({'detail': 'Invalid darshan_date format. Use YYYY-MM-DD.'}, status=status.HTTP_400_BAD_REQUEST)
 
-        CAPACITY_PER_SLOT = 180
+        CAPACITY_PER_SLOT = 30
         
         # Try to get capacity from DailyCapacity model
         try:
@@ -1571,7 +1571,7 @@ def check_pass_availability(request):
     except Exception:
         return Response({'detail': 'Invalid darshan_date format. Use YYYY-MM-DD.'}, status=status.HTTP_400_BAD_REQUEST)
 
-    CAPACITY_PER_SLOT = 180
+    CAPACITY_PER_SLOT = 30
     
     # Try to get capacity from DailyCapacity model
     try:
